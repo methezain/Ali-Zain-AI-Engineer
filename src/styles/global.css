@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   Fiery Arctic Midnight — design tokens
+   (see portfolio-design-system skill)
+   ========================================================= */
+:root {
+  --bg: #f6f7eb;
+  --surface: #ffffff;
+  --ink: #393e41;
+  --muted: #6e7173;
+  --accent: #e94f37;
+  --accent-hover: #d23f28;
+  --border: #e2e3d6;
+
+  --font-heading: 'Poppins', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --container: 1160px;
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Lenis controls scroll; keep native smooth off to avoid conflicts */
+    scroll-behavior: auto;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-size: clamp(1rem, 0.6rem + 0.6vw, 1.125rem);
+    line-height: 1.7;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4.25rem);
+    line-height: 1.08;
+  }
+
+  h2 {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+  }
+
+  h3 {
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* =========================================================
+   Reusable component classes
+   ========================================================= */
+@layer components {
+  .container-site {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+  }
+
+  .eyebrow {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.975rem;
+    padding: 0.75rem 1.375rem;
+    border-radius: 8px;
+    min-height: 44px;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease,
+      transform 0.2s var(--ease-out, ease);
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border: 1px solid var(--accent);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+
+  .btn-secondary:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(57, 62, 65, 0.06);
+  }
+
+  .link-accent {
+    color: var(--accent);
+    transition: color 0.15s ease;
+  }
+
+  .link-accent:hover {
+    color: var(--accent-hover);
+  }
+}
+
+/* =========================================================
+   Fluid cursor dot (site-wide)
+   ========================================================= */
+#cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  transition:
+    width 0.25s ease,
+    height 0.25s ease,
+    background 0.25s ease;
+}
+
+#cursor.is-hovering {
+  width: 42px;
+  height: 42px;
+  background: var(--accent);
+  mix-blend-mode: normal;
+  opacity: 0.85;
+}
+
+/* =========================================================
+   Scroll-reveal helpers (progressively enhanced by GSAP)
+   ========================================================= */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.reveal-ready [data-reveal] {
+  transition:
+    opacity 0.7s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 0.7s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
+   Reduced motion & touch
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  #cursor {
+    display: none;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (hover: none) {
+  #cursor {
+    display: none;
+  }
+}

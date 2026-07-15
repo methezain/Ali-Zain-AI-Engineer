@@ -1,0 +1,327 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Button from '../components/Button.astro';
+import { Icon } from 'astro-icon/components';
+
+const services = [
+  {
+    icon: 'lucide:message-square-code',
+    title: 'LLM Apps & RAG Systems',
+    deliverables: [
+      'Retrieval pipeline: chunking, embeddings, and a vector store',
+      'Grounded chat or search, exposed as a clean API or UI',
+      'An evaluation harness so quality is measured, not guessed',
+    ],
+    outcome: 'Answers tied to your data, in real time',
+  },
+  {
+    icon: 'lucide:workflow',
+    title: 'Agentic Workflows & Automation',
+    deliverables: [
+      'An orchestrated agent graph with tool-calling',
+      'Integrations with the systems the work actually lives in',
+      'Guardrails, retries, and logging you can inspect',
+    ],
+    outcome: 'Hours of manual work compressed into minutes',
+  },
+  {
+    icon: 'lucide:server',
+    title: 'AI Backends & APIs',
+    deliverables: [
+      'Typed, documented API with sensible validation',
+      'Dockerised services and a repeatable deploy',
+      'Data pipelines that hold up under real load',
+    ],
+    outcome: 'A backend that keeps working after I leave',
+  },
+  {
+    icon: 'lucide:file-scan',
+    title: 'Document & Data Intelligence',
+    deliverables: [
+      'Ingestion for mixed formats — CSV, XLSX, PDF, and scans',
+      'LLM and vision extraction with a validation layer',
+      'Structured output written straight to your database',
+    ],
+    outcome: 'Messy documents in, trustworthy data out',
+  },
+  {
+    icon: 'lucide:rocket',
+    title: 'Deployment & MLOps',
+    deliverables: [
+      'Containerisation and cloud deployment (Docker, AWS)',
+      'Monitoring and logging for inputs, outputs, and drift',
+      'Documentation and a clean, honest handoff',
+    ],
+    outcome: 'Shipped, observable, and maintainable',
+  },
+];
+
+const steps = [
+  { n: '01', title: 'Discover', desc: 'Understand the workflow, the data, and the outcome that actually matters.' },
+  { n: '02', title: 'Build', desc: 'Prototype fast, validate against real inputs, then harden what works.' },
+  { n: '03', title: 'Ship', desc: 'Deploy with monitoring, documentation, and a clean handoff.' },
+  { n: '04', title: 'Iterate', desc: 'Measure results and tune until the system earns its keep.' },
+];
+---
+
+<Layout
+  title="Services"
+  description="AI engineering services by Ali Zain: LLM apps and RAG systems, agentic workflows and automation, AI backends and APIs, document intelligence, and deployment/MLOps."
+>
+  <!-- Hero -->
+  <section class="svc-hero">
+    <div class="container-site">
+      <Eyebrow>Services</Eyebrow>
+      <h1 data-reveal>AI that removes <span class="mark">real work.</span></h1>
+      <p class="svc-hero__lede" data-reveal data-reveal-delay="80">
+        I help teams turn slow, manual, or unscalable work into systems that run
+        on their own. Each engagement ends in something deployed and measured —
+        not a demo that quietly gets abandoned.
+      </p>
+      <div class="svc-hero__actions" data-reveal data-reveal-delay="140">
+        <Button href="/contact" magnetic>Start a project</Button>
+        <Button href="/work" variant="secondary">See the work</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service blocks -->
+  <Section id="services">
+    <ol class="services">
+      {
+        services.map((s, i) => (
+          <li class="service" data-reveal>
+            <div class="service__head">
+              <span class="service__icon">
+                <Icon name={s.icon} width={22} height={22} />
+              </span>
+              <span class="service__n">{String(i + 1).padStart(2, '0')}</span>
+              <h2>{s.title}</h2>
+            </div>
+            <div class="service__detail">
+              <p class="service__label">What you get</p>
+              <ul class="service__list">
+                {s.deliverables.map((d) => (
+                  <li>
+                    <Icon name="lucide:check" width={16} height={16} />
+                    <span>{d}</span>
+                  </li>
+                ))}
+              </ul>
+              <p class="service__outcome">
+                <Icon name="lucide:trending-up" width={16} height={16} />
+                <span>{s.outcome}</span>
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- How engagements work -->
+  <Section id="process" class="svc-process">
+    <div class="section-head">
+      <div>
+        <Eyebrow>How it works</Eyebrow>
+        <h2 data-reveal>A tight loop from idea to impact.</h2>
+      </div>
+    </div>
+    <ol class="process">
+      {
+        steps.map((step, i) => (
+          <li class="process__step" data-reveal data-reveal-delay={i * 60}>
+            <span class="process__n">{step.n}</span>
+            <h3>{step.title}</h3>
+            <p>{step.desc}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- CTA -->
+  <Section id="svc-cta" dark class="svc-cta">
+    <div class="svc-cta__inner">
+      <h2 data-reveal>Not sure which of these you need?</h2>
+      <p data-reveal data-reveal-delay="80">
+        Tell me what’s slow or manual in your business. I’ll tell you what AI can
+        realistically do about it — and what it can’t.
+      </p>
+      <div data-reveal data-reveal-delay="140">
+        <Button href="/contact" magnetic>Start a project</Button>
+      </div>
+    </div>
+  </Section>
+</Layout>
+
+<style>
+  .mark {
+    color: var(--accent);
+  }
+
+  /* Hero */
+  .svc-hero {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(1rem, 3vw, 2rem);
+  }
+  .svc-hero h1 {
+    margin-top: 0.75rem;
+    max-width: 16ch;
+  }
+  .svc-hero__lede {
+    margin-top: 1.5rem;
+    max-width: 56ch;
+    color: var(--muted);
+    font-size: 1.15rem;
+  }
+  .svc-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 2rem;
+  }
+
+  /* Service blocks */
+  .services {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0;
+  }
+  .service {
+    padding: clamp(2rem, 4vw, 3rem) 0;
+    border-top: 1px solid var(--border);
+  }
+  .service:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+  .service__head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .service__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+  }
+  .service__n {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .service__head h2 {
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  }
+  .service__detail {
+    max-width: 60ch;
+  }
+  .service__label {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .service__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .service__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.975rem;
+    color: var(--ink);
+  }
+  .service__list :global(svg) {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+  .service__outcome {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--accent);
+  }
+
+  /* Process */
+  .svc-process .section-head {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .svc-process .section-head h2 {
+    margin-top: 0.5rem;
+  }
+  .process {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 1.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .process__step {
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .process__n {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+  .process__step h3 {
+    font-size: 1.15rem;
+    margin: 0.4rem 0;
+  }
+  .process__step p {
+    color: var(--muted);
+    max-width: 32ch;
+    font-size: 0.92rem;
+  }
+
+  /* CTA */
+  .svc-cta__inner {
+    text-align: center;
+    max-width: 44ch;
+    margin-inline: auto;
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+  }
+  .svc-cta__inner p {
+    color: color-mix(in srgb, var(--bg) 78%, transparent);
+    font-size: 1.1rem;
+  }
+
+  @media (min-width: 760px) {
+    .process {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .process__step {
+      padding: 1.5rem 0;
+    }
+  }
+</style>

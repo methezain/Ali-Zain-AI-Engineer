@@ -1,0 +1,18 @@
+---
+interface Props {
+  id?: string;
+  class?: string;
+  dark?: boolean;
+}
+
+const { id, class: className = '', dark = false } = Astro.props;
+
+const base = 'py-[clamp(3.5rem,8vw,7.5rem)]';
+const tone = dark ? 'bg-ink text-bg' : '';
+---
+
+<section id={id} class={`${base} ${tone} ${className}`.trim()}>
+  <div class="container-site">
+    <slot />
+  </div>
+</section>

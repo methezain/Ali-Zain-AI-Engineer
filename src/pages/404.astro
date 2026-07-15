@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+---
+
+<Layout title="Page not found" noindex>
+  <section class="notfound">
+    <div class="container-site notfound__inner">
+      <p class="eyebrow">Error 404</p>
+      <h1>This page went off-script.</h1>
+      <p class="notfound__copy">
+        The page you're looking for doesn't exist or has moved. Let's get you
+        back on track.
+      </p>
+      <div class="notfound__actions">
+        <Button href="/" magnetic>Back home</Button>
+        <Button href="/contact" variant="secondary">Get in touch</Button>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .notfound {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+  }
+  .notfound__inner {
+    max-width: 46ch;
+  }
+  .notfound h1 {
+    margin: 0.75rem 0 1rem;
+  }
+  .notfound__copy {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+  }
+</style>

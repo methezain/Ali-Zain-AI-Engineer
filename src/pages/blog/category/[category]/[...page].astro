@@ -1,0 +1,101 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import Layout from '../../../../layouts/Layout.astro';
+import Eyebrow from '../../../../components/Eyebrow.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import CategoryFilter from '../../../../components/CategoryFilter.astro';
+import Pagination from '../../../../components/Pagination.astro';
+import { getSortedPosts, getCategories, PAGE_SIZE, type Post } from '../../../../lib/blog';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getSortedPosts();
+  const categories = getCategories(posts);
+  // One paginated set of routes per category.
+  return categories.flatMap((cat) => {
+    const inCat = posts.filter((p) => p.data.category === cat.name);
+    return paginate(inCat, {
+      params: { category: cat.slug },
+      pageSize: PAGE_SIZE,
+      props: { activeCategory: cat, categories },
+    });
+  });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+  activeCategory: { name: string; slug: string; count: number };
+  categories: { name: string; slug: string; count: number }[];
+}
+const { page, activeCategory, categories } = Astro.props;
+const base = `/blog/category/${activeCategory.slug}`;
+
+const pageTitle =
+  page.currentPage === 1
+    ? `${activeCategory.name} articles`
+    : `${activeCategory.name} — Page ${page.currentPage}`;
+const description = `${activeCategory.name} case studies and technical notes by Ali Zain.`;
+---
+
+<Layout title={pageTitle} description={description}>
+  {page.url.prev && <link slot="head" rel="prev" href={page.url.prev} />}
+  {page.url.next && <link slot="head" rel="next" href={page.url.next} />}
+
+  <!-- Hero -->
+  <section class="blog-hero">
+    <div class="container-site">
+      <Eyebrow>Blog</Eyebrow>
+      <h1 data-reveal>{activeCategory.name}</h1>
+      <p class="blog-hero__lede" data-reveal data-reveal-delay="80">
+        {activeCategory.count} post{activeCategory.count === 1 ? '' : 's'} on {activeCategory.name}.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-posts">
+    <div class="container-site">
+      <CategoryFilter categories={categories} active={activeCategory.slug} />
+
+      <div class="grid-posts">
+        {page.data.map((entry) => <PostCard entry={entry} />)}
+      </div>
+
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={base} />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .blog-hero {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(0.5rem, 2vw, 1.5rem);
+  }
+  .blog-hero h1 {
+    margin-top: 0.75rem;
+    max-width: 16ch;
+  }
+  .blog-hero__lede {
+    margin-top: 1.5rem;
+    max-width: 58ch;
+    color: var(--muted);
+    font-size: 1.15rem;
+  }
+
+  .section-posts {
+    padding: clamp(2rem, 5vw, 3rem) 0 clamp(3.5rem, 8vw, 7.5rem);
+  }
+  .grid-posts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 720px) {
+    .grid-posts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .grid-posts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

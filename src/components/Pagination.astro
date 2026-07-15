@@ -1,0 +1,126 @@
+---
+import { Icon } from 'astro-icon/components';
+import { pageHref } from '../lib/blog';
+
+interface Props {
+  currentPage: number;
+  lastPage: number;
+  // Base listing URL, e.g. "/blog" or "/blog/category/agentic-ai".
+  base: string;
+}
+const { currentPage, lastPage, base } = Astro.props;
+
+// Windowed page list: always show first, last, and current ±1, with gaps
+// collapsed to an ellipsis. Bounded output, so it scales to any page count.
+const wanted = new Set<number>([1, lastPage, currentPage - 1, currentPage, currentPage + 1]);
+const nums = [...wanted].filter((n) => n >= 1 && n <= lastPage).sort((a, b) => a - b);
+
+type Item = { type: 'page'; n: number } | { type: 'gap' };
+const items: Item[] = [];
+let prev = 0;
+for (const n of nums) {
+  if (n - prev > 1) items.push({ type: 'gap' });
+  items.push({ type: 'page', n });
+  prev = n;
+}
+---
+
+{
+  lastPage > 1 && (
+    <nav class="pagination" aria-label="Pagination">
+      <a
+        class:list={['pagination__arrow', { 'is-disabled': currentPage <= 1 }]}
+        href={currentPage > 1 ? pageHref(base, currentPage - 1) : undefined}
+        aria-label="Previous page"
+        aria-disabled={currentPage <= 1 ? 'true' : undefined}
+      >
+        <Icon name="lucide:arrow-left" width={16} height={16} />
+      </a>
+
+      <ul class="pagination__pages">
+        {items.map((item) =>
+          item.type === 'gap' ? (
+            <li class="pagination__gap" aria-hidden="true">
+              …
+            </li>
+          ) : (
+            <li>
+              <a
+                class:list={['pagination__page', { 'is-active': item.n === currentPage }]}
+                href={pageHref(base, item.n)}
+                aria-label={`Page ${item.n}`}
+                aria-current={item.n === currentPage ? 'page' : undefined}
+              >
+                {item.n}
+              </a>
+            </li>
+          ),
+        )}
+      </ul>
+
+      <a
+        class:list={['pagination__arrow', { 'is-disabled': currentPage >= lastPage }]}
+        href={currentPage < lastPage ? pageHref(base, currentPage + 1) : undefined}
+        aria-label="Next page"
+        aria-disabled={currentPage >= lastPage ? 'true' : undefined}
+      >
+        <Icon name="lucide:arrow-right" width={16} height={16} />
+      </a>
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .pagination__pages {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .pagination__page,
+  .pagination__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--ink);
+    transition:
+      background 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .pagination__page:hover,
+  .pagination__arrow:hover {
+    border-color: var(--ink);
+  }
+  .pagination__page.is-active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+    pointer-events: none;
+  }
+  .pagination__arrow.is-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .pagination__gap {
+    color: var(--muted);
+    padding: 0 0.25rem;
+  }
+</style>

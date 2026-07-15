@@ -1,0 +1,344 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Button from '../components/Button.astro';
+import { Icon } from 'astro-icon/components';
+
+const principles = [
+  {
+    title: 'Ship, don’t demo.',
+    desc: 'A model in a notebook isn’t a result. I measure success by what reaches production — and keeps running once I’ve handed it over.',
+  },
+  {
+    title: 'Ground everything.',
+    desc: 'Retrieval, validation, and real data over confident guesses. A system people can trust beats a clever one they learn to double-check.',
+  },
+  {
+    title: 'Leave it maintainable.',
+    desc: 'Clean backends, honest docs, and a handoff that doesn’t need me on call. The work should outlast the engagement.',
+  },
+];
+
+const skills = [
+  { group: 'AI / ML', items: ['LangChain', 'LangGraph', 'RAG', 'OpenAI', 'Scikit-learn', 'TensorFlow', 'OCR'] },
+  { group: 'Backend & Tools', items: ['Python', 'FastAPI', 'Docker', 'AWS', 'PostgreSQL', 'MongoDB', 'SQL', 'Git'] },
+];
+---
+
+<Layout
+  title="About"
+  description="Ali Zain is an AI engineer who builds LLM apps, retrieval systems, and automation that remove real work — shipped to production and measured, across finance, real estate, and legal."
+>
+  <!-- Intro -->
+  <section class="intro">
+    <div class="container-site intro__inner">
+      <div class="intro__copy">
+        <Eyebrow>About</Eyebrow>
+        <h1 data-reveal>I build AI that <span class="mark">earns its keep.</span></h1>
+        <p class="intro__lead" data-reveal data-reveal-delay="80">
+          I’m Ali Zain, an AI engineer based in Pakistan, working with teams
+          worldwide. For the past year and a half I’ve built LLM apps, retrieval
+          systems, and automation across finance, real estate, and legal — the
+          kind that quietly removes hours of manual work.
+        </p>
+        <p class="intro__lead" data-reveal data-reveal-delay="120">
+          I care less about clever demos and more about systems that hold up in
+          production and stay honest about what they can and can’t do.
+        </p>
+        <div class="intro__actions" data-reveal data-reveal-delay="160">
+          <Button href="/contact" magnetic>Work with me</Button>
+          <a href="/work" class="link-accent intro__link" data-cursor="view">
+            See the work <Icon name="lucide:arrow-right" width={16} height={16} />
+          </a>
+        </div>
+      </div>
+
+      <div class="portrait" data-reveal data-reveal-delay="140">
+        <img
+          src="/about/ali-zain.webp"
+          alt="Ali Zain, AI engineer, smiling in front of a tree"
+          width="720"
+          height="720"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <Section id="principles" class="section-principles">
+    <div class="section-head">
+      <div>
+        <Eyebrow>How I work</Eyebrow>
+        <h2 data-reveal>Three things I don’t compromise on.</h2>
+      </div>
+    </div>
+    <ol class="principles">
+      {
+        principles.map((p, i) => (
+          <li class="principle" data-reveal data-reveal-delay={i * 60}>
+            <span class="principle__n">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{p.title}</h3>
+            <p>{p.desc}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- Experience & skills -->
+  <Section id="background" class="section-background">
+    <div class="background">
+      <div class="background__col" data-reveal>
+        <Eyebrow>Experience</Eyebrow>
+        <div class="xp">
+          <div class="xp__role">
+            <h3>Machine Learning &amp; Python Developer</h3>
+            <span class="xp__meta">Intalytic Group Ltd · 2024 – 2026</span>
+          </div>
+          <p>
+            Built document-processing pipelines and LLM- and OCR-based systems
+            across banking, real estate, and UK payroll — cutting manual
+            workloads by up to 90% and processing time by 70%.
+          </p>
+        </div>
+        <div class="xp">
+          <div class="xp__role">
+            <h3>BS, Information Technology</h3>
+            <span class="xp__meta">Quaid-i-Azam University · 2025</span>
+          </div>
+          <p>Foundations in systems, data, and software — put straight to work on real AI products.</p>
+        </div>
+        <p class="certs">
+          <Icon name="lucide:award" width={16} height={16} />
+          <span>ML Specialization · Retrieval Augmented Generation · Azure AI Fundamentals</span>
+        </p>
+      </div>
+
+      <div class="background__col" data-reveal data-reveal-delay="100">
+        <Eyebrow>Toolkit</Eyebrow>
+        {
+          skills.map((s) => (
+            <div class="skills">
+              <p class="skills__group">{s.group}</p>
+              <ul class="skills__list">
+                {s.items.map((it) => <li>{it}</li>)}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <!-- Closing -->
+  <Section id="closing" class="section-closing">
+    <div class="closing">
+      <div class="closing__copy" data-reveal>
+        <Eyebrow>Available for work</Eyebrow>
+        <h2>Let’s build something that lasts.</h2>
+        <p>
+          If you have a workflow that’s slow, manual, or hard to scale, I’d like
+          to hear about it — and tell you honestly what AI can do for it.
+        </p>
+        <Button href="/contact" magnetic>Start a project</Button>
+      </div>
+    </div>
+  </Section>
+</Layout>
+
+<style>
+  .mark {
+    color: var(--accent);
+  }
+
+  /* Intro */
+  .intro {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+  }
+  .intro__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+  .intro h1 {
+    margin-top: 0.75rem;
+    max-width: 14ch;
+  }
+  .intro__lead {
+    margin-top: 1.25rem;
+    max-width: 52ch;
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+  .intro__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  .intro__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+  }
+
+  /* Portrait — a single rounded photo */
+  .portrait {
+    width: 100%;
+    max-width: 380px;
+    margin-inline: auto;
+  }
+  .portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 32px rgba(57, 62, 65, 0.12);
+  }
+
+  /* Section heads */
+  .section-head {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .section-head h2 {
+    margin-top: 0.5rem;
+  }
+
+  /* Principles */
+  .principles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem 2rem;
+  }
+  .principle {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .principle__n {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+  .principle h3 {
+    font-size: 1.3rem;
+    margin: 0.5rem 0;
+  }
+  .principle p {
+    color: var(--muted);
+    max-width: 46ch;
+  }
+
+  /* Experience & skills */
+  .background {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+  .xp {
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .background__col > .eyebrow + .xp {
+    margin-top: 1.25rem;
+  }
+  .xp__role {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .xp__role h3 {
+    font-size: 1.15rem;
+  }
+  .xp__meta {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .xp p {
+    color: var(--muted);
+    max-width: 50ch;
+  }
+  .certs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .certs :global(svg) {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .skills {
+    margin-top: 1.25rem;
+  }
+  .skills__group {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .skills__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+  }
+  .skills__list li {
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--ink);
+    background: var(--surface);
+  }
+
+  /* Closing */
+  .closing {
+    text-align: center;
+  }
+  .closing__copy {
+    max-width: 48ch;
+    margin-inline: auto;
+  }
+  .closing__copy h2 {
+    margin: 0.5rem 0 1rem;
+  }
+  .closing__copy p {
+    color: var(--muted);
+    margin: 0 auto 1.75rem;
+  }
+
+  @media (min-width: 860px) {
+    .intro__inner {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+    .principles {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .background {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

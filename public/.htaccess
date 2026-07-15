@@ -1,0 +1,27 @@
+# Static Astro site on Apache (InfinityFree)
+
+# Serve index.html for the site root and for every folder route (/about/, /work/, ...)
+DirectoryIndex index.html
+
+# Use the site's own 404 page
+ErrorDocument 404 /404.html
+
+# Gzip text assets (big win for HTML/CSS/JS)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json application/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Long cache for fingerprinted/static assets; HTML stays fresh
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp     "access plus 1 year"
+  ExpiresByType image/png      "access plus 1 year"
+  ExpiresByType image/jpeg     "access plus 1 year"
+  ExpiresByType image/svg+xml  "access plus 1 year"
+  ExpiresByType text/css       "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType font/woff2     "access plus 1 year"
+  ExpiresByType text/html      "access plus 0 seconds"
+</IfModule>

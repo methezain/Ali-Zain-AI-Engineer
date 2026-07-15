@@ -1,0 +1,253 @@
+---
+import { Icon } from 'astro-icon/components';
+import { site } from '../config/site';
+const year = new Date().getFullYear();
+
+const socials = [
+  { name: 'GitHub', href: site.social.github, icon: 'simple-icons:github' },
+  { name: 'LinkedIn', href: site.social.linkedin, icon: 'simple-icons:linkedin' },
+  { name: 'Instagram', href: site.social.instagram, icon: 'simple-icons:instagram' },
+  { name: 'X', href: site.social.x, icon: 'simple-icons:x' },
+  { name: 'Medium', href: site.social.medium, icon: 'medium' },
+];
+
+const mediumSvg =
+  '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12m7.42 0c0 3.54-1.51 6.42-3.38 6.42s-3.39-2.88-3.39-6.42 1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75S21.62 15.17 21.62 12s.53-5.75 1.19-5.75S24 8.83 24 12"/></svg>';
+---
+
+<footer class="site-footer">
+  <div class="container-site">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        {
+          site.available && (
+            <span class="status-pill">
+              <span class="status-dot" /> Available for work
+            </span>
+          )
+        }
+        <p class="site-footer__tagline">
+          Building AI systems that reduce real work — from LLM apps and RAG to
+          agentic automation.
+        </p>
+      </div>
+
+      <div class="site-footer__contact-col">
+        <span class="footer-heading">Contact me</span>
+        <div class="site-footer__contact">
+          <a href={`mailto:${site.email}`} class="footer-link" data-cursor="view">
+            {site.email}
+          </a>
+          <a href={`tel:${site.phone.replace(/[^+\d]/g, '')}`} class="footer-link">
+            {site.phone}
+          </a>
+        </div>
+      </div>
+
+      <div class="site-footer__social">
+        <span class="footer-heading">My social profiles</span>
+        <ul class="social-row">
+          {
+            socials.map((s) => (
+              <li>
+                <a
+                  class:list={['social-icon', { 'social-icon--medium': s.name === 'Medium' }]}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={s.name}
+                  data-cursor="view"
+                >
+                  <span class="social-icon__base" aria-hidden="true">
+                    {s.icon === 'medium' ? (
+                      <Fragment set:html={mediumSvg} />
+                    ) : (
+                      <Icon name={s.icon} width={20} height={20} />
+                    )}
+                  </span>
+                  <span class="social-icon__fill" aria-hidden="true">
+                    {s.icon === 'medium' ? (
+                      <Fragment set:html={mediumSvg} />
+                    ) : (
+                      <Icon name={s.icon} width={20} height={20} />
+                    )}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <span>© {year} {site.name}. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink);
+    color: var(--bg);
+    padding: clamp(3.5rem, 7vw, 6rem) 0 2.5rem;
+    border-top: 1px solid rgba(246, 247, 235, 0.14);
+  }
+
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(246, 247, 235, 0.14);
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba(246, 247, 235, 0.22);
+    border-radius: 999px;
+    margin-bottom: 1.25rem;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 var(--accent);
+    animation: pulse 1.7s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(233, 79, 55, 0.5);
+    }
+    70% {
+      box-shadow: 0 0 0 8px rgba(233, 79, 55, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(233, 79, 55, 0);
+    }
+  }
+
+  .site-footer__tagline {
+    max-width: 34ch;
+    font-size: 1.05rem;
+    color: color-mix(in srgb, var(--bg) 82%, transparent);
+    margin-bottom: 1.5rem;
+  }
+
+  .site-footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .site-footer__contact-col,
+  .site-footer__social {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .footer-heading {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--bg) 55%, transparent);
+    margin-bottom: 0.25rem;
+  }
+
+  .footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: color-mix(in srgb, var(--bg) 88%, transparent);
+    width: fit-content;
+    transition: color 0.15s ease;
+  }
+
+  .footer-link:hover {
+    color: var(--accent);
+  }
+
+  /* Social icons with left-to-right accent fill on hover */
+  .social-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0;
+  }
+
+  .social-icon {
+    position: relative;
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Medium's three-ellipse mark is wide/short; scale up so it reads like the rest. */
+  .social-icon--medium svg {
+    transform: scale(1.4);
+    transform-origin: center;
+  }
+
+  .social-icon__base,
+  .social-icon__fill {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .social-icon__base {
+    color: color-mix(in srgb, var(--bg) 72%, transparent);
+  }
+
+  .social-icon__fill {
+    color: var(--accent);
+    /* start fully clipped from the right → nothing visible */
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .social-icon:hover .social-icon__fill,
+  .social-icon:focus-visible .social-icon__fill {
+    /* reveal grows left → right */
+    clip-path: inset(0 0 0 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .social-icon__fill {
+      transition: none;
+    }
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding-top: 2rem;
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--bg) 60%, transparent);
+  }
+
+  @media (min-width: 720px) {
+    /* footer: brand · contact · social */
+    .site-footer__top {
+      grid-template-columns: 1.6fr 1fr 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

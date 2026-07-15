@@ -1,0 +1,134 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import Layout from '../../layouts/Layout.astro';
+import Section from '../../components/Section.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import PostCard from '../../components/PostCard.astro';
+import CategoryFilter from '../../components/CategoryFilter.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getSortedPosts, getCategories, PAGE_SIZE, FEATURED_COUNT, type Post } from '../../lib/blog';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getSortedPosts();
+  const featured = posts.filter((p) => p.data.featured).slice(0, FEATURED_COUNT);
+  const featuredSlugs = new Set(featured.map((p) => p.slug));
+  // The main grid lists everything except the posts shown in the featured strip.
+  const grid = posts.filter((p) => !featuredSlugs.has(p.slug));
+  const categories = getCategories(posts);
+  return paginate(grid, { pageSize: PAGE_SIZE, props: { featured, categories } });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+  featured: Post[];
+  categories: { name: string; slug: string; count: number }[];
+}
+const { page, featured, categories } = Astro.props;
+const isFirst = page.currentPage === 1;
+
+const pageTitle = isFirst ? 'Blog' : `Blog — Page ${page.currentPage}`;
+const description =
+  'Case studies and technical notes by Ali Zain on LLM apps, RAG systems, document intelligence, and shipping AI to production.';
+---
+
+<Layout title={pageTitle} description={description}>
+  {page.url.prev && <link slot="head" rel="prev" href={page.url.prev} />}
+  {page.url.next && <link slot="head" rel="next" href={page.url.next} />}
+
+  <!-- Hero -->
+  <section class="blog-hero">
+    <div class="container-site">
+      <Eyebrow>Blog</Eyebrow>
+      <h1 data-reveal>Notes from <span class="mark">the build.</span></h1>
+      <p class="blog-hero__lede" data-reveal data-reveal-delay="80">
+        Case studies from real projects and short technical notes on how I
+        approach LLM apps, retrieval, document intelligence, and shipping AI to
+        production.
+      </p>
+    </div>
+  </section>
+
+  <Section id="posts" class="section-posts">
+    <CategoryFilter categories={categories} active={null} />
+
+    {
+      isFirst && featured.length > 0 && (
+        <div class="featured">
+          <p class="featured__label">Featured</p>
+          <div class="grid-featured">
+            {featured.map((entry) => (
+              <PostCard entry={entry} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <div class="grid-posts">
+      {page.data.map((entry) => <PostCard entry={entry} />)}
+    </div>
+
+    <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base="/blog" />
+  </Section>
+</Layout>
+
+<style>
+  .mark {
+    color: var(--accent);
+  }
+
+  .blog-hero {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(0.5rem, 2vw, 1.5rem);
+  }
+  .blog-hero h1 {
+    margin-top: 0.75rem;
+    max-width: 16ch;
+  }
+  .blog-hero__lede {
+    margin-top: 1.5rem;
+    max-width: 58ch;
+    color: var(--muted);
+    font-size: 1.15rem;
+  }
+
+  /* Featured strip */
+  .featured {
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .featured__label {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+  .grid-featured {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .grid-posts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 720px) {
+    .grid-featured,
+    .grid-posts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .grid-featured {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .grid-posts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

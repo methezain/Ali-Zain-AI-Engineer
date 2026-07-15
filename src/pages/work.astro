@@ -1,0 +1,328 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Button from '../components/Button.astro';
+import PostCard from '../components/PostCard.astro';
+import LiveBadge from '../components/LiveBadge.astro';
+import { Icon } from 'astro-icon/components';
+
+// Work page shows only case studies (work: true). Articles never appear here.
+const workPosts = (await getCollection('blog', ({ data }) => data.work && !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const featured = workPosts.filter((p) => p.data.featured);
+const archive = workPosts.filter((p) => !p.data.featured);
+---
+
+<Layout
+  title="Work"
+  description="Selected AI engineering work by Ali Zain: agentic commerce assistants, document extraction pipelines, RAG systems, and production ML — shipped, monitored, and measured."
+>
+  <!-- Hero -->
+  <section class="work-hero">
+    <div class="container-site">
+      <Eyebrow>Work</Eyebrow>
+      <h1 data-reveal>Systems shipped, <span class="mark">not just notebooks.</span></h1>
+      <p class="work-hero__lede" data-reveal data-reveal-delay="80">
+        A selection of AI systems I have built across e-commerce, payroll,
+        banking, and legal — each one put into production and measured against
+        the manual work it replaced.
+      </p>
+      <ul class="work-hero__meta" data-reveal data-reveal-delay="140">
+        <li><strong>{workPosts.length}</strong> shipped systems</li>
+        <li><strong>4</strong> industries</li>
+        <li><strong>90%</strong> peak workload cut</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Featured projects -->
+  <Section id="featured" class="section-featured">
+    <div class="features">
+      {
+        featured.map((p, i) => {
+          const href = `/blog/${p.slug}`;
+          const n = String(i + 1).padStart(2, '0');
+          return (
+            <article class="feature" data-reveal>
+              <a class="feature__media" href={href} data-cursor="view">
+                <img
+                  src={p.data.image}
+                  alt={p.data.imageAlt}
+                  width="1200"
+                  height="800"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <div class="feature__body">
+                <div class="feature__top">
+                  <span class="feature__n">{n}</span>
+                  <span class="feature__cat">{p.data.category}</span>
+                  {p.data.liveUrl && <LiveBadge href={p.data.liveUrl} />}
+                  {p.data.liveLinks?.map((l) => <LiveBadge href={l.url} label={l.label} />)}
+                </div>
+                <h2><a href={href}>{p.data.title}</a></h2>
+                <p class="feature__client">{p.data.client}</p>
+                <p class="feature__desc">{p.data.description}</p>
+                <p class="feature__metric">
+                  <Icon name="lucide:trending-up" width={16} height={16} />
+                  <span>{p.data.metric}</span>
+                </p>
+                <ul class="tags">
+                  {p.data.tags.map((t) => <li>{t}</li>)}
+                </ul>
+                <a class="feature__link link-accent" href={href} data-cursor="view">
+                  Read the case study <Icon name="lucide:arrow-right" width={16} height={16} />
+                </a>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </Section>
+
+  <!-- More builds -->
+  <Section id="more" class="section-more">
+    <div class="section-head">
+      <div>
+        <Eyebrow>More builds</Eyebrow>
+        <h2 data-reveal>Also in the archive.</h2>
+      </div>
+    </div>
+    <div class="grid-more">
+      {archive.map((entry) => <PostCard entry={entry} />)}
+    </div>
+  </Section>
+
+  <!-- CTA -->
+  <Section id="work-cta" dark class="work-cta">
+    <div class="work-cta__inner">
+      <h2 data-reveal>Have something like this to build?</h2>
+      <p data-reveal data-reveal-delay="80">
+        If a workflow in your business is slow, manual, or hard to scale, I can
+        tell you what AI can realistically do about it.
+      </p>
+      <div data-reveal data-reveal-delay="140">
+        <Button href="/contact" magnetic>Start a project</Button>
+      </div>
+    </div>
+  </Section>
+</Layout>
+
+<style>
+  .mark {
+    color: var(--accent);
+  }
+
+  /* Hero */
+  .work-hero {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(1rem, 3vw, 2rem);
+  }
+  .work-hero h1 {
+    margin-top: 0.75rem;
+    max-width: 16ch;
+  }
+  .work-hero__lede {
+    margin-top: 1.5rem;
+    max-width: 58ch;
+    color: var(--muted);
+    font-size: 1.15rem;
+  }
+  .work-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 2.25rem 0 0;
+  }
+  .work-hero__meta li {
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .work-hero__meta strong {
+    display: block;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .work-hero__meta li:first-child strong {
+    color: var(--accent);
+  }
+
+  /* Featured */
+  .features {
+    display: grid;
+    gap: clamp(3rem, 7vw, 6rem);
+  }
+  .feature {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+  .feature__media {
+    display: block;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(57, 62, 65, 0.06);
+    aspect-ratio: 3 / 2;
+  }
+  .feature__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .feature:hover .feature__media img {
+    transform: scale(1.04);
+  }
+  .feature__top {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 0.875rem;
+    flex-wrap: wrap;
+  }
+  .feature__n {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  .feature__cat {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+  .feature__body h2 {
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+  }
+  .feature__body h2 a {
+    transition: color 0.15s ease;
+  }
+  .feature__body h2 a:hover {
+    color: var(--accent);
+  }
+  .feature__client {
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .feature__desc {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--ink);
+  }
+  .feature__metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--accent);
+  }
+  .feature__body .tags {
+    margin-top: 1.25rem;
+  }
+  .feature__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  /* Shared tag chips */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .tags li {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+  }
+
+  /* Section head (More builds) */
+  .section-head {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .section-head h2 {
+    margin-top: 0.5rem;
+  }
+
+  /* More builds grid */
+  .grid-more {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* CTA */
+  :global(.work-cta) {
+    position: relative;
+    overflow: hidden;
+  }
+  .work-cta__inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 42ch;
+    margin-inline: auto;
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+  }
+  .work-cta__inner p {
+    color: color-mix(in srgb, var(--bg) 78%, transparent);
+    font-size: 1.1rem;
+  }
+
+  /* Responsive */
+  @media (min-width: 720px) {
+    .grid-more {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .feature {
+      grid-template-columns: 1.1fr 1fr;
+    }
+    .feature:nth-child(even) .feature__media {
+      order: 2;
+    }
+    .grid-more {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

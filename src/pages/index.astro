@@ -1,0 +1,909 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Button from '../components/Button.astro';
+import Marquee from '../components/Marquee.astro';
+import { Icon } from 'astro-icon/components';
+import { site } from '../config/site';
+
+const services = [
+  {
+    icon: 'lucide:message-square-code',
+    title: 'LLM apps & RAG systems',
+    desc: 'Chat and search grounded in your own data — retrieval, chunking, and prompt design tuned until hallucinations stop being a problem.',
+  },
+  {
+    icon: 'lucide:workflow',
+    title: 'Agentic workflows',
+    desc: 'LangGraph agents that plan, call tools, and finish multi-step jobs — with guardrails, because autonomy without them is a liability.',
+  },
+  {
+    icon: 'lucide:server',
+    title: 'AI backends & APIs',
+    desc: 'The unglamorous part done right: FastAPI services, Dockerized deploys, and AWS pipelines that keep working after I hand them over.',
+  },
+  {
+    icon: 'lucide:file-scan',
+    title: 'Document intelligence',
+    desc: 'OCR, extraction, and validation for the documents nobody wants to type out — invoices, statements, contracts — into clean, structured data.',
+  },
+];
+
+// The four featured case studies, pulled from the blog collection so the
+// home cards link straight to each project's story.
+const work = (await getCollection('blog', ({ data }) => data.work && data.featured && !data.draft))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 4);
+
+const steps = [
+  { n: '01', title: 'Discover', desc: 'We talk through the workflow, look at real data, and agree on what “working” actually means.' },
+  { n: '02', title: 'Build', desc: 'A prototype against your real inputs — fast, so we find what breaks before it matters.' },
+  { n: '03', title: 'Ship', desc: 'Deployed with monitoring, docs, and a handoff your team can actually run with.' },
+  { n: '04', title: 'Iterate', desc: 'We measure, tune, and keep only what earns its place.' },
+];
+
+const stats = [
+  { value: 90, suffix: '%', label: 'Manual workload reduced' },
+  { value: 98, suffix: '%', label: 'Classification accuracy in production' },
+  { value: 70, suffix: '%', label: 'Faster document processing' },
+];
+
+// Neural net diagram (Results section) — feedforward classifier: 3 → 5 → 5 → 2
+const nnX = [55, 205, 355, 505];
+const nnLayers = [
+  [95, 170, 245],
+  [45, 110, 170, 230, 295],
+  [45, 110, 170, 230, 295],
+  [135, 205],
+];
+const nnEdges: { x1: number; y1: number; x2: number; y2: number }[] = [];
+for (let i = 0; i < nnLayers.length - 1; i++) {
+  for (const y1 of nnLayers[i]) {
+    for (const y2 of nnLayers[i + 1]) {
+      nnEdges.push({ x1: nnX[i], y1, x2: nnX[i + 1], y2 });
+    }
+  }
+}
+---
+
+<Layout>
+  <!-- 1. Hero -->
+  <section class="hero">
+    <div class="container-site hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow" data-reveal>AI Engineer · {site.location}</p>
+        <h1 data-reveal data-reveal-delay="60">
+          I build AI systems<br />that <span class="mark">do real work.</span>
+        </h1>
+        <p class="hero__tagline" data-reveal data-reveal-delay="120">
+          LLM apps, retrieval systems, and document pipelines that have cut
+          manual workloads by up to 90% — deployed, monitored, and measured
+          in production.
+        </p>
+        <div class="hero__actions" data-reveal data-reveal-delay="180">
+          <Button href="/contact" magnetic>Start a project</Button>
+          <Button href="/work" variant="secondary">See the work</Button>
+        </div>
+      </div>
+
+      <div class="hero__portrait" data-reveal data-reveal-delay="220">
+        <span class="hero__portrait-hit" aria-hidden="true"></span>
+        <div class="hero__portrait-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <img
+          class="hero__portrait-img"
+          src="/ali-zain.webp"
+          alt="Ali Zain, AI engineer"
+          width="900"
+          height="1106"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Trust bar -->
+  <div class="trust">
+    <div class="container-site">
+      <p class="eyebrow trust__label">Tools &amp; stack</p>
+    </div>
+    <Marquee
+      items={[
+        'Python', 'OpenAI', 'Anthropic', 'LangChain', 'LangGraph', 'FastAPI',
+        'Docker', 'AWS', 'PostgreSQL', 'Weaviate', 'Scikit-learn', 'TensorFlow',
+      ]}
+    />
+  </div>
+
+  <!-- 3. Services overview -->
+  <Section id="services">
+    <div class="section-head">
+      <div>
+        <Eyebrow>What I do</Eyebrow>
+        <h2 data-reveal>The model, the pipeline, and everything <span class="mark">in between</span>.</h2>
+        <p class="section-lede" data-reveal data-reveal-delay="60">
+          Four kinds of systems I get hired to build, keep running, and hand
+          over properly.
+        </p>
+      </div>
+      <a href="/services" class="section-head__link link-accent" data-cursor="view">
+        All services <Icon name="lucide:arrow-right" width={16} height={16} />
+      </a>
+    </div>
+
+    <div class="grid-cards">
+      {
+        services.map((s, i) => (
+          <article class="card service-card" data-reveal data-reveal-delay={i * 60}>
+            <span class="service-card__icon">
+              <Icon name={s.icon} width={22} height={22} />
+            </span>
+            <h3>{s.title}</h3>
+            <p>{s.desc}</p>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- 4. Selected work -->
+  <Section id="work" class="section-work">
+    <div class="section-head">
+      <div>
+        <Eyebrow>Selected work</Eyebrow>
+        <h2 data-reveal>Systems shipped, not just notebooks.</h2>
+        <p class="section-lede" data-reveal data-reveal-delay="60">
+          A few favorites — each one replaced a queue of manual work.
+        </p>
+      </div>
+      <a href="/work" class="section-head__link link-accent" data-cursor="view">
+        All work <Icon name="lucide:arrow-right" width={16} height={16} />
+      </a>
+    </div>
+
+    <div class="grid-work">
+      {
+        work.map((w, i) => (
+          <a href={`/blog/${w.slug}`} class="card work-card" data-reveal data-reveal-delay={i * 60} data-cursor="view">
+            <div class="work-card__visual">
+              <img
+                src={w.data.image.replace(/\.webp$/, '-sm.webp')}
+                alt={w.data.imageAlt}
+                width="600"
+                height="400"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="work-card__body">
+              <h3>{w.data.cardTitle ?? w.data.title}</h3>
+              <p>{w.data.excerpt}</p>
+              <ul class="tags">
+                {w.data.tags.slice(0, 3).map((t) => <li>{t}</li>)}
+              </ul>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- 5. Process -->
+  <Section id="process">
+    <div class="section-head">
+      <div>
+        <Eyebrow>How it works</Eyebrow>
+        <h2 data-reveal>From “this is slow” to “this runs itself.”</h2>
+      </div>
+    </div>
+    <ol class="process">
+      {
+        steps.map((step, i) => (
+          <li class="process__step" data-reveal data-reveal-delay={i * 60}>
+            <span class="process__n">{step.n}</span>
+            <h3>{step.title}</h3>
+            <p>{step.desc}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- 6. Results / metrics -->
+  <Section id="results" dark>
+    <div class="results">
+      <div class="results__head">
+        <Eyebrow>Results</Eyebrow>
+        <h2 data-reveal>Numbers that hold up in production.</h2>
+      </div>
+      <div class="results__grid">
+        {
+          stats.map((stat, i) => (
+            <div class="stat" data-reveal data-reveal-delay={i * 80}>
+              <span
+                class:list={['stat__value', { accent: i === 1 }]}
+                data-counter={stat.value}
+                data-counter-suffix={stat.suffix}
+              >
+                0{stat.suffix}
+              </span>
+              <span class="stat__label">{stat.label}</span>
+            </div>
+          ))
+        }
+      </div>
+      <aside class="metrics-panel card" data-reveal data-reveal-delay="120" aria-label="Sample results">
+        <div class="panel__head">
+          <span class="panel__dot"></span>
+          <span>results.json</span>
+        </div>
+        <ul class="panel__list">
+          <li><span>Invoice accuracy</span><strong>98%</strong></li>
+          <li><span>Processing time</span><strong class="accent">−70%</strong></li>
+          <li><span>Manual review</span><strong>−90%</strong></li>
+          <li><span>Deployment</span><strong>Docker · AWS</strong></li>
+        </ul>
+        <div class="panel__foot">
+          <Icon name="lucide:activity" width={16} height={16} />
+          <span>Shipped &amp; monitored in production</span>
+        </div>
+      </aside>
+      <div class="results__net" data-reveal data-reveal-delay="120">
+          <svg viewBox="34 24 492 292" role="img" aria-label="Feedforward neural network classifier: 3 inputs, two hidden layers of 5, 2 outputs">
+            <g stroke="#ffffff" stroke-opacity="0.16" stroke-width="1">
+              {
+                nnEdges.map((e) => (
+                  <line x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} />
+                ))
+              }
+            </g>
+            {
+              nnLayers.map((layer, i) =>
+                layer.map((y) => (
+                  <circle
+                    cx={nnX[i]}
+                    cy={y}
+                    r="11"
+                    fill="#ffffff"
+                    fill-opacity={i === nnLayers.length - 1 ? 0.85 : 0.1}
+                    stroke="#ffffff"
+                    stroke-opacity="0.5"
+                    stroke-width="1.25"
+                  />
+                ))
+              )
+            }
+          </svg>
+        </div>
+      </div>
+  </Section>
+
+  <!-- 7. About snippet -->
+  <Section id="about-snippet">
+    <div class="about-snippet">
+      <img
+        class="about-snippet__photo"
+        src="/profile.webp"
+        alt="Ali Zain"
+        width="480"
+        height="480"
+        loading="lazy"
+        decoding="async"
+        data-reveal
+      />
+      <div class="about-snippet__copy">
+        <Eyebrow>About</Eyebrow>
+        <p data-reveal>
+          I'm Ali Zain, an AI engineer working across legal, real estate, and
+          finance — usually on the problems where documents pile up and people
+          burn hours on them. My pipelines have cut processing time by 70% and
+          manual workload by 90%, and every one shipped with monitoring, docs,
+          and a clean handoff. I like AI that quietly does its job.
+        </p>
+        <a href="/about" class="link-accent about-snippet__link" data-cursor="view">
+          More about me <Icon name="lucide:arrow-right" width={16} height={16} />
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 8. Final CTA band -->
+  <Section id="cta" dark class="cta-band">
+    <svg
+      class="cta-flow"
+      viewBox="0 0 1200 420"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <g fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1.25">
+        <path d="M140 205 C200 205 190 95 250 95" />
+        <path d="M140 205 C200 205 190 215 250 215" />
+        <path d="M140 205 C200 205 190 335 250 335" />
+        <path d="M360 95 C420 95 410 145 470 145" />
+        <path d="M360 215 C420 215 410 145 470 145" />
+        <path d="M360 215 C420 215 410 285 470 285" />
+        <path d="M360 335 C420 335 410 285 470 285" />
+        <path d="M590 145 C640 145 640 211 690 211" />
+        <path d="M590 285 C640 285 640 211 690 211" />
+        <path d="M820 211 C860 211 860 105 900 105" />
+        <path d="M820 211 C860 211 860 225 900 225" />
+        <path d="M820 211 C860 211 860 345 900 345" />
+        <path d="M1010 105 C1050 105 1050 165 1090 165" />
+        <path d="M1010 225 C1050 225 1050 165 1090 165" />
+        <path d="M1010 225 C1050 225 1050 305 1090 305" />
+        <path d="M1010 345 C1050 345 1050 305 1090 305" />
+      </g>
+      <g fill="#ffffff" fill-opacity="0.0175" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1.25">
+        <rect x="30" y="180" width="110" height="50" rx="12" />
+        <rect x="250" y="70" width="110" height="50" rx="12" />
+        <rect x="250" y="190" width="110" height="50" rx="12" />
+        <rect x="250" y="310" width="110" height="50" rx="12" />
+        <rect x="470" y="120" width="120" height="50" rx="12" />
+        <rect x="470" y="260" width="120" height="50" rx="12" />
+        <rect x="690" y="185" width="130" height="52" rx="12" />
+        <rect x="900" y="80" width="110" height="50" rx="12" />
+        <rect x="900" y="200" width="110" height="50" rx="12" />
+        <rect x="900" y="320" width="110" height="50" rx="12" />
+        <rect x="1090" y="140" width="90" height="50" rx="12" />
+        <rect x="1090" y="280" width="90" height="50" rx="12" />
+      </g>
+      <g fill="#ffffff" fill-opacity="0.10">
+        <circle cx="140" cy="205" r="4" />
+        <circle cx="250" cy="95" r="4" />
+        <circle cx="360" cy="95" r="4" />
+        <circle cx="250" cy="215" r="4" />
+        <circle cx="360" cy="215" r="4" />
+        <circle cx="250" cy="335" r="4" />
+        <circle cx="360" cy="335" r="4" />
+        <circle cx="470" cy="145" r="4" />
+        <circle cx="590" cy="145" r="4" />
+        <circle cx="470" cy="285" r="4" />
+        <circle cx="590" cy="285" r="4" />
+        <circle cx="690" cy="211" r="4" />
+        <circle cx="820" cy="211" r="4" />
+        <circle cx="900" cy="105" r="4" />
+        <circle cx="1010" cy="105" r="4" />
+        <circle cx="900" cy="225" r="4" />
+        <circle cx="1010" cy="225" r="4" />
+        <circle cx="900" cy="345" r="4" />
+        <circle cx="1010" cy="345" r="4" />
+        <circle cx="1090" cy="165" r="4" />
+        <circle cx="1090" cy="305" r="4" />
+      </g>
+    </svg>
+    <div class="cta-band__inner">
+      <h2 data-reveal>Have a workflow worth automating?</h2>
+      <p data-reveal data-reveal-delay="80">
+        Tell me what's slow, manual, or unscalable. I'll tell you what AI can
+        realistically do about it.
+      </p>
+      <div data-reveal data-reveal-delay="140">
+        <Button href="/contact" magnetic>Start a project</Button>
+      </div>
+    </div>
+  </Section>
+</Layout>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-top: clamp(3rem, 8vw, 6rem);
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  }
+  .hero__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    align-items: center;
+  }
+  .hero__copy {
+    position: relative;
+    z-index: 1;
+  }
+  .mark {
+    color: var(--accent);
+  }
+  .hero__tagline {
+    max-width: 46ch;
+    margin-top: 1.5rem;
+    color: var(--muted);
+    font-size: 1.125rem;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 2rem;
+  }
+  .hero__portrait {
+    display: none;
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    margin-inline: auto;
+  }
+  .hero__portrait-img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: grayscale(0.7) contrast(1.03) drop-shadow(3px 2px 0 var(--accent));
+    transition: filter 0.35s ease;
+  }
+  .hero__portrait-hit {
+    position: absolute;
+    top: 20%;
+    left: 24%;
+    right: 26%;
+    bottom: 0;
+    z-index: 3;
+  }
+  .hero__portrait-lines {
+    position: absolute;
+    z-index: 0;
+    top: 55%;
+    left: 47%;
+    width: 150%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+    transform: translate(-50%, -50%) rotate(-32deg);
+    pointer-events: none;
+  }
+  .hero__portrait-lines span {
+    display: block;
+    width: 65%;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width 0.35s ease;
+  }
+  .hero__portrait-lines span:nth-child(2) {
+    width: 58.5%;
+  }
+  .hero__portrait-lines span:nth-child(3) {
+    width: 52%;
+  }
+  .hero__portrait-hit:hover ~ .hero__portrait-img {
+    filter: grayscale(0.7) contrast(1.03) drop-shadow(7px 4px 0 var(--accent));
+  }
+  .hero__portrait-hit:hover ~ .hero__portrait-lines span {
+    width: 57%;
+  }
+  .hero__portrait-hit:hover ~ .hero__portrait-lines span:nth-child(2) {
+    width: 51%;
+  }
+  .hero__portrait-hit:hover ~ .hero__portrait-lines span:nth-child(3) {
+    width: 45%;
+  }
+  .metrics-panel {
+    padding: 1.5rem;
+    max-width: 420px;
+  }
+  .panel__head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .panel__list {
+    list-style: none;
+    padding: 1rem 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .panel__list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .panel__list strong {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+  .panel__list strong.accent {
+    color: var(--accent);
+  }
+  .panel__foot {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* Trust */
+  .trust {
+    position: relative;
+    padding: 1.5rem 0 2.5rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--ink) 4%, var(--bg));
+    box-shadow:
+      inset 0 7px 7px -7px rgba(57, 62, 65, 0.3),
+      inset 0 -7px 7px -7px rgba(57, 62, 65, 0.3);
+  }
+  .trust__label {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Section heads */
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .section-head h2 {
+    margin-top: 0.5rem;
+    max-width: 20ch;
+  }
+  .section-lede {
+    margin-top: 0.875rem;
+    max-width: 52ch;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .section-head__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  /* Service cards */
+  .grid-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .service-card {
+    padding: 1.75rem;
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s ease;
+  }
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(57, 62, 65, 0.08);
+  }
+  .service-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+  }
+  .service-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .service-card p {
+    color: var(--muted);
+    font-size: 0.975rem;
+  }
+
+  /* Work */
+  .section-work {
+    background:
+      linear-gradient(var(--bg), var(--bg)) padding-box;
+  }
+  .grid-work {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .work-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s ease;
+  }
+  .work-card:hover {
+    transform: translateY(-5px) rotate(-0.4deg);
+    box-shadow: 0 16px 34px rgba(57, 62, 65, 0.1);
+  }
+  .work-card__visual {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .work-card__visual img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .work-card:hover .work-card__visual img {
+    transform: scale(1.04);
+  }
+  .work-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.25rem 1.25rem 1.4rem;
+  }
+  .work-card__body h3 {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+    min-height: 2.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .work-card__body p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    min-height: 3em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .work-card__body .tags {
+    margin-top: auto;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .tags li {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+  }
+
+  /* Process */
+  .process {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 1.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: step;
+  }
+  .process__step {
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .process__n {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+  .process__step h3 {
+    font-size: 1.15rem;
+    margin: 0.4rem 0;
+  }
+  .process__step p {
+    color: var(--muted);
+    max-width: 32ch;
+    font-size: 0.92rem;
+  }
+
+  /* Results */
+  .results {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .results__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(246, 247, 235, 0.16);
+  }
+  .stat__value {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 9vw, 3.75rem);
+    line-height: 1;
+  }
+  .stat__value.accent {
+    color: var(--accent);
+  }
+  .stat__label {
+    color: color-mix(in srgb, var(--bg) 70%, transparent);
+    font-size: 0.95rem;
+  }
+  .results__net {
+    display: none;
+    justify-content: center;
+  }
+  .results__net svg {
+    display: block;
+    width: 100%;
+    max-width: 440px;
+    height: auto;
+  }
+
+  /* About snippet */
+  .about-snippet {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  .about-snippet__photo {
+    width: clamp(120px, 16vw, 168px);
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(57, 62, 65, 0.06);
+  }
+  .about-snippet__copy p {
+    font-size: 1.15rem;
+    max-width: 60ch;
+    margin: 0.75rem 0 1rem;
+  }
+  .about-snippet__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+  }
+
+  /* CTA band */
+  :global(.cta-band) {
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-flow {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cta-band__inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 40ch;
+    margin-inline: auto;
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+  }
+  .cta-band__inner p {
+    color: color-mix(in srgb, var(--bg) 78%, transparent);
+    font-size: 1.1rem;
+  }
+
+  /* Responsive */
+  @media (min-width: 720px) {
+    .grid-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-work {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .process {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .results__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .about-snippet {
+      grid-template-columns: auto 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .hero__inner {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+    .hero__portrait {
+      display: block;
+      position: absolute;
+      right: 0;
+      bottom: calc(-1 * clamp(2.5rem, 6vw, 4.5rem));
+      width: clamp(380px, 34vw, 520px);
+      max-width: none;
+      margin: 0;
+      z-index: 0;
+    }
+    .grid-cards {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .grid-work {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .process {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .process__step {
+      padding: 1.5rem 0;
+    }
+    .process__step h3 {
+      font-size: 1.35rem;
+      margin: 0.5rem 0;
+    }
+    .process__step p {
+      font-size: 1rem;
+    }
+    .results {
+      grid-template-columns: 0.8fr 1.2fr;
+      align-items: start;
+    }
+    .results__net {
+      position: relative;
+      align-self: stretch;
+      display: block;
+    }
+    .results__net svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+    }
+  }
+</style>

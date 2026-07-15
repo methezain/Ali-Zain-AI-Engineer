@@ -1,0 +1,62 @@
+---
+import { site } from '../config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  image = site.ogImage,
+  type = 'website',
+  noindex = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${site.name}` : site.title;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const ogImage = new URL(image, Astro.site ?? site.url).href;
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: site.role,
+  url: site.url,
+  email: `mailto:${site.email}`,
+  sameAs: [
+    site.social.github,
+    site.social.linkedin,
+    site.social.instagram,
+    site.social.x,
+    site.social.medium,
+  ],
+};
+---
+
+<!-- Primary meta -->
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content={site.name} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- Structured data -->
+<script type="application/ld+json" set:html={JSON.stringify(personLd)} />

@@ -1,0 +1,147 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import LiveBadge from './LiveBadge.astro';
+
+interface Props {
+  entry: CollectionEntry<'blog'>;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const href = `/blog/${entry.slug}`;
+const title = data.cardTitle ?? data.title;
+// Cards display small — use the ~600px variant to keep downloads tiny.
+const cardImg = data.image.replace(/\.webp$/, '-sm.webp');
+---
+
+<a class="post-card card" href={href} data-category={data.category} data-cursor="view">
+  <div class="post-card__media">
+    <img
+      src={cardImg}
+      alt={data.imageAlt}
+      width="600"
+      height="400"
+      loading="lazy"
+      decoding="async"
+    />
+    {(data.liveUrl || data.liveLinks?.length) && (
+      <span class="post-card__live">
+        <LiveBadge />
+      </span>
+    )}
+  </div>
+  <div class="post-card__body">
+    <span class="post-card__cat">{data.category}</span>
+    <h3>{title}</h3>
+    <p>{data.excerpt}</p>
+    <ul class="tags">
+      {data.tags.slice(0, 3).map((t) => <li>{t}</li>)}
+    </ul>
+  </div>
+</a>
+
+<style>
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+    height: 100%;
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s ease;
+  }
+  .post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 34px rgba(57, 62, 65, 0.1);
+  }
+  .post-card__media {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .post-card__live {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1;
+    display: inline-flex;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(4px);
+  }
+  .post-card__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .post-card:hover .post-card__media img {
+    transform: scale(1.04);
+  }
+  .post-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.25rem 1.25rem 1.4rem;
+  }
+  .post-card__cat {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.5rem;
+  }
+  /* Title: always occupy 2 lines, clamp longer titles with an ellipsis. */
+  .post-card__body h3 {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin: 0 0 0.4rem;
+    min-height: 2.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  /* Teaser: always occupy 2 lines, same for every card. */
+  .post-card__body p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 1rem;
+    min-height: 3em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .post-card__body .tags {
+    margin-top: auto;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .tags li {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+  }
+</style>

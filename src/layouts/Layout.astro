@@ -1,0 +1,170 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import SEO from '../components/SEO.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/poppins/400-italic.css';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: string;
+  noindex?: boolean;
+}
+
+const { title, description, image, type, noindex } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#F6F7EB" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <SEO title={title} description={description} image={image} type={type} noindex={noindex} />
+    <slot name="head" />
+    <ViewTransitions />
+
+    <!-- Branded preloader (inline so it paints before any external CSS/JS) -->
+    <style is:inline>
+      #preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f6f7eb;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+      }
+      #preloader.is-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #preloader .pl-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.1rem;
+      }
+      #preloader .pl-mark {
+        font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+        font-weight: 600;
+        font-size: 1.6rem;
+        letter-spacing: -0.02em;
+        color: #393e41;
+      }
+      #preloader .pl-dot {
+        color: #e94f37;
+      }
+      #preloader .pl-bar {
+        position: relative;
+        width: 132px;
+        height: 3px;
+        background: #e2e3d6;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      #preloader .pl-bar i {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 45%;
+        height: 100%;
+        background: #e94f37;
+        border-radius: 3px;
+        will-change: transform;
+        animation: plslide 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      /* Animate transform (GPU/compositor) instead of `left` so it stays
+         smooth even while the main thread is busy loading the page. */
+      @keyframes plslide {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(222%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #preloader { transition: none; }
+        #preloader .pl-bar i { animation: none; transform: none; width: 100%; }
+      }
+    </style>
+    <noscript><style>#preloader { display: none !important; }</style></noscript>
+    <script is:inline>
+      (function () {
+        var pre;
+        var showTimer;
+        function el() { return pre || (pre = document.getElementById('preloader')); }
+        function hide() { clearTimeout(showTimer); var p = el(); if (p) p.classList.add('is-hidden'); }
+        function show() { var p = el(); if (p) p.classList.remove('is-hidden'); }
+        // Initial load: hide once Astro reports the page is ready (with safety nets).
+        document.addEventListener('astro:page-load', hide);
+        window.addEventListener('load', hide);
+        setTimeout(hide, 5000);
+        // Slow page-to-page navigation: show again, but only if it takes a moment.
+        document.addEventListener('astro:before-preparation', function () {
+          showTimer = setTimeout(show, 250);
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="preloader" aria-hidden="true" transition:persist>
+      <div class="pl-inner">
+        <span class="pl-mark">Ali&nbsp;Zain<span class="pl-dot">.</span></span>
+        <span class="pl-bar"><i></i></span>
+      </div>
+    </div>
+    <div id="cursor" aria-hidden="true"></div>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <style>
+      .skip-link {
+        position: absolute;
+        left: 1rem;
+        top: -3rem;
+        z-index: 200;
+        background: var(--ink);
+        color: var(--bg);
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        transition: top 0.2s ease;
+      }
+      .skip-link:focus {
+        top: 1rem;
+      }
+    </style>
+
+    <script>
+      import { initCursor, destroyCursor } from '../scripts/cursor';
+      import { initMotion, destroyMotion } from '../scripts/motion';
+
+      function boot() {
+        initCursor();
+        initMotion();
+      }
+      function teardown() {
+        destroyCursor();
+        destroyMotion();
+      }
+
+      boot();
+      // Re-init after View Transition page swaps.
+      document.addEventListener('astro:page-load', boot);
+      document.addEventListener('astro:before-swap', teardown);
+    </script>
+  </body>
+</html>

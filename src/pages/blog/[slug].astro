@@ -1,0 +1,435 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Button from '../../components/Button.astro';
+import LiveBadge from '../../components/LiveBadge.astro';
+import { Icon } from 'astro-icon/components';
+import { site } from '../../config/site';
+import { getSortedPosts, categorySlug, type Post } from '../../lib/blog';
+
+export async function getStaticPaths() {
+  const posts = await getSortedPosts();
+  return posts.map((entry, i) => ({
+    params: { slug: entry.slug },
+    // `next` = the following (older) post, for end-of-article navigation.
+    props: { entry, next: posts[i + 1] ?? null },
+  }));
+}
+
+interface Props {
+  entry: Post;
+  next: Post | null;
+}
+const { entry, next } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+
+const dateLabel = data.pubDate.toLocaleDateString('en-US', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+const backHref = data.work ? '/work' : '/blog';
+const backLabel = data.work ? 'Back to work' : 'Back to blog';
+
+// Structured data — absolute URLs required, so resolve against the site origin.
+const origin = Astro.site ?? site.url;
+const canonicalUrl = new URL(Astro.url.pathname, origin).href;
+const imageUrl = new URL(data.image, origin).href;
+const author = {
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  sameAs: [site.social.github, site.social.linkedin],
+};
+const blogPostingLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: data.title,
+  description: data.description,
+  image: [imageUrl],
+  datePublished: data.pubDate.toISOString(),
+  dateModified: data.pubDate.toISOString(),
+  author,
+  publisher: author,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+  url: canonicalUrl,
+  articleSection: data.category,
+  ...(data.tags.length ? { keywords: data.tags.join(', ') } : {}),
+  inLanguage: 'en',
+};
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', origin).href },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: new URL('/blog', origin).href },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: data.category,
+      item: new URL(`/blog/category/${categorySlug(data.category)}`, origin).href,
+    },
+    { '@type': 'ListItem', position: 4, name: data.title, item: canonicalUrl },
+  ],
+};
+---
+
+<Layout title={data.title} description={data.description} image={data.image} type="article">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  </Fragment>
+
+  <article class="post">
+    <div class="container-site">
+      <a href={backHref} class="post__back link-accent" data-cursor="view">
+        <Icon name="lucide:arrow-left" width={16} height={16} />
+        {backLabel}
+      </a>
+
+      <div class="post__head">
+        <div class="post__meta">
+          <span class="post__cat">{data.category}</span>
+          <span class="post__date">{dateLabel}</span>
+        </div>
+        <h1 data-reveal>{data.title}</h1>
+        <p class="post__standfirst" data-reveal data-reveal-delay="60">
+          {data.description}
+        </p>
+      </div>
+
+      <div class="post__cover">
+        <img
+          src={data.image}
+          alt={data.imageAlt}
+          width="1200"
+          height="800"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
+      {
+        data.work && (
+          <dl class="post__facts">
+            {data.client && (
+              <div>
+                <dt>Context</dt>
+                <dd>{data.client}</dd>
+              </div>
+            )}
+            {data.metric && (
+              <div>
+                <dt>Outcome</dt>
+                <dd class="post__facts-metric">{data.metric}</dd>
+              </div>
+            )}
+            {data.tags.length > 0 && (
+              <div>
+                <dt>Stack</dt>
+                <dd>{data.tags.join(' · ')}</dd>
+              </div>
+            )}
+            {data.liveUrl && (
+              <div class="post__facts-live">
+                <dt>Live</dt>
+                <dd>
+                  <LiveBadge href={data.liveUrl} label="View live project" />
+                </dd>
+              </div>
+            )}
+            {data.liveLinks && data.liveLinks.length > 0 && (
+              <div class="post__facts-live">
+                <dt>Live</dt>
+                <dd class="post__facts-live-badges">
+                  {data.liveLinks.map((l) => (
+                    <LiveBadge href={l.url} label={l.label} />
+                  ))}
+                </dd>
+              </div>
+            )}
+          </dl>
+        )
+      }
+
+      <div class="post__body prose">
+        <Content />
+      </div>
+
+      <div class="post__foot">
+        <ul class="tags">
+          {data.tags.map((t) => <li>{t}</li>)}
+        </ul>
+        {
+          next ? (
+            <a href={`/blog/${next.slug}`} class="post__next" data-cursor="view">
+              <span class="post__next-label">
+                Next article <Icon name="lucide:arrow-right" width={15} height={15} />
+              </span>
+              <span class="post__next-title">{next.data.title}</span>
+            </a>
+          ) : (
+            <a href={backHref} class="link-accent post__foot-link" data-cursor="view">
+              {backLabel} <Icon name="lucide:arrow-right" width={16} height={16} />
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="post-cta">
+      <div class="container-site post-cta__inner">
+        <h2 data-reveal>Building something similar?</h2>
+        <p data-reveal data-reveal-delay="80">
+          If you have a workflow that's slow, manual, or hard to scale, I can
+          tell you what AI can realistically do about it.
+        </p>
+        <div data-reveal data-reveal-delay="140">
+          <Button href="/contact" magnetic>Start a project</Button>
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post {
+    padding-top: clamp(2rem, 5vw, 3.5rem);
+  }
+  .post__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .post__head {
+    max-width: 55rem;
+    margin: clamp(1.5rem, 4vw, 2.5rem) auto 0;
+    text-align: center;
+  }
+  .post__meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .post__cat {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--accent);
+  }
+  .post__date {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .post__head h1 {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.15;
+  }
+  .post__standfirst {
+    margin-top: 1.25rem;
+    font-size: 1.2rem;
+    color: var(--muted);
+  }
+
+  .post__cover {
+    margin: clamp(2rem, 5vw, 3.5rem) 0 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    aspect-ratio: 16 / 9;
+  }
+  .post__cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Project facts (case studies only) */
+  .post__facts {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 55rem;
+    margin: clamp(2rem, 4vw, 3rem) auto 0;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+  .post__facts dt {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+  .post__facts dd {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+  .post__facts-metric {
+    color: var(--accent) !important;
+  }
+  .post__facts-live dd {
+    margin-top: 0.15rem;
+  }
+  .post__facts-live-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  @media (min-width: 640px) {
+    .post__facts {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .post__facts-live {
+      grid-column: 1 / -1;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+  }
+
+  /* Prose body */
+  .post__body {
+    max-width: 55rem;
+    margin: clamp(2.5rem, 5vw, 3.5rem) auto 0;
+  }
+  .prose :global(h2) {
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+    margin: 2.25rem 0 0.75rem;
+  }
+  .prose :global(h3) {
+    font-size: 1.25rem;
+    margin: 1.75rem 0 0.5rem;
+  }
+  .prose :global(p) {
+    margin: 0 0 1.15rem;
+    line-height: 1.75;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 1.15rem;
+    padding-left: 1.25rem;
+  }
+  .prose :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  .prose :global(strong) {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .prose :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose :global(blockquote) {
+    margin: 1.5rem 0;
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+    font-style: italic;
+  }
+  .prose :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    background: color-mix(in srgb, var(--ink) 6%, var(--bg));
+    padding: 0.15em 0.4em;
+    border-radius: 6px;
+  }
+
+  .post__foot {
+    max-width: 55rem;
+    margin: clamp(2rem, 4vw, 3rem) auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .post__foot-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+  }
+  .post__next {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.15rem;
+    text-align: right;
+    max-width: 60%;
+  }
+  .post__next-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+  .post__next-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--ink);
+    transition: color 0.15s ease;
+  }
+  .post__next:hover .post__next-title {
+    color: var(--accent);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .tags li {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+  }
+
+  /* CTA */
+  .post-cta {
+    margin-top: clamp(3.5rem, 8vw, 6rem);
+    background: var(--ink);
+    color: var(--bg);
+    padding: clamp(3rem, 7vw, 5rem) 0;
+  }
+  .post-cta__inner {
+    text-align: center;
+    max-width: 42ch;
+    margin-inline: auto;
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+  }
+  .post-cta__inner p {
+    color: color-mix(in srgb, var(--bg) 78%, transparent);
+    font-size: 1.1rem;
+  }
+</style>
