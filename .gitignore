@@ -18,3 +18,7 @@ pnpm-debug.log*
 Thumbs.db
 
 color pallets/
+resume/
+
+.claude/
+.github/
