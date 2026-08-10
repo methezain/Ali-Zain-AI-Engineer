@@ -7,22 +7,59 @@ import { Icon } from 'astro-icon/components';
 
 const principles = [
   {
-    title: 'Ship, don’t demo.',
-    desc: 'A model in a notebook isn’t a result. I measure success by what reaches production — and keeps running once I’ve handed it over.',
+    title: 'Requirement engineering',
+    desc: 'Before any code, I get clear on the real problem, the constraints, and what a win looks like for you. That clarity keeps the build from drifting later.',
   },
   {
-    title: 'Ground everything.',
-    desc: 'Retrieval, validation, and real data over confident guesses. A system people can trust beats a clever one they learn to double-check.',
+    title: 'Prototype and ship fast',
+    desc: 'I reach a working prototype quickly, so you can try it instead of just reading about it. Real feedback beats months of planning.',
   },
   {
-    title: 'Leave it maintainable.',
-    desc: 'Clean backends, honest docs, and a handoff that doesn’t need me on call. The work should outlast the engagement.',
+    title: 'Real systems, not notebooks',
+    desc: 'A notebook or script is not a product. I design and deploy proper systems that hold up for real users and keep running after handoff.',
   },
 ];
 
 const skills = [
-  { group: 'AI / ML', items: ['LangChain', 'LangGraph', 'RAG', 'OpenAI', 'Scikit-learn', 'TensorFlow', 'OCR'] },
-  { group: 'Backend & Tools', items: ['Python', 'FastAPI', 'Docker', 'AWS', 'PostgreSQL', 'MongoDB', 'SQL', 'Git'] },
+  {
+    group: 'AI / ML',
+    items: [
+      { name: 'Scikit-learn + XGBoost', level: 85 },
+      { name: 'TensorFlow + PyTorch + Keras', level: 60 },
+      { name: 'LLMs (OpenAI, Anthropic)', level: 95 },
+      { name: 'API integration', level: 90 },
+      { name: 'LangChain + LangGraph', level: 80 },
+    ],
+  },
+  {
+    group: 'Backend & System Design',
+    items: [
+      { name: 'Python + FastAPI + Flask', level: 90 },
+      { name: 'AWS + Fly.io + Docker', level: 70 },
+      { name: 'PostgreSQL + MongoDB', level: 75 },
+      { name: 'SQL', level: 65 },
+      { name: 'Git & GitHub', level: 80 },
+    ],
+  },
+];
+
+const certifications = [
+  {
+    name: 'Machine Learning Specialization',
+    url: 'https://www.coursera.org/account/accomplishments/specialization/D7ZXNR9WHXFW',
+  },
+  {
+    name: 'Retrieval Augmented Generation (RAG)',
+    url: 'https://www.coursera.org/account/accomplishments/verify/D8FP5AIMY7NF?utm_source=link&utm_medium=certificate&utm_content=cert_image&utm_campaign=sharing_cta&utm_product=course',
+  },
+  {
+    name: 'Microsoft Certified: Azure AI Fundamentals',
+    url: 'https://learn.microsoft.com/en-us/users/alizain-7342/credentials/6b361a052f2f0d5d',
+  },
+  {
+    name: 'Sequence Models',
+    url: 'https://www.coursera.org/account/accomplishments/verify/ONLLHBF33K6T',
+  },
 ];
 ---
 
@@ -35,21 +72,23 @@ const skills = [
     <div class="container-site intro__inner">
       <div class="intro__copy">
         <Eyebrow>About</Eyebrow>
-        <h1 data-reveal>I build AI that <span class="mark">earns its keep.</span></h1>
+        <h1 data-reveal>I build AI that <span class="mark">actually survives real users.</span></h1>
         <p class="intro__lead" data-reveal data-reveal-delay="80">
-          I’m Ali Zain, an AI engineer based in Pakistan, working with teams
-          worldwide. For the past year and a half I’ve built LLM apps, retrieval
-          systems, and automation across finance, real estate, and legal — the
-          kind that quietly removes hours of manual work.
+          I’m Ali Zain, an AI engineer who partners with fast-moving startups and
+          businesses worldwide. I don’t build fragile wrappers or flashy demos
+          that break under load. I build high-agency AI systems: retrieval
+          pipelines, LLM agents, and automation engines designed to scale, cut
+          costs, and actually work in production.
         </p>
         <p class="intro__lead" data-reveal data-reveal-delay="120">
-          I care less about clever demos and more about systems that hold up in
-          production and stay honest about what they can and can’t do.
+          I care about shipping fast, keeping latency low, and building honest
+          tech that solves real-world bottlenecks. If you need a developer who
+          can own the AI stack and execute without hand-holding, let’s talk.
         </p>
         <div class="intro__actions" data-reveal data-reveal-delay="160">
           <Button href="/contact" magnetic>Work with me</Button>
           <a href="/work" class="link-accent intro__link" data-cursor="view">
-            See the work <Icon name="lucide:arrow-right" width={16} height={16} />
+            See my work <Icon name="lucide:arrow-right" width={16} height={16} />
           </a>
         </div>
       </div>
@@ -72,7 +111,7 @@ const skills = [
     <div class="section-head">
       <div>
         <Eyebrow>How I work</Eyebrow>
-        <h2 data-reveal>Three things I don’t compromise on.</h2>
+        <h2 data-reveal>From requirement to real users.</h2>
       </div>
     </div>
     <ol class="principles">
@@ -98,23 +137,34 @@ const skills = [
             <h3>Machine Learning &amp; Python Developer</h3>
             <span class="xp__meta">Intalytic Group Ltd · 2024 – 2026</span>
           </div>
-          <p>
-            Built document-processing pipelines and LLM- and OCR-based systems
-            across banking, real estate, and UK payroll — cutting manual
-            workloads by up to 90% and processing time by 70%.
-          </p>
+          <ul class="xp-list">
+            <li>
+              Built document extraction & processing pipelines for banking,
+              real estate, and UK payroll, combining OCR, language
+              models, and vision models to read files.
+            </li>
+            <li>
+              Focused on reliability, accuracy and cost, making the pipelines accurate
+              enough to trust and cheap enough to run at scale.
+            </li>
+            <li>
+              Led API development and shipped to production with the DevOps team,
+              cutting workloads by up to 70%, and created ease in overall workflows using technology. 
+            </li>
+          </ul>
         </div>
         <div class="xp">
           <div class="xp__role">
             <h3>BS, Information Technology</h3>
             <span class="xp__meta">Quaid-i-Azam University · 2025</span>
           </div>
-          <p>Foundations in systems, data, and software — put straight to work on real AI products.</p>
+          <p>
+            This is where I built my foundation in Python, Machine Learning, and
+            Databases, and where I first turned classroom theory into working
+            software. It gave me the fundamentals I now use to design and ship
+            real AI models and Agentic workflows.
+          </p>
         </div>
-        <p class="certs">
-          <Icon name="lucide:award" width={16} height={16} />
-          <span>ML Specialization · Retrieval Augmented Generation · Azure AI Fundamentals</span>
-        </p>
       </div>
 
       <div class="background__col" data-reveal data-reveal-delay="100">
@@ -123,13 +173,43 @@ const skills = [
           skills.map((s) => (
             <div class="skills">
               <p class="skills__group">{s.group}</p>
-              <ul class="skills__list">
-                {s.items.map((it) => <li>{it}</li>)}
+              <ul class="skill-list">
+                {s.items.map((it) => (
+                  <li class="skill">
+                    <span class="skill__name">{it.name}</span>
+                    <span class="skill__bar">
+                      <i style={`width:${it.level}%`} />
+                    </span>
+                  </li>
+                ))}
               </ul>
             </div>
           ))
         }
       </div>
+    </div>
+
+    <div class="certs-block" data-reveal>
+      <p class="certs-block__title">Certifications</p>
+      <ul class="cert-list">
+        {
+          certifications.map((c) => (
+            <li class="cert-item">
+              <a
+                class="cert-pill"
+                href={c.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cursor="view"
+              >
+                View<span class="cert-pill__word">&nbsp;certificate</span>
+                <Icon name="lucide:arrow-up-right" width={13} height={13} />
+              </a>
+              <span class="cert-name">{c.name}</span>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </Section>
 
@@ -141,7 +221,7 @@ const skills = [
         <h2>Let’s build something that lasts.</h2>
         <p>
           If you have a workflow that’s slow, manual, or hard to scale, I’d like
-          to hear about it — and tell you honestly what AI can do for it.
+          to hear about it, and tell you honestly what AI can do for it.
         </p>
         <Button href="/contact" magnetic>Start a project</Button>
       </div>
@@ -246,6 +326,11 @@ const skills = [
     grid-template-columns: 1fr;
     gap: clamp(2.5rem, 5vw, 4rem);
   }
+  /* Columns size to their content; Toolkit pairs with Experience + Education,
+     Certifications sits full width below. */
+  .background {
+    align-items: start;
+  }
   .xp {
     padding: 1.25rem 0;
     border-top: 1px solid var(--border);
@@ -272,20 +357,97 @@ const skills = [
     color: var(--muted);
     max-width: 50ch;
   }
-  .certs {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-    font-size: 0.9rem;
+  .xp-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.7rem;
+    max-width: 52ch;
+  }
+  .xp-list li {
+    position: relative;
+    padding-left: 1.1rem;
     color: var(--muted);
   }
-  .certs :global(svg) {
-    color: var(--accent);
-    flex-shrink: 0;
+  .xp-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
   }
+  /* Certifications */
+  .certs-block {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .certs-block__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0 0 1.1rem;
+  }
+  .cert-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .cert-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .cert-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex: none;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+    border-radius: 999px;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+  .cert-pill:hover {
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .cert-name {
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  /* On small screens shorten the pill to just "View" so the name stays inline. */
+  @media (max-width: 600px) {
+    .cert-pill__word {
+      display: none;
+    }
+  }
+
   .skills {
     margin-top: 1.25rem;
+  }
+  /* Extra breathing room between the two toolkit groups */
+  .skills + .skills {
+    margin-top: 3rem;
   }
   .skills__group {
     font-family: var(--font-body);
@@ -296,22 +458,33 @@ const skills = [
     color: var(--muted);
     margin-bottom: 0.75rem;
   }
-  .skills__list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .skill-list {
     list-style: none;
     padding: 0;
-    margin: 0 0 1.5rem;
+    margin: 0 0 1.75rem;
+    display: grid;
+    gap: 0.85rem;
   }
-  .skills__list li {
-    font-size: 0.85rem;
+  .skill {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .skill__name {
+    font-size: 0.9rem;
     font-weight: 500;
-    padding: 0.35rem 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
     color: var(--ink);
-    background: var(--surface);
+  }
+  .skill__bar {
+    height: 6px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ink) 9%, var(--bg));
+    overflow: hidden;
+  }
+  .skill__bar i {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--accent);
   }
 
   /* Closing */
