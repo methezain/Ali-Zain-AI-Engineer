@@ -12,8 +12,16 @@ featured: true
 order: 5
 client: 'Mixed-vendor invoice routing'
 metric: '98% accuracy · 300k invoices'
+metricContext: 'Accuracy and volume are based on model evaluation over a multi-vendor invoice dataset of roughly 300k records.'
+citations:
+  - label: 'Scikit-learn documentation'
+    url: 'https://scikit-learn.org/stable/'
+  - label: 'FastAPI documentation'
+    url: 'https://fastapi.tiangolo.com/'
 tags: ['Scikit-learn', 'FastAPI', 'Docker']
 ---
+
+This is a classic machine learning engineer use case: reduce a repetitive business queue by combining robust preprocessing, model quality, and clean API delivery.
 
 ## What I built
 
@@ -37,3 +45,12 @@ people's time without using their skill. Turning it into an instant, 98%-
 accurate routing step means the manual sorting queue essentially disappears,
 and the few genuinely ambiguous cases are the only ones a human needs to look
 at.
+
+## Related AI engineering paths
+
+If your team is still triaging invoices manually, start with
+[AI engineering services](/services), review adjacent [AI case studies](/work), or
+[contact me](/contact) for a scoped rollout.
+
+Related reading: [Catching fraud across 6.3 million transactions](/blog/fraud-detection-classifier) and
+[Shipping ML behind a FastAPI service that stays up](/blog/shipping-ml-with-fastapi).

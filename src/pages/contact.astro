@@ -8,8 +8,8 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
 ---
 
 <Layout
-  title="Contact"
-  description="Get in touch with Ali Zain — AI engineer building LLM apps, RAG systems, and automation. Tell me what's slow or manual and I'll tell you what AI can realistically do about it."
+  title="Contact | AI Engineering Projects"
+  description="Contact Ali Zain for AI engineering projects, including LLM apps, RAG systems, and automation for manual workflows."
 >
   <section class="contact">
     <div class="container-site">
@@ -37,7 +37,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
             <p class="field__error" data-error-for="email" aria-live="polite"></p>
           </div>
 
-          <div class="field">
+          <div class="field field--message">
             <label for="message">Message</label>
             <textarea id="message" name="message" rows="6" required></textarea>
             <p class="field__error" data-error-for="message" aria-live="polite"></p>
@@ -154,6 +154,12 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
   .field textarea {
     resize: vertical;
     min-height: 8rem;
+  }
+  .field--message {
+    grid-template-rows: auto minmax(8rem, 1fr) auto;
+  }
+  .field--message textarea {
+    height: 100%;
   }
   .field input:focus-visible,
   .field textarea:focus-visible {
@@ -323,10 +329,43 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     if (!form || form.dataset.bound === '1') return;
     form.dataset.bound = '1';
 
+    const directCard = document.querySelector<HTMLElement>('.direct');
+    const messageField = form.querySelector<HTMLElement>('.field--message');
+    const messageInput = form.querySelector<HTMLTextAreaElement>('#message');
+
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toast-msg');
     const submit = form.querySelector<HTMLButtonElement>('.form__submit');
     let toastTimer: number | undefined;
+
+    const syncMessageHeight = () => {
+      if (!directCard || !messageField || !messageInput) return;
+
+      if (!window.matchMedia('(min-width: 820px)').matches) {
+        messageField.style.removeProperty('min-height');
+        messageField.style.removeProperty('height');
+        messageInput.style.removeProperty('height');
+        return;
+      }
+
+      const cardRect = directCard.getBoundingClientRect();
+      const messageRect = messageField.getBoundingClientRect();
+      const targetHeight = cardRect.bottom - messageRect.top;
+      const finalHeight = Math.max(120, Math.floor(targetHeight));
+
+      messageField.style.minHeight = `${finalHeight}px`;
+      messageField.style.height = `${finalHeight}px`;
+      messageInput.style.height = '100%';
+    };
+
+    syncMessageHeight();
+    window.addEventListener('resize', syncMessageHeight);
+    window.setTimeout(syncMessageHeight, 120);
+
+    if ('ResizeObserver' in window && directCard) {
+      const resizeObserver = new ResizeObserver(syncMessageHeight);
+      resizeObserver.observe(directCard);
+    }
 
     const showToast = (msg: string, isError = false) => {
       if (!toast || !toastMsg) return;

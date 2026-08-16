@@ -61,11 +61,30 @@ const certifications = [
     url: 'https://www.coursera.org/account/accomplishments/verify/ONLLHBF33K6T',
   },
 ];
+
+const roleVariants = [
+  {
+    title: 'AI Engineer',
+    desc: 'Best fit when you need end-to-end LLM products, agent workflows, and production APIs owned by one person.',
+  },
+  {
+    title: 'Artificial Intelligence Engineer',
+    desc: 'Best fit for teams that need a practical strategy plus implementation across retrieval, automation, and deployment.',
+  },
+  {
+    title: 'Machine Learning Engineer',
+    desc: 'Best fit for model-backed pipelines, classification systems, and measurable quality improvements in production.',
+  },
+  {
+    title: 'AI/ML Engineer',
+    desc: 'Best fit for mixed delivery where application logic, model behavior, and system reliability all matter together.',
+  },
+];
 ---
 
 <Layout
-  title="About"
-  description="Ali Zain is an AI engineer who builds LLM apps, retrieval systems, and automation that remove real work — shipped to production and measured, across finance, real estate, and legal."
+  title="About | Artificial Intelligence Engineer"
+  description="Meet Ali Zain (methezain), an AI engineer and machine learning engineer who builds production LLM apps, retrieval systems, and automation for document-heavy teams."
 >
   <!-- Intro -->
   <section class="intro">
@@ -74,7 +93,7 @@ const certifications = [
         <Eyebrow>About</Eyebrow>
         <h1 data-reveal>I build AI that <span class="mark">actually survives real users.</span></h1>
         <p class="intro__lead" data-reveal data-reveal-delay="80">
-          I’m Ali Zain, an AI engineer who partners with fast-moving startups and
+          I’m Ali Zain, also known online as methezain, an artificial intelligence engineer who partners with fast-moving startups and
           businesses worldwide. I don’t build fragile wrappers or flashy demos
           that break under load. I build high-agency AI systems: retrieval
           pipelines, LLM agents, and automation engines designed to scale, cut
@@ -88,7 +107,7 @@ const certifications = [
         <div class="intro__actions" data-reveal data-reveal-delay="160">
           <Button href="/contact" magnetic>Work with me</Button>
           <a href="/work" class="link-accent intro__link" data-cursor="view">
-            See my work <Icon name="lucide:arrow-right" width={16} height={16} />
+            See AI case studies <Icon name="lucide:arrow-right" width={16} height={16} />
           </a>
         </div>
       </div>
@@ -105,6 +124,25 @@ const certifications = [
       </div>
     </div>
   </section>
+
+  <Section id="role-fit" class="section-role-fit">
+    <div class="section-head">
+      <div>
+        <Eyebrow>Role fit</Eyebrow>
+        <h2 data-reveal>Hire me as an AI Engineer, or Machine Learning Engineer.</h2>
+      </div>
+    </div>
+    <ul class="role-grid">
+      {
+        roleVariants.map((role, i) => (
+          <li class="role-card" data-reveal data-reveal-delay={i * 50}>
+            <h3>{role.title}</h3>
+            <p>{role.desc}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
 
   <!-- Principles -->
   <Section id="principles" class="section-principles">
@@ -290,6 +328,30 @@ const certifications = [
   }
   .section-head h2 {
     margin-top: 0.5rem;
+  }
+
+  .role-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+  .role-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    padding: 1rem;
+  }
+  .role-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.45rem;
+  }
+  .role-card p {
+    color: var(--muted);
+    max-width: 48ch;
+    font-size: 0.95rem;
   }
 
   /* Principles */
@@ -506,6 +568,9 @@ const certifications = [
   @media (min-width: 860px) {
     .intro__inner {
       grid-template-columns: 1.2fr 0.8fr;
+    }
+    .role-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
     .principles {
       grid-template-columns: repeat(3, 1fr);

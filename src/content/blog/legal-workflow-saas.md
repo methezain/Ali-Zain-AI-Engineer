@@ -12,8 +12,16 @@ featured: false
 order: 6
 client: 'Final-year project'
 metric: '−60% case processing time'
+metricContext: 'Time reduction was observed during workflow testing of document-heavy legal intake and processing.'
+citations:
+  - label: 'FastAPI documentation'
+    url: 'https://fastapi.tiangolo.com/'
+  - label: 'OpenAI API documentation'
+    url: 'https://platform.openai.com/docs'
 tags: ['Python', 'FastAPI', 'OCR', 'OpenAI']
 ---
+
+This project is a legal-tech document automation pattern where reliability and auditability matter as much as model quality.
 
 ## What I built
 
@@ -32,3 +40,12 @@ to compress the slow, manual first pass on every case into something automatic.
 Legal work is full of high-value people doing low-value document handling.
 Automating that first pass cut **case processing time by 60%**, giving the firm
 back the hours that used to disappear into paperwork.
+
+## Related AI engineering paths
+
+If your legal or compliance workflow is still bottlenecked by document intake,
+start with [AI engineering services](/services), review similar [AI case studies](/work),
+or [contact me](/contact) to scope a safe pilot.
+
+Related reading: [Automating banking document intake into S3](/blog/banking-document-pipeline) and
+[Text or scan, one pipeline: extraction with vision models](/blog/structured-extraction-vision-models).

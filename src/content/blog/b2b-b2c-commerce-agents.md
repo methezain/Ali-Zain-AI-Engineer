@@ -12,13 +12,19 @@ featured: true
 order: 1
 client: 'Exact Solutions Electronics'
 metric: 'Live in production · B2B + B2C'
+metricContext: 'Outcome reflects production deployment across separate B2B and B2C storefront assistant experiences.'
 liveLinks:
   - label: 'B2B store'
     url: 'https://www.exactsyn.com/'
   - label: 'B2C store'
     url: 'https://b2c-multivendor-fe.vercel.app/'
+citations:
+  - label: 'OpenAI API documentation'
+    url: 'https://platform.openai.com/docs'
 tags: ['OpenAI SDK', 'Python', 'MongoDB', 'Fly.io']
 ---
+
+This is a practical AI engineer pattern: one core agent architecture, then role-specific behavior by audience so recommendations feel useful in the real buying flow.
 
 ## What I built
 
@@ -49,3 +55,12 @@ wrong answer. Tying every response to the real catalog means the agent is only
 ever as wrong as the database — and the database is the source of truth the
 business already runs on. That's the difference between a demo and something a
 store can put in front of paying customers.
+
+## Related AI engineering paths
+
+If you are planning a production shopping or support assistant, start with
+[AI engineering services](/services), check related [AI case studies](/work), or
+[contact me](/contact) with your catalog and support workflow details.
+
+Related reading: [A retrieval assistant that actually knows the catalog](/blog/rag-fashion-assistant) and
+[Why your RAG system hallucinates — and how to ground it](/blog/grounding-rag-systems).

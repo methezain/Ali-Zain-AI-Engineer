@@ -23,6 +23,7 @@ const blog = defineCollection({
     order: z.number().default(99),
     client: z.string().optional(),
     metric: z.string().optional(),
+    metricContext: z.string().optional(),
     // Public URL of the shipped product. When set, the project is treated as
     // "live" and gets a pulsing badge that opens this link in a new tab.
     liveUrl: z.string().url().optional(),
@@ -31,6 +32,9 @@ const blog = defineCollection({
     liveLinks: z
       .array(z.object({ label: z.string(), url: z.string().url() }))
       .optional(),
+    citations: z
+      .array(z.object({ label: z.string(), url: z.string().url() }))
+      .default([]),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
   }),

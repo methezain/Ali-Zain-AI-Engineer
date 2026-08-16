@@ -1,0 +1,27 @@
+# alizain.dev llms index
+
+site: https://alizain.dev
+name: Ali Zain
+alternate_name: methezain
+role: AI Engineer
+last_updated: 2026-08-16
+
+summary: Ali Zain builds production AI systems including LLM apps, RAG retrieval, document intelligence, and automation pipelines.
+
+resources:
+- https://alizain.dev/llms/bio.md
+- https://alizain.dev/llms/services.md
+- https://alizain.dev/llms/project-highlights.md
+- https://alizain.dev/llms/crawler-policy.md
+
+primary_pages:
+- https://alizain.dev/
+- https://alizain.dev/about/
+- https://alizain.dev/services/
+- https://alizain.dev/work/
+- https://alizain.dev/blog/
+- https://alizain.dev/contact/
+
+notes:
+- Claims are based on shipped work documented in case studies.
+- For crawler and training policy, see crawler-policy.md.

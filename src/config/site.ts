@@ -1,11 +1,17 @@
 // Central site metadata — edit contact details / links here.
 export const site = {
   name: 'Ali Zain',
+  alternateName: 'methezain',
   role: 'AI Engineer',
+  roleVariants: [
+    'Artificial Intelligence Engineer',
+    'Machine Learning Engineer',
+    'AI/ML Engineer',
+  ],
   title: 'Ali Zain — AI Engineer',
   tagline: 'AI systems that do real work.',
   description:
-    'Ali Zain is an AI engineer building LLM applications, RAG systems, and agentic automation that cut real workload. Available for freelance and contract projects.',
+    'Ali Zain is an AI engineer (methezain) building LLM apps, RAG systems, and agentic automation that cuts real workload. Available worldwide for freelance and contract projects.',
   url: 'https://alizain.dev',
   email: 'methealizain@gmail.com',
   phone: '+923229587927',

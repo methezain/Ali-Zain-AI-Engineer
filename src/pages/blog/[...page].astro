@@ -26,9 +26,12 @@ interface Props {
 const { page, featured, categories } = Astro.props;
 const isFirst = page.currentPage === 1;
 
-const pageTitle = isFirst ? 'Blog' : `Blog — Page ${page.currentPage}`;
+const pageTitle =
+  isFirst
+    ? 'AI Engineering Blog and Case Studies'
+    : `AI Engineering Blog — Page ${page.currentPage}`;
 const description =
-  'Case studies and technical notes by Ali Zain on LLM apps, RAG systems, document intelligence, and shipping AI to production.';
+  'AI engineering case studies and technical notes by Ali Zain on LLM apps, RAG systems, document intelligence, and production ML delivery.';
 ---
 
 <Layout title={pageTitle} description={description}>

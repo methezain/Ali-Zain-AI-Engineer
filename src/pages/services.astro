@@ -3,6 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import Button from '../components/Button.astro';
+import AnswerBlock from '../components/AnswerBlock.astro';
+import TrustSignals from '../components/TrustSignals.astro';
 import { Icon } from 'astro-icon/components';
 
 const services = [
@@ -64,11 +66,30 @@ const steps = [
   { n: '03', title: 'Ship', desc: 'Deploy with monitoring, documentation, and a clean handoff.' },
   { n: '04', title: 'Iterate', desc: 'Measure results and tune until the system earns its keep.' },
 ];
+
+const serviceAnswers = [
+  {
+    q: 'Which services are the best first fit?',
+    a: 'Most teams start with either a RAG system for internal knowledge or document intelligence for manual file workflows.',
+  },
+  {
+    q: 'Do you only build prototypes?',
+    a: 'No. The default path is prototype, then production hardening with monitoring, documentation, and handoff.',
+  },
+  {
+    q: 'Can this work with existing systems?',
+    a: 'Yes. Integrations are built around current data sources, APIs, and team workflows to avoid tool sprawl.',
+  },
+  {
+    q: 'What outcomes should a team expect?',
+    a: 'Lower manual effort, faster processing, and a more reliable pipeline with clear operating visibility.',
+  },
+];
 ---
 
 <Layout
-  title="Services"
-  description="AI engineering services by Ali Zain: LLM apps and RAG systems, agentic workflows and automation, AI backends and APIs, document intelligence, and deployment/MLOps."
+  title="AI Engineering Services"
+  description="AI engineering and machine learning engineering services by Ali Zain: LLM apps, RAG systems, agentic workflows, document intelligence, and MLOps for teams that need production reliability."
 >
   <!-- Hero -->
   <section class="svc-hero">
@@ -82,7 +103,7 @@ const steps = [
       </p>
       <div class="svc-hero__actions" data-reveal data-reveal-delay="140">
         <Button href="/contact" magnetic>Start a project</Button>
-        <Button href="/work" variant="secondary">See the work</Button>
+        <Button href="/work" variant="secondary">See AI case studies</Button>
       </div>
     </div>
   </section>
@@ -140,6 +161,16 @@ const steps = [
         ))
       }
     </ol>
+  </Section>
+
+  <Section id="service-answers" class="svc-answers">
+    <div class="service-evidence">
+      <AnswerBlock
+        title="Quick answers about services"
+        items={serviceAnswers}
+      />
+      <TrustSignals updatedOn="August 2026" />
+    </div>
   </Section>
 
   <!-- CTA -->
@@ -302,6 +333,12 @@ const steps = [
     font-size: 0.92rem;
   }
 
+  .service-evidence {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
   /* CTA */
   .svc-cta__inner {
     text-align: center;
@@ -317,6 +354,9 @@ const steps = [
   }
 
   @media (min-width: 760px) {
+    .service-evidence {
+      grid-template-columns: 1.3fr 1fr;
+    }
     .process {
       grid-template-columns: repeat(4, 1fr);
     }

@@ -18,31 +18,172 @@ const {
 } = Astro.props;
 
 const pageTitle = title ? `${title} — ${site.name}` : site.title;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
-const ogImage = new URL(image, Astro.site ?? site.url).href;
+const origin = Astro.site ?? site.url;
+const canonical = new URL(Astro.url.pathname, origin).href;
+const ogImage = new URL(image, origin).href;
+const robotsContent = noindex
+  ? 'noindex, nofollow'
+  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+const sameAs = [
+  site.social.github,
+  site.social.linkedin,
+  site.social.instagram,
+  site.social.x,
+  site.social.medium,
+];
+const roleVariants = [site.role, ...(site.roleVariants ?? [])];
+
+const segmentLabels: Record<string, string> = {
+  about: 'About',
+  services: 'Services',
+  work: 'Work',
+  contact: 'Contact',
+  blog: 'Blog',
+  category: 'Category',
+};
+
+const toTitleCase = (value: string) =>
+  value
+    .split('-')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+const toBreadcrumbLabel = (segment: string) => {
+  if (segmentLabels[segment]) return segmentLabels[segment];
+  if (/^\d+$/.test(segment)) return `Page ${segment}`;
+  return toTitleCase(segment);
+};
+
+const pathSegments = Astro.url.pathname.split('/').filter(Boolean);
+const breadcrumbId = `${canonical}#breadcrumb`;
+
+const breadcrumbItems = [];
+if (type !== 'article' && pathSegments.length > 0) {
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    position: 1,
+    name: 'Home',
+    item: new URL('/', origin).href,
+  });
+
+  let currentPath = '';
+  for (const [index, segment] of pathSegments.entries()) {
+    currentPath += `/${segment}`;
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: index + 2,
+      name: toBreadcrumbLabel(segment),
+      item: new URL(`${currentPath}/`, origin).href,
+    });
+  }
+}
+
+const personId = `${site.url}#person`;
+const websiteId = `${site.url}#website`;
+const organizationId = `${site.url}#organization`;
+const serviceId = `${site.url}#services`;
 
 const personLd = {
-  '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': personId,
   name: site.name,
+  alternateName: site.alternateName,
   jobTitle: site.role,
   url: site.url,
   email: `mailto:${site.email}`,
-  sameAs: [
-    site.social.github,
-    site.social.linkedin,
-    site.social.instagram,
-    site.social.x,
-    site.social.medium,
-  ],
+  description: site.description,
+  sameAs,
+  knowsAbout: roleVariants,
 };
+
+const websiteLd = {
+  '@type': 'WebSite',
+  '@id': websiteId,
+  url: site.url,
+  name: site.name,
+  alternateName: site.alternateName,
+  inLanguage: 'en',
+  publisher: { '@id': personId },
+};
+
+const organizationLd = {
+  '@type': 'Organization',
+  '@id': organizationId,
+  name: site.name,
+  alternateName: site.alternateName,
+  url: site.url,
+  email: `mailto:${site.email}`,
+  sameAs,
+};
+
+const professionalServiceLd = {
+  '@type': 'ProfessionalService',
+  '@id': serviceId,
+  name: `${site.name} AI Engineering Services`,
+  url: new URL('/services', origin).href,
+  provider: { '@id': organizationId },
+  founder: { '@id': personId },
+  areaServed: site.location,
+  serviceType: [
+    'LLM application development',
+    'RAG system implementation',
+    'Agentic workflow automation',
+    'Document intelligence pipelines',
+    'Machine learning engineering',
+  ],
+  description:
+    'AI engineering services focused on LLM apps, RAG systems, agentic workflows, and document intelligence that reduce manual operations.',
+};
+
+const breadcrumbLd =
+  breadcrumbItems.length > 1
+    ? {
+        '@type': 'BreadcrumbList',
+        '@id': breadcrumbId,
+        itemListElement: breadcrumbItems,
+      }
+    : null;
+
+const webPageLd = {
+  '@type': 'WebPage',
+  '@id': `${canonical}#webpage`,
+  url: canonical,
+  name: pageTitle,
+  description,
+  isPartOf: { '@id': websiteId },
+  about: { '@id': personId },
+  inLanguage: 'en',
+  ...(breadcrumbLd ? { breadcrumb: { '@id': breadcrumbId } } : {}),
+};
+
+const graphNodes = [personLd, websiteLd, organizationLd, professionalServiceLd, webPageLd];
+if (breadcrumbLd) {
+  graphNodes.push(breadcrumbLd);
+}
+
+const graphLd = {
+  '@context': 'https://schema.org',
+  '@graph': graphNodes,
+};
+
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
+const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const bingSiteVerification = import.meta.env.PUBLIC_BING_SITE_VERIFICATION;
 ---
 
 <!-- Primary meta -->
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
-{noindex && <meta name="robots" content="noindex, nofollow" />}
+<meta name="robots" content={robotsContent} />
+<meta name="googlebot" content={robotsContent} />
+<meta name="author" content={site.name} />
+<meta name="creator" content={site.name} />
+<meta name="publisher" content={site.name} />
+<meta name="application-name" content={site.name} />
+{googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
+{bingSiteVerification && <meta name="msvalidate.01" content={bingSiteVerification} />}
 
 <!-- Open Graph -->
 <meta property="og:type" content={type} />
@@ -58,5 +199,19 @@ const personLd = {
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 
+{
+  gaMeasurementId && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>
+      <script is:inline define:vars={{ gaMeasurementId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', gaMeasurementId);
+      </script>
+    </>
+  )
+}
+
 <!-- Structured data -->
-<script type="application/ld+json" set:html={JSON.stringify(personLd)} />
+<script type="application/ld+json" set:html={JSON.stringify(graphLd)} />

@@ -1,4 +1,18 @@
 User-agent: *
 Allow: /
 
+User-agent: Googlebot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
 Sitemap: https://alizain.dev/sitemap-index.xml
+# LLM retrieval index
+LLMS: https://alizain.dev/llms.txt

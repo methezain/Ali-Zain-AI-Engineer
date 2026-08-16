@@ -31,9 +31,9 @@ const base = `/blog/category/${activeCategory.slug}`;
 
 const pageTitle =
   page.currentPage === 1
-    ? `${activeCategory.name} articles`
-    : `${activeCategory.name} — Page ${page.currentPage}`;
-const description = `${activeCategory.name} case studies and technical notes by Ali Zain.`;
+    ? `${activeCategory.name} AI Articles`
+    : `${activeCategory.name} AI Articles — Page ${page.currentPage}`;
+const description = `${activeCategory.name} case studies and technical notes by Ali Zain on AI engineering, machine learning systems, and production delivery.`;
 ---
 
 <Layout title={pageTitle} description={description}>

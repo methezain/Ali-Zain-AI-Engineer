@@ -1,0 +1,103 @@
+---
+interface Props {
+  id?: string;
+  updatedOn?: string;
+}
+
+const { id, updatedOn = 'August 2026' } = Astro.props;
+---
+
+<section id={id} class="trust-signals" aria-label="Trust and freshness">
+  <h2>Trust and freshness policy</h2>
+  <div class="trust-signals__list">
+    <details class="trust-signals__item">
+      <summary>
+        <span>Who writes this content?</span>
+        <span class="trust-signals__chevron" aria-hidden="true">▾</span>
+      </summary>
+      <p>Content is written by Ali Zain (methezain), an AI engineer focused on production systems.</p>
+    </details>
+
+    <details class="trust-signals__item">
+      <summary>
+        <span>How are claims verified?</span>
+        <span class="trust-signals__chevron" aria-hidden="true">▾</span>
+      </summary>
+      <p>Outcome claims are based on shipped projects with measurable context.</p>
+    </details>
+
+    <details class="trust-signals__item">
+      <summary>
+        <span>Where is the evidence trail?</span>
+        <span class="trust-signals__chevron" aria-hidden="true">▾</span>
+      </summary>
+      <p>Proof appears in <a href="/work" data-cursor="view">AI case studies</a> and implementation detail in <a href="/blog" data-cursor="view">technical notes</a>.</p>
+    </details>
+
+    <details class="trust-signals__item">
+      <summary>
+        <span>How often is content reviewed?</span>
+        <span class="trust-signals__chevron" aria-hidden="true">▾</span>
+      </summary>
+      <p>Core pages are reviewed monthly. Last reviewed {updatedOn}.</p>
+    </details>
+  </div>
+</section>
+
+<style>
+  .trust-signals h2 {
+    margin-bottom: 0.7rem;
+  }
+  .trust-signals__list {
+    margin: 0;
+    display: grid;
+    gap: 0.95rem;
+  }
+  .trust-signals__item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .trust-signals__item summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    min-height: 3.6rem;
+    padding: 0.95rem 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .trust-signals__item summary::-webkit-details-marker {
+    display: none;
+  }
+  .trust-signals__item summary span:first-child {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+  .trust-signals__chevron {
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--muted);
+    transform: rotate(0deg);
+    transition: transform 0.2s ease;
+  }
+  .trust-signals__item[open] .trust-signals__chevron {
+    transform: rotate(180deg);
+  }
+  .trust-signals__item p {
+    margin: 0;
+    padding: 0 1rem 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .trust-signals a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>

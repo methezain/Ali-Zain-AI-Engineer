@@ -1,0 +1,105 @@
+---
+interface QAItem {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  id?: string;
+  title?: string;
+  intro?: string;
+  items: QAItem[];
+}
+
+const { id, title = 'Quick answers', intro, items } = Astro.props;
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+};
+---
+
+<section id={id} class="answer-block" aria-label={title}>
+  <h2>{title}</h2>
+  {intro && <p class="answer-block__intro">{intro}</p>}
+  <div class="answer-block__list">
+    {
+      items.map((item) => (
+        <details class="answer-block__item">
+          <summary>
+            <span>{item.q}</span>
+            <span class="answer-block__chevron" aria-hidden="true">▾</span>
+          </summary>
+          <p>{item.a}</p>
+        </details>
+      ))
+    }
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</section>
+
+<style>
+  .answer-block h2 {
+    margin-bottom: 0.6rem;
+  }
+  .answer-block__intro {
+    color: var(--muted);
+    max-width: 58ch;
+    margin-bottom: 1.25rem;
+  }
+  .answer-block__list {
+    margin: 0;
+    display: grid;
+    gap: 0.95rem;
+  }
+  .answer-block__item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .answer-block__item summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    min-height: 3.6rem;
+    padding: 0.95rem 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .answer-block__item summary::-webkit-details-marker {
+    display: none;
+  }
+  .answer-block__item summary span:first-child {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+  .answer-block__chevron {
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--muted);
+    transform: rotate(0deg);
+    transition: transform 0.2s ease;
+  }
+  .answer-block__item[open] .answer-block__chevron {
+    transform: rotate(180deg);
+  }
+  .answer-block__item p {
+    margin: 0;
+    padding: 0 1rem 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+</style>

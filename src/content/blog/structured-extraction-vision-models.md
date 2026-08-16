@@ -10,8 +10,15 @@ imageAlt: 'A hand working with a paper document on a desk'
 work: false
 featured: false
 order: 99
+citations:
+  - label: 'OpenAI API documentation'
+    url: 'https://platform.openai.com/docs'
+  - label: 'Tesseract OCR project'
+    url: 'https://tesseract-ocr.github.io/'
 tags: ['OpenAI', 'Vision', 'OCR']
 ---
+
+This article covers the operational core of document intelligence: one pipeline that can adapt to text files and scans while producing the same trustworthy output schema.
 
 ## Real documents don't arrive clean
 
@@ -39,3 +46,12 @@ something passes validation. Check types, ranges, and required fields before
 anything is written downstream. On documents that decide someone's pay or a
 financial record, the validation layer is not optional — it's the part that
 lets you sleep at night.
+
+## Related AI engineering paths
+
+If your team receives mixed PDFs, spreadsheets, and scans, start with
+[AI engineering services](/services), review relevant [AI case studies](/work), or
+[contact me](/contact) for a phased implementation plan.
+
+Related reading: [The extraction engine behind PaysEye, a UK payroll platform](/blog/payseye-extraction-engine) and
+[Automating banking document intake into S3](/blog/banking-document-pipeline).

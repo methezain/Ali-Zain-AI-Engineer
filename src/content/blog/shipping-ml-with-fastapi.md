@@ -10,8 +10,15 @@ imageAlt: 'Terminal prompt on a dark screen'
 work: false
 featured: false
 order: 99
+citations:
+  - label: 'FastAPI documentation'
+    url: 'https://fastapi.tiangolo.com/'
+  - label: 'Docker documentation'
+    url: 'https://docs.docker.com/'
 tags: ['FastAPI', 'Docker', 'Python']
 ---
+
+This is the machine learning engineering layer most teams underestimate: turning a promising model into a service that behaves predictably in production.
 
 ## The notebook is the easy 80%
 
@@ -41,3 +48,12 @@ dramatic — they're slow drift that nobody noticed because nobody was looking.
 Clients don't remember the model's F1 score. They remember whether the thing
 worked when they needed it. The unglamorous infrastructure is what turns a good
 model into something a business can actually rely on.
+
+## Related AI engineering paths
+
+If you are moving ML from notebooks into production systems, start with
+[AI engineering services](/services), browse more [AI case studies](/work), or
+[contact me](/contact) with your deployment and monitoring requirements.
+
+Related reading: [Classifying 300,000 invoices at 98% accuracy](/blog/smart-invoice-classifier) and
+[Catching fraud across 6.3 million transactions](/blog/fraud-detection-classifier).

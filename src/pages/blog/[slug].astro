@@ -29,7 +29,23 @@ const dateLabel = data.pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
 });
 const backHref = data.work ? '/work' : '/blog';
-const backLabel = data.work ? 'Back to work' : 'Back to blog';
+const backLabel = data.work ? 'Back to AI case studies' : 'Back to AI engineering blog';
+const evidenceContext = data.client ?? `${data.category} article`;
+const evidenceOutcome = data.metric ?? 'Practical implementation guidance';
+const evidenceStack = data.tags.length > 0 ? data.tags.join(' · ') : 'Not specified';
+
+const liveCitations = [
+  ...(data.liveUrl ? [{ label: 'Live project', url: data.liveUrl }] : []),
+  ...((data.liveLinks ?? []).map((item) => ({ label: item.label, url: item.url }))),
+];
+const citationEntries = [...data.citations, ...liveCitations];
+const citationMap = new Map<string, string>();
+for (const citation of citationEntries) {
+  if (!citationMap.has(citation.url)) {
+    citationMap.set(citation.url, citation.label);
+  }
+}
+const citations = [...citationMap.entries()].map(([url, label]) => ({ url, label }));
 
 // Structured data — absolute URLs required, so resolve against the site origin.
 const origin = Astro.site ?? site.url;
@@ -55,6 +71,7 @@ const blogPostingLd = {
   url: canonicalUrl,
   articleSection: data.category,
   ...(data.tags.length ? { keywords: data.tags.join(', ') } : {}),
+  ...(citations.length ? { citation: citations.map((citation) => citation.url) } : {}),
   inLanguage: 'en',
 };
 const breadcrumbLd = {
@@ -151,6 +168,43 @@ const breadcrumbLd = {
           </dl>
         )
       }
+
+      <section class="post__evidence" aria-label="Evidence snapshot">
+        <h2>Evidence snapshot</h2>
+        <dl class="post__evidence-grid">
+          <div>
+            <dt>Context</dt>
+            <dd>{evidenceContext}</dd>
+          </div>
+          <div>
+            <dt>Outcome</dt>
+            <dd class:list={['post__evidence-outcome', { 'is-default': !data.metric }]}>{evidenceOutcome}</dd>
+          </div>
+          <div>
+            <dt>Stack</dt>
+            <dd>{evidenceStack}</dd>
+          </div>
+        </dl>
+        {
+          data.metricContext && <p class="post__evidence-note">{data.metricContext}</p>
+        }
+        {
+          citations.length > 0 && (
+            <div class="post__citations">
+              <h3>Citations</h3>
+              <ol>
+                {citations.map((citation) => (
+                  <li>
+                    <a href={citation.url} target="_blank" rel="noopener noreferrer" data-cursor="view">
+                      {citation.label}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )
+        }
+      </section>
 
       <div class="post__body prose">
         <Content />
@@ -298,6 +352,79 @@ const breadcrumbLd = {
       grid-column: 1 / -1;
       padding-top: 1.5rem;
       border-top: 1px solid var(--border);
+    }
+  }
+
+  .post__evidence {
+    max-width: 55rem;
+    margin: clamp(1.5rem, 3vw, 2.25rem) auto 0;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+  .post__evidence h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.8rem;
+  }
+  .post__evidence-grid {
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .post__evidence-grid dt {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+  .post__evidence-grid dd {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.02rem;
+    color: var(--ink);
+  }
+  .post__evidence-outcome {
+    color: var(--accent);
+  }
+  .post__evidence-outcome.is-default {
+    color: var(--ink);
+  }
+  .post__evidence-note {
+    margin-top: 0.9rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+  .post__citations {
+    margin-top: 1rem;
+    padding-top: 0.95rem;
+    border-top: 1px solid var(--border);
+  }
+  .post__citations h3 {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .post__citations ol {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .post__citations a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  @media (min-width: 640px) {
+    .post__evidence-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
     }
   }
 

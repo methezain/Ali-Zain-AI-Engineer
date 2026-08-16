@@ -12,8 +12,16 @@ featured: true
 order: 3
 client: 'Fashion catalog search'
 metric: '44,000+ products indexed'
+metricContext: 'Catalog-size metric reflects indexed product records available to the retrieval layer at deployment.'
+citations:
+  - label: 'LangChain documentation'
+    url: 'https://python.langchain.com/docs/'
+  - label: 'Weaviate documentation'
+    url: 'https://weaviate.io/developers/weaviate'
 tags: ['LangChain', 'Weaviate', 'OpenAI']
 ---
+
+This is a retrieval-first assistant build, where recommendation trust depends on grounding every answer in live catalog evidence.
 
 ## What I built
 
@@ -40,3 +48,12 @@ Retrieval is what separates a useful catalog assistant from a confident liar. A
 plain chatbot will happily invent a product that fits the question; a grounded
 one can only recommend what's actually on the shelf. For a store, that's the
 whole point — answers customers can act on.
+
+## Related AI engineering paths
+
+If you want a catalog or knowledge assistant tied to real business data, start with
+[AI engineering services](/services), review related [AI case studies](/work), or
+[contact me](/contact) with your product data and support goals.
+
+Related reading: [Why your RAG system hallucinates — and how to ground it](/blog/grounding-rag-systems) and
+[Building B2B and B2C shopping agents for an electronics retailer](/blog/b2b-b2c-commerce-agents).

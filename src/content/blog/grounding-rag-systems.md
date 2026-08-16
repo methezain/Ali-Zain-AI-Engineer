@@ -10,8 +10,15 @@ imageAlt: 'Wall of books on wooden library shelves'
 work: false
 featured: false
 order: 99
+citations:
+  - label: 'LangChain documentation'
+    url: 'https://python.langchain.com/docs/'
+  - label: 'OpenAI API documentation'
+    url: 'https://platform.openai.com/docs'
 tags: ['RAG', 'LangChain', 'Vector DBs']
 ---
+
+This is the core reliability question for retrieval systems: can the assistant prove where its answer came from, or is it still guessing with confidence.
 
 ## The problem is rarely the model
 
@@ -40,3 +47,12 @@ is far more useful than one that always produces something.
 Treat a RAG system as a retrieval problem with a language model on the end, not
 a language model with some documents attached. That ordering is what makes the
 difference between a bot people trust and one they learn to double-check.
+
+## Related AI engineering paths
+
+If you are evaluating RAG for production support or internal knowledge, start with
+[AI engineering services](/services), explore more [AI case studies](/work), or
+[contact me](/contact) with your data shape and risk tolerance.
+
+Related reading: [A retrieval assistant that actually knows the catalog](/blog/rag-fashion-assistant) and
+[What an AI engineer does in the first 30 days of a project](/blog/ai-engineer-first-30-days).

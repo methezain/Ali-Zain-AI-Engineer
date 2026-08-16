@@ -12,8 +12,16 @@ featured: true
 order: 2
 client: 'Intalytic Group'
 metric: 'Any format · Text + Vision'
+metricContext: 'Any-format claim refers to routing text files and scanned files through separate extraction paths into one validated schema.'
+citations:
+  - label: 'OpenAI API documentation'
+    url: 'https://platform.openai.com/docs'
+  - label: 'PostgreSQL documentation'
+    url: 'https://www.postgresql.org/docs/'
 tags: ['OpenAI', 'TypeScript', 'PostgreSQL']
 ---
+
+This is document intelligence at product scale: unify extraction across mixed formats without forcing clients to clean files before upload.
 
 ## What I built
 
@@ -41,3 +49,12 @@ Payroll is unforgiving: a misread number is someone's paycheque. Handling every
 format through one validated pipeline means the platform can accept whatever a
 client already has, instead of forcing them to reformat their data first — and
 the finance team downstream can trust what lands in the database.
+
+## Related AI engineering paths
+
+If your payroll or finance team is managing mixed-format files manually, start with
+[AI engineering services](/services), compare more [AI case studies](/work), or
+[contact me](/contact) with your current document flow.
+
+Related reading: [Automating banking document intake into S3](/blog/banking-document-pipeline) and
+[Text or scan, one pipeline: extraction with vision models](/blog/structured-extraction-vision-models).
