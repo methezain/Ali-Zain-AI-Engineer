@@ -428,13 +428,31 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
       }
 
       try {
-        const res = await fetch('/api/contact.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-        const json = await res.json().catch(() => null);
-        if (res.ok && json && json.ok) {
+            const endpoints = [
+                'https://alizain-contact-api.methealizain.workers.dev/api/contact',
+                '/api/contact',
+                '/api/contact.php'
+            ];
+        let sent = false;
+
+        for (const endpoint of endpoints) {
+          try {
+            const res = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+            const json = await res.json().catch(() => null);
+            if (res.ok && json && json.ok) {
+              sent = true;
+              break;
+            }
+          } catch {
+            // Try the next endpoint.
+          }
+        }
+
+        if (sent) {
           form.reset();
           showToast('Thanks — I’ll get back to you soon.');
         } else {

@@ -1,0 +1,16 @@
+{
+  "name": "alizain-contact-api",
+  "main": "./contact-worker.mjs",
+  "compatibility_date": "2026-08-16",
+  "workers_dev": true,
+  "preview_urls": true,
+  "routes": [
+    "alizain.dev/api/contact*",
+    "www.alizain.dev/api/contact*"
+  ],
+  "vars": {
+    "CONTACT_TO": "methealizain@gmail.com",
+    "CONTACT_FROM": "Portfolio Contact <onboarding@resend.dev>",
+    "ALLOWED_ORIGIN": "https://alizain.dev"
+  }
+}

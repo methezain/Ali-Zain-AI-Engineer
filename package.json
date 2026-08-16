@@ -9,7 +9,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "validate:seo": "node seo/validate-csv.mjs"
+    "validate:seo": "node seo/validate-csv.mjs",
+    "deploy:contact-worker": "npx wrangler deploy --config workers/wrangler.contact.jsonc",
+    "secret:contact-worker:resend": "npx wrangler secret put RESEND_API_KEY --config workers/wrangler.contact.jsonc"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.2.1",
