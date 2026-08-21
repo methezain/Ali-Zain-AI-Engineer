@@ -1,84 +1,94 @@
-// Fluid cursor dot — trails the pointer and deforms toward motion direction.
-// Re-init on every Astro page load (survives View Transitions).
+const INTERACTIVE = 'a, button, summary, input, textarea, select, label, [role="button"]';
 
-let rafId: number | null = null;
-const listeners: Array<() => void> = [];
+let teardown: (() => void) | null = null;
 
 export function initCursor(): void {
-  // Tear down any previous instance first.
   destroyCursor();
 
-  const dot = document.getElementById('cursor');
-  if (!dot) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (matchMedia('(hover: none)').matches) return;
+  if (matchMedia('(hover: none)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
 
-  let tx = innerWidth / 2;
-  let ty = innerHeight / 2;
-  let x = tx;
-  let y = ty;
-  let px = x;
-  let py = y;
-  const ease = 0.1; // lower = more trailing/lag = more fluid feel
+  const ring = document.getElementById('cursor-ring');
+  const dot = document.getElementById('cursor-dot');
+  if (!(ring instanceof HTMLElement) || !(dot instanceof HTMLElement)) return;
 
-  const move = (cx: number, cy: number) => {
-    tx = cx;
-    ty = cy;
+  let px = window.innerWidth / 2;
+  let py = window.innerHeight / 2;
+  let rx = px;
+  let ry = py;
+  let dx = px;
+  let dy = py;
+  let lastX = px;
+  let lastY = py;
+  let raf: number | null = null;
+  let shown = false;
+  const ringEase = 0.14;
+  const dotEase = 0.42;
+
+  const onMove = (e: PointerEvent) => {
+    px = e.clientX;
+    py = e.clientY;
+    if (!shown) {
+      shown = true;
+      document.body.classList.add('has-cursor');
+    }
+    const el = e.target instanceof Element ? e.target.closest(INTERACTIVE) : null;
+    ring.classList.toggle('is-active', !!el);
+    dot.classList.toggle('is-active', !!el);
   };
 
-  const onMouse = (e: MouseEvent) => move(e.clientX, e.clientY);
-  const onTouch = (e: TouchEvent) => {
-    const t = e.touches[0];
-    if (t) move(t.clientX, t.clientY);
-  };
+  const frame = () => {
+    rx += (px - rx) * ringEase;
+    ry += (py - ry) * ringEase;
+    dx += (px - dx) * dotEase;
+    dy += (py - dy) * dotEase;
 
-  addEventListener('mousemove', onMouse);
-  addEventListener('touchmove', onTouch, { passive: true });
-  listeners.push(() => removeEventListener('mousemove', onMouse));
-  listeners.push(() => removeEventListener('touchmove', onTouch));
+    const vx = rx - lastX;
+    const vy = ry - lastY;
+    lastX = rx;
+    lastY = ry;
 
-  // Contextual morph on interactive elements.
-  const hoverTargets = 'a, button, [data-cursor="view"]';
-  const onOver = (e: Event) => {
-    const el = (e.target as Element)?.closest?.(hoverTargets);
-    if (el) dot.classList.add('is-hovering');
-  };
-  const onOut = (e: Event) => {
-    const el = (e.target as Element)?.closest?.(hoverTargets);
-    if (el) dot.classList.remove('is-hovering');
-  };
-  document.addEventListener('mouseover', onOver);
-  document.addEventListener('mouseout', onOut);
-  listeners.push(() => document.removeEventListener('mouseover', onOver));
-  listeners.push(() => document.removeEventListener('mouseout', onOut));
-
-  const raf = () => {
-    x += (tx - x) * ease;
-    y += (ty - y) * ease;
-    const vx = x - px;
-    const vy = y - py;
     const speed = Math.min(Math.hypot(vx, vy), 48);
+    const stretch = speed / 48;
     const angle = (Math.atan2(vy, vx) * 180) / Math.PI;
-    const stretch = speed / 48; // 0..1, ramps up faster now
-    const sx = 1 + stretch * 1.35; // elongate strongly along motion
-    const sy = 1 - stretch * 0.55; // squash more perpendicular
-    dot.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${angle}deg) scale(${sx.toFixed(
-      3
-    )}, ${sy.toFixed(3)})`;
-    px = x;
-    py = y;
-    rafId = requestAnimationFrame(raf);
+
+    ring.style.transform =
+      `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)` +
+      ` rotate(${angle}deg) scale(${(1 + stretch * 1.25).toFixed(3)}, ${(1 - stretch * 0.5).toFixed(3)})`;
+    dot.style.transform = `translate3d(${dx}px, ${dy}px, 0) translate(-50%, -50%)`;
+
+    raf = requestAnimationFrame(frame);
   };
-  rafId = requestAnimationFrame(raf);
+
+  const onOut = (e: PointerEvent) => {
+    if (e.relatedTarget === null) document.body.classList.remove('has-cursor');
+  };
+  const onOver = () => {
+    if (shown) document.body.classList.add('has-cursor');
+  };
+  const onDown = () => ring.classList.add('is-down');
+  const onUp = () => ring.classList.remove('is-down');
+
+  window.addEventListener('pointermove', onMove, { passive: true });
+  window.addEventListener('pointerout', onOut);
+  window.addEventListener('pointerover', onOver);
+  window.addEventListener('pointerdown', onDown);
+  window.addEventListener('pointerup', onUp);
+  raf = requestAnimationFrame(frame);
+
+  teardown = () => {
+    if (raf !== null) cancelAnimationFrame(raf);
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerout', onOut);
+    window.removeEventListener('pointerover', onOver);
+    window.removeEventListener('pointerdown', onDown);
+    window.removeEventListener('pointerup', onUp);
+    document.body.classList.remove('has-cursor');
+  };
 }
 
 export function destroyCursor(): void {
-  if (rafId !== null) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
-  }
-  while (listeners.length) {
-    const off = listeners.pop();
-    off?.();
-  }
+  teardown?.();
+  teardown = null;
 }

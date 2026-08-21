@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
+import CtaBand from '../components/CtaBand.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import Button from '../components/Button.astro';
 import AnswerBlock from '../components/AnswerBlock.astro';
@@ -30,7 +31,7 @@ const services = [
   },
   {
     icon: 'lucide:server',
-    title: 'AI Backends & APIs',
+    title: 'AI Backends with FastAPI',
     deliverables: [
       'Typed, documented API with sensible validation',
       'Dockerised services and a repeatable deploy',
@@ -42,7 +43,7 @@ const services = [
     icon: 'lucide:file-scan',
     title: 'Document & Data Intelligence',
     deliverables: [
-      'Ingestion for mixed formats — CSV, XLSX, PDF, and scans',
+      'Ingestion for mixed formats: CSV, XLSX, PDF, and scans',
       'LLM and vision extraction with a validation layer',
       'Structured output written straight to your database',
     ],
@@ -89,20 +90,20 @@ const serviceAnswers = [
 
 <Layout
   title="AI Engineering Services"
-  description="AI engineering and machine learning engineering services by Ali Zain: LLM apps, RAG systems, agentic workflows, document intelligence, and MLOps for teams that need production reliability."
+  description="AI engineering services by Ali Zain (methezain): LLM apps, RAG systems, agentic workflows, and document intelligence built for production reliability."
 >
   <!-- Hero -->
   <section class="svc-hero">
     <div class="container-site">
       <Eyebrow>Services</Eyebrow>
-      <h1 data-reveal>AI that removes <span class="mark">real work.</span></h1>
+      <h1 data-reveal>AI that removes real work.</h1>
       <p class="svc-hero__lede" data-reveal data-reveal-delay="80">
         I help teams turn slow, manual, or unscalable work into systems that run
-        on their own. Each engagement ends in something deployed and measured —
+        on their own. Each engagement ends in something deployed and measured,
         not a demo that quietly gets abandoned.
       </p>
       <div class="svc-hero__actions" data-reveal data-reveal-delay="140">
-        <Button href="/contact" magnetic>Start a project</Button>
+        <Button href="/contact">Start a project</Button>
         <Button href="/work" variant="secondary">See AI case studies</Button>
       </div>
     </div>
@@ -174,24 +175,16 @@ const serviceAnswers = [
   </Section>
 
   <!-- CTA -->
-  <Section id="svc-cta" dark class="svc-cta">
-    <div class="svc-cta__inner">
-      <h2 data-reveal>Not sure which of these you need?</h2>
-      <p data-reveal data-reveal-delay="80">
-        Tell me what’s slow or manual in your business. I’ll tell you what AI can
-        realistically do about it — and what it can’t.
-      </p>
-      <div data-reveal data-reveal-delay="140">
-        <Button href="/contact" magnetic>Start a project</Button>
-      </div>
-    </div>
+  <Section id="svc-cta">
+    <CtaBand
+      title="Not sure which of these you need?"
+      lede="Tell me what is slow or manual in your business. I will tell you what AI can realistically do about it, and what it cannot."
+      note="I read every message and usually reply within a day"
+    />
   </Section>
 </Layout>
 
 <style>
-  .mark {
-    color: var(--accent);
-  }
 
   /* Hero */
   .svc-hero {
@@ -205,7 +198,7 @@ const serviceAnswers = [
   .svc-hero__lede {
     margin-top: 1.5rem;
     max-width: 56ch;
-    color: var(--muted);
+    color: var(--text-2);
     font-size: 1.15rem;
   }
   .svc-hero__actions {
@@ -249,10 +242,10 @@ const serviceAnswers = [
     color: var(--accent);
   }
   .service__n {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 0.9rem;
-    color: var(--muted);
+    color: var(--text-2);
   }
   .service__head h2 {
     font-size: clamp(1.4rem, 2.5vw, 1.9rem);
@@ -266,7 +259,7 @@ const serviceAnswers = [
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: var(--muted);
+    color: var(--text-2);
     margin-bottom: 0.75rem;
   }
   .service__list {
@@ -281,7 +274,7 @@ const serviceAnswers = [
     align-items: flex-start;
     gap: 0.6rem;
     font-size: 0.975rem;
-    color: var(--ink);
+    color: var(--text-1);
   }
   .service__list :global(svg) {
     color: var(--accent);
@@ -292,7 +285,7 @@ const serviceAnswers = [
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 0.95rem;
     color: var(--accent);
@@ -318,7 +311,7 @@ const serviceAnswers = [
     border-top: 1px solid var(--border);
   }
   .process__n {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 0.9rem;
     color: var(--accent);
@@ -328,7 +321,7 @@ const serviceAnswers = [
     margin: 0.4rem 0;
   }
   .process__step p {
-    color: var(--muted);
+    color: var(--text-2);
     max-width: 32ch;
     font-size: 0.92rem;
   }
@@ -340,18 +333,6 @@ const serviceAnswers = [
   }
 
   /* CTA */
-  .svc-cta__inner {
-    text-align: center;
-    max-width: 44ch;
-    margin-inline: auto;
-    display: grid;
-    gap: 1.25rem;
-    justify-items: center;
-  }
-  .svc-cta__inner p {
-    color: color-mix(in srgb, var(--bg) 78%, transparent);
-    font-size: 1.1rem;
-  }
 
   @media (min-width: 760px) {
     .service-evidence {

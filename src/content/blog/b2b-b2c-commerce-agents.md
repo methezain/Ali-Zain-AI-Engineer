@@ -2,7 +2,7 @@
 title: 'Building B2B and B2C shopping agents for an electronics retailer'
 cardTitle: 'B2B & B2C Commerce Agents'
 excerpt: 'Two conversational agents that recommend the right laptop, phone, or console straight from a live product database.'
-description: 'How I built two OpenAI-powered shopping assistants — one for retail, one for trade — that recommend electronics live from a production MongoDB catalog for Exact Solutions Electronics.'
+description: 'How I built two OpenAI powered shopping assistants, one for retail and one for trade, that recommend electronics live from a production MongoDB catalog for Exact Solutions Electronics.'
 category: 'Agentic AI'
 pubDate: 2026-06-18
 image: '/work/chatbots-commerce.webp'

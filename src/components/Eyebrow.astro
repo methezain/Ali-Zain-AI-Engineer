@@ -1,10 +1,21 @@
 ---
 interface Props {
   class?: string;
+  index?: string;
+  bare?: boolean;
 }
-const { class: className = '' } = Astro.props;
+const { class: className = '', index, bare = false } = Astro.props;
 ---
 
-<span class={`eyebrow ${className}`.trim()}>
+<span class:list={['eyebrow', { 'eyebrow--bare': bare }, className]}>
+  {index && <span class="eyebrow__index">{index}</span>}
   <slot />
 </span>
+
+<style>
+  .eyebrow__index {
+    font-family: var(--font-mono);
+    color: var(--text-3);
+    letter-spacing: 0.06em;
+  }
+</style>

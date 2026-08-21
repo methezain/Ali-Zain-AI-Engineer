@@ -2,7 +2,7 @@
 title: 'Automating document workflows for law firms'
 cardTitle: 'Legal Workflow SaaS'
 excerpt: 'A SaaS platform that cut case processing time by 60% for legal teams.'
-description: 'A SaaS platform that automates document-heavy legal workflows with Python, FastAPI, OCR, and OpenAI — cutting case processing time by 60%.'
+description: 'A SaaS platform that automates document heavy legal workflows with Python, FastAPI, OCR, and OpenAI, cutting case processing time by 60%.'
 category: 'Automation'
 pubDate: 2026-01-20
 image: '/work/legal-saas.webp'

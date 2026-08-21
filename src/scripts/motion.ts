@@ -1,155 +1,142 @@
-// Smooth scroll (Lenis) + scroll reveals + counters + magnetic buttons.
-// GSAP/ScrollTrigger drives reveals; everything degrades with reduced motion.
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-import Lenis from 'lenis';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
-
-const prefersReduced = () =>
-  matchMedia('(prefers-reduced-motion: reduce)').matches;
-const isTouch = () => matchMedia('(hover: none)').matches;
-
-let lenis: Lenis | null = null;
-let rafId: number | null = null;
 const cleanups: Array<() => void> = [];
 
-function initLenis(): void {
-  if (prefersReduced()) return;
+function observe(
+  selector: string,
+  onEnter: (el: HTMLElement) => void,
+  rootMargin = '0px 0px -12% 0px'
+): void {
+  const els = Array.from(document.querySelectorAll<HTMLElement>(selector));
+  if (!els.length) return;
 
-  lenis = new Lenis({
-    duration: 1.05,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-  });
+  if (reduced() || !('IntersectionObserver' in window)) {
+    els.forEach(onEnter);
+    return;
+  }
 
-  lenis.on('scroll', ScrollTrigger.update);
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        onEnter(entry.target as HTMLElement);
+        io.unobserve(entry.target);
+      }
+    },
+    { rootMargin, threshold: 0.1 }
+  );
 
-  const raf = (time: number) => {
-    lenis?.raf(time);
-    rafId = requestAnimationFrame(raf);
-  };
-  rafId = requestAnimationFrame(raf);
-
-  // In-page anchor smoothing.
-  const onClick = (e: Event) => {
-    const link = (e.target as Element)?.closest?.('a[href^="#"]');
-    if (!(link instanceof HTMLAnchorElement)) return;
-    const id = link.getAttribute('href');
-    if (!id || id === '#') return;
-    const target = document.querySelector(id);
-    if (target) {
-      e.preventDefault();
-      lenis?.scrollTo(target as HTMLElement, { offset: -80 });
-    }
-  };
-  document.addEventListener('click', onClick);
-  cleanups.push(() => document.removeEventListener('click', onClick));
+  els.forEach((el) => io.observe(el));
+  cleanups.push(() => io.disconnect());
 }
 
 function initReveals(): void {
   document.documentElement.classList.add('reveal-ready');
-  const els = gsap.utils.toArray<HTMLElement>('[data-reveal]');
 
-  if (prefersReduced()) {
-    els.forEach((el) => el.classList.add('is-visible'));
-    return;
-  }
-
-  els.forEach((el) => {
+  observe('[data-reveal]', (el) => {
     const delay = Number(el.dataset.revealDelay ?? 0);
-    const st = ScrollTrigger.create({
-      trigger: el,
-      start: 'top 88%',
-      once: true,
-      onEnter: () => {
-        if (delay) {
-          el.style.transitionDelay = `${delay}ms`;
-        }
-        el.classList.add('is-visible');
-      },
-    });
-    cleanups.push(() => st.kill());
+    if (delay) el.style.transitionDelay = `${delay}ms`;
+    el.classList.add('is-visible');
   });
 }
 
 function initCounters(): void {
-  const counters = gsap.utils.toArray<HTMLElement>('[data-counter]');
-  counters.forEach((el) => {
+  if (!reduced()) {
+    document.querySelectorAll<HTMLElement>('[data-counter]').forEach((el) => {
+      el.textContent = `${el.dataset.counterPrefix ?? ''}0${el.dataset.counterSuffix ?? ''}`;
+    });
+  }
+
+  observe('[data-counter]', (el) => {
     const target = Number(el.dataset.counter ?? 0);
     const suffix = el.dataset.counterSuffix ?? '';
-    const decimals = Number(el.dataset.counterDecimals ?? 0);
+    const prefix = el.dataset.counterPrefix ?? '';
+    const render = (v: number) => {
+      el.textContent = `${prefix}${Math.round(v)}${suffix}`;
+    };
 
-    if (prefersReduced()) {
-      el.textContent = target.toFixed(decimals) + suffix;
+    if (reduced()) {
+      render(target);
       return;
     }
 
-    const obj = { val: 0 };
-    const st = ScrollTrigger.create({
-      trigger: el,
-      start: 'top 90%',
-      once: true,
-      onEnter: () => {
-        gsap.to(obj, {
-          val: target,
-          duration: 1.6,
-          ease: 'power2.out',
-          onUpdate: () => {
-            el.textContent = obj.val.toFixed(decimals) + suffix;
-          },
-        });
-      },
-    });
-    cleanups.push(() => st.kill());
+    const duration = 900;
+    let start: number | null = null;
+    const tick = (now: number) => {
+      start ??= now;
+      const t = Math.min(1, (now - start) / duration);
+      render(target * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   });
 }
 
-function initMagnetic(): void {
-  if (prefersReduced() || isTouch()) return;
-  const els = document.querySelectorAll<HTMLElement>('[data-magnetic]');
-  els.forEach((el) => {
-    const strength = Number(el.dataset.magnetic || 0.3);
-    const onMove = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      const mx = e.clientX - (r.left + r.width / 2);
-      const my = e.clientY - (r.top + r.height / 2);
-      gsap.to(el, {
-        x: mx * strength,
-        y: my * strength,
-        duration: 0.4,
-        ease: 'power3.out',
-      });
-    };
-    const onLeave = () => {
-      gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
-    };
-    el.addEventListener('mousemove', onMove);
-    el.addEventListener('mouseleave', onLeave);
-    cleanups.push(() => {
-      el.removeEventListener('mousemove', onMove);
-      el.removeEventListener('mouseleave', onLeave);
-    });
+function initBars(): void {
+  observe('[data-bar]', (el) => {
+    el.style.setProperty('--bar-w', `${el.dataset.bar}%`);
+  });
+}
+
+function initSheen(): void {
+  if (matchMedia('(hover: none)').matches) return;
+  if (!document.querySelector('.lift')) return;
+
+  const STIFFNESS = 0.032;
+  const DAMPING = 0.84;
+
+  let px = -9999;
+  let py = -9999;
+  let lx = px;
+  let ly = py;
+  let vx = 0;
+  let vy = 0;
+  let active: HTMLElement | null = null;
+  let raf: number | null = null;
+
+  const tick = () => {
+    vx = (vx + (px - lx) * STIFFNESS) * DAMPING;
+    vy = (vy + (py - ly) * STIFFNESS) * DAMPING;
+    lx += vx;
+    ly += vy;
+
+    if (active) {
+      const r = active.getBoundingClientRect();
+      active.style.setProperty('--mx', `${((lx - r.left) / r.width) * 100}%`);
+      active.style.setProperty('--my', `${((ly - r.top) / r.height) * 100}%`);
+    }
+
+    const settled = Math.hypot(vx, vy) < 0.05 && Math.hypot(px - lx, py - ly) < 0.5;
+    raf = active || !settled ? requestAnimationFrame(tick) : null;
+  };
+
+  const onMove = (e: PointerEvent) => {
+    px = e.clientX;
+    py = e.clientY;
+    if (lx === -9999) {
+      lx = px;
+      ly = py;
+    }
+    const found = e.target instanceof Element ? e.target.closest('.lift') : null;
+    active = found instanceof HTMLElement ? found : null;
+    if (active && raf === null) raf = requestAnimationFrame(tick);
+  };
+
+  document.addEventListener('pointermove', onMove, { passive: true });
+  cleanups.push(() => {
+    document.removeEventListener('pointermove', onMove);
+    if (raf !== null) cancelAnimationFrame(raf);
   });
 }
 
 export function initMotion(): void {
   destroyMotion();
-  initLenis();
   initReveals();
   initCounters();
-  initMagnetic();
-  ScrollTrigger.refresh();
+  initBars();
+  initSheen();
 }
 
 export function destroyMotion(): void {
   while (cleanups.length) cleanups.pop()?.();
-  ScrollTrigger.getAll().forEach((t) => t.kill());
-  if (rafId !== null) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
-  }
-  lenis?.destroy();
-  lenis = null;
 }

@@ -1,7 +1,8 @@
 ---
 import { Icon } from 'astro-icon/components';
-import { site } from '../config/site';
+import { site, nav } from '../config/site';
 const year = new Date().getFullYear();
+const footerNav = nav.filter((item) => !['/', '/about'].includes(item.href));
 
 const socials = [
   { name: 'GitHub', href: site.social.github, icon: 'simple-icons:github' },
@@ -22,30 +23,39 @@ const mediumSvg =
         {
           site.available && (
             <span class="status-pill">
-              <span class="status-dot" /> Available for work
+              <span class="status-pill__dot" aria-hidden="true" />
+              Available for work
             </span>
           )
         }
         <p class="site-footer__tagline">
-          Building AI systems that reduce real work — from LLM apps and RAG to
-          agentic automation.
+          AI systems that remove real work, from retrieval and document pipelines to trained supervised models.
         </p>
+        <a href="/contact" class="btn btn-secondary btn-sm site-footer__cta">
+          Start a project
+          <Icon name="lucide:arrow-right" width={15} height={15} />
+        </a>
       </div>
 
-      <div class="site-footer__contact-col">
-        <span class="footer-heading">Contact me</span>
-        <div class="site-footer__contact">
-          <a href={`mailto:${site.email}`} class="footer-link" data-cursor="view">
-            {site.email}
-          </a>
-          <a href={`tel:${site.phone.replace(/[^+\d]/g, '')}`} class="footer-link">
-            {site.phone}
-          </a>
-        </div>
+      <nav class="site-footer__col" aria-label="Footer">
+        <h2 class="footer-heading mono-label">Pages</h2>
+        <ul class="footer-list">
+          {footerNav.map((item) => <li><a href={item.href} class="footer-link">{item.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div class="site-footer__col">
+        <h2 class="footer-heading mono-label">Contact</h2>
+        <ul class="footer-list">
+          <li><a href={`mailto:${site.email}`} class="footer-link">{site.email}</a></li>
+          <li>
+            <a href={`tel:${site.phone.replace(/[^+\d]/g, '')}`} class="footer-link">{site.phone}</a>
+          </li>
+        </ul>
       </div>
 
-      <div class="site-footer__social">
-        <span class="footer-heading">My social profiles</span>
+      <div class="site-footer__col">
+        <h2 class="footer-heading mono-label">Elsewhere</h2>
         <ul class="social-row">
           {
             socials.map((s) => (
@@ -56,7 +66,6 @@ const mediumSvg =
                   target="_blank"
                   rel="noopener"
                   aria-label={s.name}
-                  data-cursor="view"
                 >
                   <span class="social-icon__base" aria-hidden="true">
                     {s.icon === 'medium' ? (
@@ -82,110 +91,96 @@ const mediumSvg =
 
     <div class="site-footer__bottom">
       <span>© {year} {site.name}. All rights reserved.</span>
+      <a href="#main" class="footer-top-link">
+        Back to top
+        <Icon name="lucide:arrow-up" width={13} height={13} />
+      </a>
     </div>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    background: var(--ink);
-    color: var(--bg);
-    padding: clamp(3.5rem, 7vw, 6rem) 0 2.5rem;
-    border-top: 1px solid rgba(246, 247, 235, 0.14);
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+    padding: clamp(2.5rem, 4.5vw, 3.5rem) 0 1.5rem;
   }
 
   .site-footer__top {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 3rem;
-    padding-bottom: 3rem;
-    border-bottom: 1px solid rgba(246, 247, 235, 0.14);
-  }
-
-  .status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    padding: 0.35rem 0.75rem;
-    border: 1px solid rgba(246, 247, 235, 0.22);
-    border-radius: 999px;
-    margin-bottom: 1.25rem;
-  }
-
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 0 var(--accent);
-    animation: pulse 1.7s ease-out infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      box-shadow: 0 0 0 0 rgba(233, 79, 55, 0.5);
-    }
-    70% {
-      box-shadow: 0 0 0 8px rgba(233, 79, 55, 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(233, 79, 55, 0);
-    }
+    gap: 2.25rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-strong);
   }
 
   .site-footer__tagline {
     max-width: 34ch;
-    font-size: 1.05rem;
-    color: color-mix(in srgb, var(--bg) 82%, transparent);
-    margin-bottom: 1.5rem;
+    margin: 1.125rem 0 1.5rem;
+    color: var(--text-2);
+    font-size: 1rem;
   }
 
-  .site-footer__contact {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+  .site-footer__cta {
+    background: var(--surface-1);
   }
 
-  .site-footer__contact-col,
-  .site-footer__social {
+  .site-footer__col {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.875rem;
   }
 
   .footer-heading {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: color-mix(in srgb, var(--bg) 55%, transparent);
-    margin-bottom: 0.25rem;
+    margin: 0;
+    color: var(--text-3);
+  }
+
+  .footer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   .footer-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    color: color-mix(in srgb, var(--bg) 88%, transparent);
     width: fit-content;
-    transition: color 0.15s ease;
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    transition: color var(--dur-1) var(--ease-out);
   }
 
   .footer-link:hover {
+    color: var(--text-1);
+  }
+
+  .footer-link:active {
+    color: var(--accent-hover);
+  }
+
+  .footer-top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-3);
+    transition: color var(--dur-1) var(--ease-out);
+  }
+
+  .footer-top-link:hover {
     color: var(--accent);
   }
 
-  /* Social icons with left-to-right accent fill on hover */
   .social-row {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     list-style: none;
     padding: 0;
-    margin: 0.25rem 0 0;
+    margin: 0.125rem 0 0;
   }
 
   .social-icon {
@@ -195,7 +190,6 @@ const mediumSvg =
     height: 20px;
   }
 
-  /* Medium's three-ellipse mark is wide/short; scale up so it reads like the rest. */
   .social-icon--medium svg {
     transform: scale(1.4);
     transform-origin: center;
@@ -211,26 +205,18 @@ const mediumSvg =
   }
 
   .social-icon__base {
-    color: color-mix(in srgb, var(--bg) 72%, transparent);
+    color: var(--text-2);
   }
 
   .social-icon__fill {
     color: var(--accent);
-    /* start fully clipped from the right → nothing visible */
     clip-path: inset(0 100% 0 0);
-    transition: clip-path 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: clip-path var(--dur-3) var(--ease-out);
   }
 
   .social-icon:hover .social-icon__fill,
   .social-icon:focus-visible .social-icon__fill {
-    /* reveal grows left → right */
     clip-path: inset(0 0 0 0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .social-icon__fill {
-      transition: none;
-    }
   }
 
   .site-footer__bottom {
@@ -238,16 +224,17 @@ const mediumSvg =
     flex-wrap: wrap;
     gap: 0.75rem;
     justify-content: space-between;
-    padding-top: 2rem;
+    align-items: baseline;
+    padding-top: 1.25rem;
     font-size: 0.85rem;
-    color: color-mix(in srgb, var(--bg) 60%, transparent);
+    color: var(--text-3);
   }
 
   @media (min-width: 720px) {
-    /* footer: brand · contact · social */
     .site-footer__top {
-      grid-template-columns: 1.6fr 1fr 1fr;
-      gap: 2rem;
+      grid-template-columns: minmax(0, 1fr) auto auto auto;
+      column-gap: clamp(2.5rem, 6vw, 5.5rem);
+      row-gap: 2rem;
     }
   }
 </style>

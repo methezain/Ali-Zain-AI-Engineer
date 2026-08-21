@@ -1,7 +1,7 @@
 ---
 title: 'An agent that drafts SEO-ready articles end to end'
 cardTitle: 'AI SEO Content Engine'
-excerpt: 'Research, draft, and structure SEO articles automatically — 80% less manual writing.'
+excerpt: 'Research, draft, and structure SEO articles automatically, with 80% less manual writing.'
 description: 'A LangGraph agent that researches, drafts, and structures SEO-ready articles end to end, removing 80% of the manual writing effort.'
 category: 'Agentic AI'
 pubDate: 2025-12-15

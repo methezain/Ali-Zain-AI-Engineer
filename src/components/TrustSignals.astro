@@ -31,7 +31,7 @@ const { id, updatedOn = 'August 2026' } = Astro.props;
         <span>Where is the evidence trail?</span>
         <span class="trust-signals__chevron" aria-hidden="true">▾</span>
       </summary>
-      <p>Proof appears in <a href="/work" data-cursor="view">AI case studies</a> and implementation detail in <a href="/blog" data-cursor="view">technical notes</a>.</p>
+      <p>Proof appears in <a href="/work">AI case studies</a> and implementation detail in <a href="/blog">technical notes</a>.</p>
     </details>
 
     <details class="trust-signals__item">
@@ -56,7 +56,7 @@ const { id, updatedOn = 'August 2026' } = Astro.props;
   .trust-signals__item {
     border: 1px solid var(--border);
     border-radius: 12px;
-    background: var(--surface);
+    background: var(--surface-1);
     overflow: hidden;
   }
   .trust-signals__item summary {
@@ -74,15 +74,15 @@ const { id, updatedOn = 'August 2026' } = Astro.props;
     display: none;
   }
   .trust-signals__item summary span:first-child {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 1rem;
-    color: var(--ink);
+    color: var(--text-1);
   }
   .trust-signals__chevron {
     font-size: 1rem;
     line-height: 1;
-    color: var(--muted);
+    color: var(--text-2);
     transform: rotate(0deg);
     transition: transform 0.2s ease;
   }
@@ -92,7 +92,7 @@ const { id, updatedOn = 'August 2026' } = Astro.props;
   .trust-signals__item p {
     margin: 0;
     padding: 0 1rem 1rem;
-    color: var(--muted);
+    color: var(--text-2);
     line-height: 1.6;
   }
   .trust-signals a {

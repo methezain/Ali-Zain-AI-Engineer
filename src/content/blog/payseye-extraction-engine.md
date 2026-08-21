@@ -1,7 +1,7 @@
 ---
 title: 'The extraction engine behind PaysEye, a UK payroll platform'
 cardTitle: 'PaysEye Extraction Engine'
-excerpt: 'Timesheets and payroll files — spreadsheets, PDFs, or scans — turned into clean, validated data.'
+excerpt: 'Timesheets and payroll files, whether spreadsheets, PDFs, or scans, turned into clean validated data.'
 description: 'How the extraction layer inside PaysEye turns UK timesheets and payroll files in any format into validated data, using LLMs for text and vision models for scanned documents.'
 category: 'Document Intelligence'
 pubDate: 2026-05-27

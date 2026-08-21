@@ -1,0 +1,97 @@
+---
+import { Icon } from 'astro-icon/components';
+import { site } from '../config/site';
+import AmbientField from './AmbientField.astro';
+
+interface Props {
+  title: string;
+  lede?: string;
+  href?: string;
+  label?: string;
+  note?: string;
+  showEmail?: boolean;
+}
+
+const {
+  title,
+  lede,
+  href = '/contact',
+  label = 'Start a project',
+  note,
+  showEmail = true,
+} = Astro.props;
+---
+
+<div class="cta panel">
+  <AmbientField class="cta__field" density={5200} />
+  <div class="cta__inner">
+    <h2>{title}</h2>
+    {lede && <p class="cta__lede">{lede}</p>}
+    <div class="cta__actions">
+      <a href={href} class="btn btn-primary cta__btn">
+        {label}
+        <Icon name="lucide:arrow-right" width={16} height={16} />
+      </a>
+      {showEmail && <a href={`mailto:${site.email}`} class="link-accent cta__mail">{site.email}</a>}
+    </div>
+    {note && <p class="mono-label cta__note">{note}</p>}
+  </div>
+</div>
+
+<style>
+  .cta {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(2rem, 4.6vw, 3.25rem) clamp(1.5rem, 5vw, 4rem);
+  }
+
+  .cta__field {
+    -webkit-mask-image: radial-gradient(ellipse 82% 76% at 50% 50%, #000 30%, transparent 100%);
+    mask-image: radial-gradient(ellipse 82% 76% at 50% 50%, #000 30%, transparent 100%);
+  }
+
+  .cta__inner {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+    justify-items: center;
+    text-align: center;
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .cta__lede {
+    color: var(--text-2);
+    font-size: 1.0625rem;
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-4) var(--s-6);
+    margin-top: var(--s-2);
+  }
+
+  .cta__btn {
+    min-width: min(12rem, 100%);
+  }
+
+  .cta__btn :global(svg) {
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+
+  .cta__btn:hover :global(svg) {
+    transform: translateX(3px);
+  }
+
+  .cta__mail {
+    font-size: 0.9375rem;
+  }
+
+  .cta__note {
+    color: var(--text-3);
+    margin-top: var(--s-2);
+  }
+</style>
