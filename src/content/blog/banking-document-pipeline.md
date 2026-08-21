@@ -1,8 +1,8 @@
 ---
 title: 'Automating banking document intake into S3'
 cardTitle: 'Banking Document Pipeline'
-excerpt: 'Reads each banking document, validates the fields, and files structured results to S3 — no manual queue.'
-description: 'An OCR and FastAPI pipeline that reads banking documents, validates the extracted fields, and archives structured data to AWS S3 — cutting manual work 90% and processing time 70%.'
+excerpt: 'Reads each banking document, validates the fields, and files structured results to S3, with no manual queue.'
+description: 'An OCR and FastAPI pipeline that reads banking documents, validates the extracted fields, and archives structured data to AWS S3, cutting manual work 70% and processing time 60%.'
 category: 'Automation'
 pubDate: 2026-03-22
 image: '/work/banking-ocr.webp'
@@ -11,7 +11,7 @@ work: true
 featured: true
 order: 4
 client: 'Financial document ingestion'
-metric: '−90% manual work · −70% processing time'
+metric: '−70% manual work · −60% processing time'
 metricContext: 'Reduction percentages compare the previous manual review flow with automated intake runs in the same workflow.'
 citations:
   - label: 'FastAPI documentation'
@@ -42,8 +42,8 @@ than run as a one-off script.
 
 The before-picture was a manual review queue: people opening documents,
 reading numbers, typing them into a system. That approach doesn't scale and it
-makes mistakes. Automating it cut **manual workload by 90%** and **processing
-time by 70%** — and, just as importantly, made the process consistent. The
+makes mistakes. Automating it cut **manual workload by 70%** and **processing
+time by 60%**, and, just as importantly, made the process consistent. The
 pipeline reads every document the same way, every time.
 
 ## Related AI engineering paths

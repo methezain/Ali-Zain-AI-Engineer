@@ -2,7 +2,7 @@
 title: 'Shipping ML behind a FastAPI service that stays up'
 cardTitle: 'Shipping ML With FastAPI'
 excerpt: "A model in a notebook isn't a product. Here's the boring, load-bearing part: serving, Docker, and monitoring."
-description: 'Notes on serving machine learning models in production with FastAPI and Docker — the deployment, validation, and monitoring that keep a model actually useful.'
+description: 'Notes on serving machine learning models in production with FastAPI and Docker: the deployment, validation, and monitoring that keep a model actually useful.'
 category: 'Backend'
 pubDate: 2026-05-10
 image: '/work/article-backend.webp'

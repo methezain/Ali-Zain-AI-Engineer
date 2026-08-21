@@ -31,8 +31,8 @@ const base = `/blog/category/${activeCategory.slug}`;
 
 const pageTitle =
   page.currentPage === 1
-    ? `${activeCategory.name} AI Articles`
-    : `${activeCategory.name} AI Articles — Page ${page.currentPage}`;
+    ? `${activeCategory.name} Articles`
+    : `${activeCategory.name} Articles, Page ${page.currentPage}`;
 const description = `${activeCategory.name} case studies and technical notes by Ali Zain on AI engineering, machine learning systems, and production delivery.`;
 ---
 
@@ -76,7 +76,7 @@ const description = `${activeCategory.name} case studies and technical notes by 
   .blog-hero__lede {
     margin-top: 1.5rem;
     max-width: 58ch;
-    color: var(--muted);
+    color: var(--text-2);
     font-size: 1.15rem;
   }
 

@@ -1,582 +1,864 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import Button from '../components/Button.astro';
+import CtaBand from '../components/CtaBand.astro';
+import AmbientField from '../components/AmbientField.astro';
+import { site } from '../config/site';
 import { Icon } from 'astro-icon/components';
 
-const principles = [
+const ledger = (await getCollection('blog'))
+  .filter((p) => p.data.work && p.data.metric)
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
+  .map((p) => ({ ...p, numeric: /(^|[\s·])[−-]?\d[\d,.]*\s*(%|k|M|\+|x)/i.test(p.data.metric ?? '') }));
+
+const now = [
   {
-    title: 'Requirement engineering',
-    desc: 'Before any code, I get clear on the real problem, the constraints, and what a win looks like for you. That clarity keeps the build from drifting later.',
+    k: 'role',
+    v: 'Machine Learning and Python Developer at Intalytic Group, since 2024',
   },
   {
-    title: 'Prototype and ship fast',
-    desc: 'I reach a working prototype quickly, so you can try it instead of just reading about it. Real feedback beats months of planning.',
+    k: 'freelance',
+    v: 'Open to project based work, scoped by deliverable rather than hours',
   },
   {
-    title: 'Real systems, not notebooks',
-    desc: 'A notebook or script is not a product. I design and deploy proper systems that hold up for real users and keep running after handoff.',
+    k: 'in daily use',
+    v: 'Python · FastAPI · LangGraph · OCR and vision extraction · Docker',
   },
 ];
 
-const skills = [
-  {
-    group: 'AI / ML',
-    items: [
-      { name: 'Scikit-learn + XGBoost', level: 85 },
-      { name: 'TensorFlow + PyTorch + Keras', level: 60 },
-      { name: 'LLMs (OpenAI, Anthropic)', level: 95 },
-      { name: 'API integration', level: 90 },
-      { name: 'LangChain + LangGraph', level: 80 },
-    ],
-  },
-  {
-    group: 'Backend & System Design',
-    items: [
-      { name: 'Python + FastAPI + Flask', level: 90 },
-      { name: 'AWS + Fly.io + Docker', level: 70 },
-      { name: 'PostgreSQL + MongoDB', level: 75 },
-      { name: 'SQL', level: 65 },
-      { name: 'Git & GitHub', level: 80 },
-    ],
-  },
+const fits = [
+  'Documents that arrive in nine different formats and still have to end up as records your software can read.',
+  'Retrieval that has to answer from your own content and say nothing when the answer is not in there.',
+  'Multi step jobs an agent should finish on its own, with a human check on the calls that carry risk.',
+  'Problems where prompting a hosted model will not hold, and a model trained on your data will.',
 ];
+
+const misfits = [
+  'Frontend or design only builds. I will write the API your frontend calls, not the frontend.',
+  'Research with no shipping target. I am not the person for a paper or a benchmark chase.',
+  'A chatbot on the marketing site with nothing behind it. Without your data it is a toy.',
+  'Anything where I cannot see the real files. Sample data hides every problem that matters.',
+];
+
+const shipped = [
+  'Python',
+  'FastAPI',
+  'LangGraph',
+  'OpenAI',
+  'Anthropic',
+  'OCR + vision extraction',
+  'Scikit-learn',
+  'XGBoost',
+  'PostgreSQL',
+  'MongoDB',
+  'Docker',
+  'AWS',
+  'Fly.io',
+  'Git',
+];
+
+const learning = ['PyTorch', 'TensorFlow', 'Keras', 'Advanced SQL tuning'];
 
 const certifications = [
   {
     name: 'Machine Learning Specialization',
+    issuer: 'DeepLearning.AI · Stanford',
     url: 'https://www.coursera.org/account/accomplishments/specialization/D7ZXNR9WHXFW',
   },
   {
-    name: 'Retrieval Augmented Generation (RAG)',
-    url: 'https://www.coursera.org/account/accomplishments/verify/D8FP5AIMY7NF?utm_source=link&utm_medium=certificate&utm_content=cert_image&utm_campaign=sharing_cta&utm_product=course',
+    name: 'Retrieval Augmented Generation',
+    issuer: 'Coursera',
+    url: 'https://www.coursera.org/account/accomplishments/verify/D8FP5AIMY7NF',
   },
   {
-    name: 'Microsoft Certified: Azure AI Fundamentals',
+    name: 'Azure AI Fundamentals',
+    issuer: 'Microsoft Certified',
     url: 'https://learn.microsoft.com/en-us/users/alizain-7342/credentials/6b361a052f2f0d5d',
   },
   {
     name: 'Sequence Models',
+    issuer: 'DeepLearning.AI',
     url: 'https://www.coursera.org/account/accomplishments/verify/ONLLHBF33K6T',
   },
 ];
 
-const roleVariants = [
-  {
-    title: 'AI Engineer',
-    desc: 'Best fit when you need end-to-end LLM products, agent workflows, and production APIs owned by one person.',
-  },
-  {
-    title: 'Artificial Intelligence Engineer',
-    desc: 'Best fit for teams that need a practical strategy plus implementation across retrieval, automation, and deployment.',
-  },
-  {
-    title: 'Machine Learning Engineer',
-    desc: 'Best fit for model-backed pipelines, classification systems, and measurable quality improvements in production.',
-  },
-  {
-    title: 'AI/ML Engineer',
-    desc: 'Best fit for mixed delivery where application logic, model behavior, and system reliability all matter together.',
-  },
+const rail = [
+  { k: 'Based', v: site.location },
+  { k: 'Also known as', v: 'methezain' },
+  { k: 'Hired as', v: 'AI Engineer · Python Developer · Machine Learning Engineer' },
+  { k: 'Domains', v: 'Legal · Real estate · Finance · Payroll · eCommerce' },
+  { k: 'Engagements', v: 'Freelance · Contract · Project based' },
 ];
 ---
 
 <Layout
-  title="About | Artificial Intelligence Engineer"
-  description="Meet Ali Zain (methezain), an AI engineer and machine learning engineer who builds production LLM apps, retrieval systems, and automation for document-heavy teams."
+  title="About an AI Engineer and Python Developer"
+  description="Ali Zain, known online as methezain, is an AI engineer and Python developer in Islamabad building document pipelines, RAG systems, and agent workflows."
 >
-  <!-- Intro -->
-  <section class="intro">
-    <div class="container-site intro__inner">
-      <div class="intro__copy">
-        <Eyebrow>About</Eyebrow>
-        <h1 data-reveal>I build AI that <span class="mark">actually survives real users.</span></h1>
-        <p class="intro__lead" data-reveal data-reveal-delay="80">
-          I’m Ali Zain, also known online as methezain, an artificial intelligence engineer who partners with fast-moving startups and
-          businesses worldwide. I don’t build fragile wrappers or flashy demos
-          that break under load. I build high-agency AI systems: retrieval
-          pipelines, LLM agents, and automation engines designed to scale, cut
-          costs, and actually work in production.
-        </p>
-        <p class="intro__lead" data-reveal data-reveal-delay="120">
-          I care about shipping fast, keeping latency low, and building honest
-          tech that solves real-world bottlenecks. If you need a developer who
-          can own the AI stack and execute without hand-holding, let’s talk.
-        </p>
-        <div class="intro__actions" data-reveal data-reveal-delay="160">
-          <Button href="/contact" magnetic>Work with me</Button>
-          <a href="/work" class="link-accent intro__link" data-cursor="view">
-            See AI case studies <Icon name="lucide:arrow-right" width={16} height={16} />
-          </a>
-        </div>
+  <section class="lead depth-top">
+    <AmbientField class="lead__field" density={6800} />
+
+    <div class="container-site lead__body">
+      <div class="lead__meta">
+        <span class="status-pill">
+          <span class="status-pill__dot" aria-hidden="true"></span>
+          Available for project work
+        </span>
+        <span class="mono-label lead__role">AI Engineer · Python Developer · {site.location}</span>
       </div>
 
-      <div class="portrait" data-reveal data-reveal-delay="140">
-        <img
-          src="/about/ali-zain.webp"
-          alt="Ali Zain, AI engineer, smiling in front of a tree"
-          width="720"
-          height="720"
-          loading="eager"
-          decoding="async"
-        />
+      <div class="lead__grid">
+        <div class="lead__copy">
+          <Eyebrow>About</Eyebrow>
+          <h1>Most of my work is reading the files nobody wants to read.</h1>
+          <p class="lead__text">
+            I am Ali Zain, an AI engineer and Python developer. On GitHub and most other places I
+            am methezain. Since 2024 I have been at Intalytic Group building the pipelines that turn
+            banking statements, property paperwork, and UK payroll files into structured records,
+            and I take freelance projects alongside that.
+          </p>
+          <p class="lead__text">
+            The work is less glamorous than the demos suggest. A scan is rotated, a table has no
+            borders, a vendor changes their invoice layout in March. Getting that right is the job,
+            and it is the part that decides whether anyone still uses the system in six months.
+          </p>
+          <div class="lead__actions">
+            <Button href="/contact">Start a project</Button>
+            <a href="/work" class="link-quiet">
+              Read the case studies
+              <Icon name="lucide:arrow-right" width={16} height={16} />
+            </a>
+          </div>
+        </div>
+
+        <figure class="portrait">
+          <img
+            src="/about/ali-zain.webp"
+            alt="Ali Zain, also known as methezain, an AI engineer and Python developer"
+            width="720"
+            height="720"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption class="portrait__cap">
+            <span class="mono">{site.name}</span>
+            <span class="mono-label">@{site.alternateName}</span>
+          </figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
-  <Section id="role-fit" class="section-role-fit">
-    <div class="section-head">
+  <section class="strip" aria-labelledby="now-label">
+    <div class="container-site">
+      <h2 id="now-label" class="strip__label mono-label">Right now</h2>
+      <dl class="nowlist">
+        {
+          now.map((n) => (
+            <div class="nowlist__row">
+              <dt class="mono-label">{n.k}</dt>
+              <dd>{n.v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <Section id="fit" field={9000}>
+    <div class="head-split">
       <div>
-        <Eyebrow>Role fit</Eyebrow>
-        <h2 data-reveal>Hire me as an AI Engineer, or Machine Learning Engineer.</h2>
+        <Eyebrow index="01">Fit</Eyebrow>
+        <h2>Bring me the problems where the input is a mess.</h2>
+      </div>
+      <div class="head-split__aside">
+        <a href="/services" class="link-quiet">
+          What I build
+          <Icon name="lucide:arrow-right" width={16} height={16} />
+        </a>
       </div>
     </div>
-    <ul class="role-grid">
-      {
-        roleVariants.map((role, i) => (
-          <li class="role-card" data-reveal data-reveal-delay={i * 50}>
-            <h3>{role.title}</h3>
-            <p>{role.desc}</p>
-          </li>
-        ))
-      }
-    </ul>
+
+    <div class="fitgrid">
+      <div class="fitcol card" data-reveal>
+        <p class="fitcol__head mono-label">
+          <Icon class="fitcol__mark" name="lucide:check" width={14} height={14} />
+          Worth an email
+        </p>
+        <ul class="fitlist">
+          {fits.map((f) => <li>{f}</li>)}
+        </ul>
+      </div>
+
+      <div class="fitcol card fitcol--out" data-reveal data-reveal-delay="80">
+        <p class="fitcol__head mono-label">
+          <Icon class="fitcol__mark" name="lucide:minus" width={14} height={14} />
+          Not a fit
+        </p>
+        <ul class="fitlist">
+          {misfits.map((f) => <li>{f}</li>)}
+        </ul>
+      </div>
+    </div>
   </Section>
 
-  <!-- Principles -->
-  <Section id="principles" class="section-principles">
-    <div class="section-head">
-      <div>
-        <Eyebrow>How I work</Eyebrow>
-        <h2 data-reveal>From requirement to real users.</h2>
+  <Section id="ledger" tone="deep">
+    <div class="head-bar">
+      <div class="head-bar__rail">
+        <Eyebrow index="02">Track record</Eyebrow>
+        <a href="/work" class="link-quiet">
+          All work
+          <Icon name="lucide:arrow-right" width={16} height={16} />
+        </a>
       </div>
+      <h2>Shipped, with the figures attached.</h2>
+      <p class="head-bar__lede">
+        Every line below is a system somebody is using. The figures came off the running version, not
+        off a validation split, and each one links to how it was built.
+      </p>
     </div>
-    <ol class="principles">
+
+    <ol class="ledger">
       {
-        principles.map((p, i) => (
-          <li class="principle" data-reveal data-reveal-delay={i * 60}>
-            <span class="principle__n">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{p.title}</h3>
-            <p>{p.desc}</p>
+        ledger.map((p, i) => (
+          <li class="ledger__row">
+            <a class="ledger__link" href={`/blog/${p.slug}`}>
+              <span class="index-marker ledger__i">{`//00${i + 1}`}</span>
+              <span class="ledger__name">{p.data.cardTitle ?? p.data.title}</span>
+              <span class="ledger__client mono-label">{p.data.client}</span>
+              <span class:list={['ledger__figure', 'mono', { num: p.numeric }]}>{p.data.metric}</span>
+              <span class="ledger__arrow" aria-hidden="true">
+                <Icon name="lucide:arrow-up-right" width={15} height={15} />
+              </span>
+            </a>
           </li>
         ))
       }
     </ol>
   </Section>
 
-  <!-- Experience & skills -->
-  <Section id="background" class="section-background">
-    <div class="background">
-      <div class="background__col" data-reveal>
-        <Eyebrow>Experience</Eyebrow>
-        <div class="xp">
-          <div class="xp__role">
-            <h3>Machine Learning &amp; Python Developer</h3>
-            <span class="xp__meta">Intalytic Group Ltd · 2024 – 2026</span>
-          </div>
-          <ul class="xp-list">
+  <Section id="background">
+    <h2 class="head-statement">
+      I learned this on files that were already broken, not on a dataset somebody had cleaned first.
+    </h2>
+
+    <div class="bg">
+      <div class="bg__spine">
+        <article class="post">
+          <header class="post__head">
+            <h3>Machine Learning and Python Developer</h3>
+            <p class="post__meta mono-label">Intalytic Group Ltd · 2024 to now</p>
+          </header>
+          <ul class="post__list">
             <li>
-              Built document extraction & processing pipelines for banking,
-              real estate, and UK payroll, combining OCR, language
-              models, and vision models to read files.
+              Build the document extraction and processing pipelines for banking, property, and UK
+              payroll, pairing OCR with language and vision models so the format of the file stops
+              mattering.
             </li>
             <li>
-              Focused on reliability, accuracy and cost, making the pipelines accurate
-              enough to trust and cheap enough to run at scale.
+              Tune them on accuracy and on cost together. A pipeline nobody trusts is useless, and
+              one nobody can afford to run at volume is the same thing.
             </li>
             <li>
-              Led API development and shipped to production with the DevOps team,
-              cutting workloads by up to 70%, and created ease in overall workflows using technology. 
+              Own the API layer and ship to production with the DevOps team. Manual review on the
+              banking intake dropped by 70 percent and processing time by 60 percent.
             </li>
           </ul>
-        </div>
-        <div class="xp">
-          <div class="xp__role">
+        </article>
+
+        <article class="post">
+          <header class="post__head">
             <h3>BS, Information Technology</h3>
-            <span class="xp__meta">Quaid-i-Azam University · 2025</span>
-          </div>
-          <p>
-            This is where I built my foundation in Python, Machine Learning, and
-            Databases, and where I first turned classroom theory into working
-            software. It gave me the fundamentals I now use to design and ship
-            real AI models and Agentic workflows.
+            <p class="post__meta mono-label">Quaid-i-Azam University · 2025</p>
+          </header>
+          <p class="post__text">
+            Python, machine learning, and databases, plus the first time I had to hand something over
+            and watch other people use it. The final year project was a case management system for a
+            legal team that cut their case processing time, and it is
+            <a href="/blog/legal-workflow-saas" class="link-inline">still written up here</a>.
+          </p>
+        </article>
+      </div>
+
+      <dl class="rail">
+        {
+          rail.map((r) => (
+            <div class="rail__row">
+              <dt class="mono-label">{r.k}</dt>
+              <dd>{r.v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </Section>
+
+  <section class="strip strip--tall" aria-labelledby="toolkit-label">
+    <div class="container-site">
+      <h2 id="toolkit-label" class="strip__label strip__label--rule mono-label">Toolkit</h2>
+
+      <div class="kit">
+        <div class="kit__group">
+          <p class="kit__label mono-label">Shipped to production</p>
+          <ul class="kit__list">
+            {shipped.map((t) => <li class="pill">{t}</li>)}
+          </ul>
+        </div>
+
+        <div class="kit__group">
+          <p class="kit__label mono-label">Used, not my depth</p>
+          <ul class="kit__list">
+            {learning.map((t) => <li class="pill">{t}</li>)}
+          </ul>
+          <p class="kit__note">
+            Listed separately on purpose. If your problem lives here, you want somebody whose
+            first list it is on.
           </p>
         </div>
       </div>
 
-      <div class="background__col" data-reveal data-reveal-delay="100">
-        <Eyebrow>Toolkit</Eyebrow>
-        {
-          skills.map((s) => (
-            <div class="skills">
-              <p class="skills__group">{s.group}</p>
-              <ul class="skill-list">
-                {s.items.map((it) => (
-                  <li class="skill">
-                    <span class="skill__name">{it.name}</span>
-                    <span class="skill__bar">
-                      <i style={`width:${it.level}%`} />
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
+      <div class="certs">
+        <p class="kit__label mono-label">Certifications</p>
+        <ul class="certs__list">
+          {
+            certifications.map((c) => (
+              <li class="certs__row">
+                <a class="certs__link" href={c.url} target="_blank" rel="noopener noreferrer">
+                  <span class="certs__name">{c.name}</span>
+                  <span class="certs__issuer mono-label">{c.issuer}</span>
+                  <span class="certs__verify mono-label">
+                    Verify
+                    <Icon name="lucide:arrow-up-right" width={12} height={12} />
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </div>
+  </section>
 
-    <div class="certs-block" data-reveal>
-      <p class="certs-block__title">Certifications</p>
-      <ul class="cert-list">
-        {
-          certifications.map((c) => (
-            <li class="cert-item">
-              <a
-                class="cert-pill"
-                href={c.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-cursor="view"
-              >
-                View<span class="cert-pill__word">&nbsp;certificate</span>
-                <Icon name="lucide:arrow-up-right" width={13} height={13} />
-              </a>
-              <span class="cert-name">{c.name}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </Section>
-
-  <!-- Closing -->
-  <Section id="closing" class="section-closing">
-    <div class="closing">
-      <div class="closing__copy" data-reveal>
-        <Eyebrow>Available for work</Eyebrow>
-        <h2>Let’s build something that lasts.</h2>
-        <p>
-          If you have a workflow that’s slow, manual, or hard to scale, I’d like
-          to hear about it, and tell you honestly what AI can do for it.
-        </p>
-        <Button href="/contact" magnetic>Start a project</Button>
-      </div>
-    </div>
+  <Section id="cta">
+    <CtaBand
+      title="Tell me what the files look like."
+      lede="Send me the workflow, the ugly sample, and what it costs you in hours. I will tell you plainly whether this is worth automating and what it would take."
+      note="Project based · I reply within a day"
+    />
   </Section>
 </Layout>
 
 <style>
-  .mark {
-    color: var(--accent);
-  }
-
-  /* Intro */
-  .intro {
-    padding-top: clamp(2.5rem, 6vw, 4.5rem);
-    padding-bottom: clamp(2rem, 5vw, 4rem);
-  }
-  .intro__inner {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(2rem, 5vw, 3.5rem);
-    align-items: center;
-  }
-  .intro h1 {
-    margin-top: 0.75rem;
-    max-width: 14ch;
-  }
-  .intro__lead {
-    margin-top: 1.25rem;
-    max-width: 52ch;
-    color: var(--muted);
-    font-size: 1.1rem;
-  }
-  .intro__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1.25rem;
-    margin-top: 2rem;
-  }
-  .intro__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-weight: 500;
-  }
-
-  /* Portrait — a single rounded photo */
-  .portrait {
-    width: 100%;
-    max-width: 380px;
-    margin-inline: auto;
-  }
-  .portrait img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    box-shadow: 0 12px 32px rgba(57, 62, 65, 0.12);
-  }
-
-  /* Section heads */
-  .section-head {
-    margin-bottom: clamp(2rem, 4vw, 3rem);
-  }
-  .section-head h2 {
-    margin-top: 0.5rem;
-  }
-
-  .role-grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.9rem;
-  }
-  .role-card {
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: var(--surface);
-    padding: 1rem;
-  }
-  .role-card h3 {
-    font-size: 1.05rem;
-    margin-bottom: 0.45rem;
-  }
-  .role-card p {
-    color: var(--muted);
-    max-width: 48ch;
-    font-size: 0.95rem;
-  }
-
-  /* Principles */
-  .principles {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem 2rem;
-  }
-  .principle {
-    padding: 1.5rem 0;
-    border-top: 1px solid var(--border);
-  }
-  .principle__n {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--accent);
-  }
-  .principle h3 {
-    font-size: 1.3rem;
-    margin: 0.5rem 0;
-  }
-  .principle p {
-    color: var(--muted);
-    max-width: 46ch;
-  }
-
-  /* Experience & skills */
-  .background {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(2.5rem, 5vw, 4rem);
-  }
-  /* Columns size to their content; Toolkit pairs with Experience + Education,
-     Certifications sits full width below. */
-  .background {
-    align-items: start;
-  }
-  .xp {
-    padding: 1.25rem 0;
-    border-top: 1px solid var(--border);
-  }
-  .background__col > .eyebrow + .xp {
-    margin-top: 1.25rem;
-  }
-  .xp__role {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .xp__role h3 {
-    font-size: 1.15rem;
-  }
-  .xp__meta {
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-  .xp p {
-    color: var(--muted);
-    max-width: 50ch;
-  }
-  .xp-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 0.7rem;
-    max-width: 52ch;
-  }
-  .xp-list li {
+  .lead {
     position: relative;
-    padding-left: 1.1rem;
-    color: var(--muted);
+    padding-top: clamp(1.75rem, 4vw, 3rem);
+    padding-bottom: clamp(2rem, 4vw, 3.25rem);
+    overflow: hidden;
   }
-  .xp-list li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
+
+  .lead__field {
+    -webkit-mask-image: radial-gradient(110% 90% at 78% 26%, #000 12%, transparent 70%);
+    mask-image: radial-gradient(110% 90% at 78% 26%, #000 12%, transparent 70%);
   }
-  /* Certifications */
-  .certs-block {
-    margin-top: clamp(2.5rem, 5vw, 3.5rem);
-    padding: 1.5rem 0;
-    border-top: 1px solid var(--border);
+
+  .lead__body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .lead__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-4);
+    padding-bottom: var(--s-4);
     border-bottom: 1px solid var(--border);
   }
-  .certs-block__title {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 1.15rem;
-    color: var(--ink);
-    margin: 0 0 1.1rem;
+
+  .lead__role {
+    color: var(--text-3);
   }
-  .cert-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+
+  .lead__grid {
     display: grid;
-    gap: 0.9rem;
+    gap: clamp(2rem, 4vw, 3rem);
+    margin-top: clamp(1.75rem, 3.4vw, 2.75rem);
   }
-  .cert-item {
+
+  .lead__copy h1 {
+    margin-top: 0.875rem;
+    max-width: 22ch;
+  }
+
+  .lead__text {
+    margin-top: var(--s-5);
+    max-width: 58ch;
+    color: var(--text-2);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  .lead__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-5);
+    margin-top: clamp(1.75rem, 3vw, 2.25rem);
+  }
+
+  .portrait {
+    position: relative;
+    margin: 0;
+    max-width: 360px;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  .portrait img {
+    width: 100%;
+    height: auto;
+    filter: grayscale(0.14) contrast(1.03);
+  }
+
+  .portrait__cap {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding: 0.6875rem 0.875rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .portrait__cap .mono {
+    font-size: 0.78rem;
+    color: var(--text-1);
+  }
+
+  .portrait__cap .mono-label {
+    color: var(--text-3);
+  }
+
+  .strip {
+    padding-block: clamp(1.5rem, 2.4vw, 2.25rem);
+    border-block: 1px solid var(--border);
+  }
+
+  .strip--tall {
+    padding-block: clamp(2rem, 3.4vw, 3rem);
+  }
+
+  .strip__label {
+    color: var(--text-3);
+    font-size: 0.68rem;
+  }
+
+  .nowlist {
+    margin: var(--s-4) 0 0;
+    padding: 0;
+  }
+
+  .nowlist__row {
+    display: grid;
+    gap: 0.125rem;
+    padding: 0.5625rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .nowlist__row dd {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--text-1);
+  }
+
+  .nowlist__row dt {
+    color: var(--text-3);
+  }
+
+  .fitgrid {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .fitcol {
+    padding: clamp(1.375rem, 2.6vw, 1.875rem);
+  }
+
+  .fitcol--out {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .fitcol__head {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 0 0 var(--s-4);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--border);
+    color: var(--accent-hover);
   }
-  .cert-pill {
+
+  .fitcol--out .fitcol__head {
+    color: var(--text-3);
+  }
+
+  .fitcol__mark {
+    flex: none;
+  }
+
+  .fitlist {
+    display: grid;
+    gap: var(--s-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .fitlist li {
+    max-width: 46ch;
+    color: var(--text-2);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .fitcol--out .fitlist li {
+    color: var(--text-3);
+  }
+
+  .ledger {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .ledger__row {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ledger__link {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'i name arrow' 'i figure arrow';
+    align-items: center;
+    column-gap: var(--s-4);
+    row-gap: 0.25rem;
+    padding: var(--s-4) 0;
+    transition: background var(--dur-1) var(--ease-out);
+  }
+
+  .ledger__link:hover {
+    background: var(--surface-1);
+  }
+
+  .ledger__link:active {
+    background: var(--surface-2);
+  }
+
+  .ledger__i {
+    grid-area: i;
+  }
+
+  .ledger__name {
+    grid-area: name;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.012em;
+  }
+
+  .ledger__client {
+    display: none;
+    color: var(--text-3);
+    text-align: left;
+  }
+
+  .ledger__figure {
+    grid-area: figure;
+    font-size: 0.78rem;
+    color: var(--metric);
+  }
+
+  .ledger__arrow {
+    grid-area: arrow;
+    color: var(--text-3);
+    transition:
+      transform var(--dur-1) var(--ease-out),
+      color var(--dur-1) var(--ease-out);
+  }
+
+  .ledger__link:hover .ledger__arrow {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+
+  .bg {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    margin-top: clamp(1.75rem, 3.4vw, 2.5rem);
+  }
+
+  .bg__spine {
+    display: grid;
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .post {
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--border-strong);
+  }
+
+  .post__head h3 {
+    max-width: 42ch;
+  }
+
+  .post__meta {
+    margin: 0.4375rem 0 0;
+    color: var(--text-3);
+  }
+
+  .post__list {
+    display: grid;
+    gap: var(--s-4);
+    margin: var(--s-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .post__list li {
+    position: relative;
+    max-width: 62ch;
+    padding-left: var(--s-5);
+    color: var(--text-2);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .post__list li::before {
+    content: '';
+    position: absolute;
+    top: 0.6875rem;
+    left: 0;
+    width: 12px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .post__text {
+    margin: var(--s-5) 0 0;
+    max-width: 62ch;
+    color: var(--text-2);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .link-inline {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .link-inline:hover {
+    color: var(--accent-hover);
+  }
+
+  .rail {
+    margin: 0;
+    padding: 0;
+    align-self: start;
+    border-top: 1px solid var(--border);
+  }
+
+  .rail__row {
+    display: grid;
+    gap: 0.125rem;
+    padding: 0.6875rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rail__row dt {
+    color: var(--text-3);
+  }
+
+  .rail__row dd {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--text-1);
+  }
+
+  .strip__label--rule {
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .kit {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin-top: clamp(1.375rem, 2.4vw, 1.875rem);
+  }
+
+  .kit__label {
+    margin: 0 0 var(--s-3);
+    color: var(--text-3);
+  }
+
+  .kit__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .kit__note {
+    margin: var(--s-4) 0 0;
+    max-width: 40ch;
+    color: var(--text-3);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+
+  .certs {
+    margin-top: clamp(1.75rem, 3.4vw, 2.5rem);
+  }
+
+  .certs__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .certs__row {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .certs__link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.25rem var(--s-4);
+    padding: 0.75rem 0;
+  }
+
+  .certs__name {
+    font-size: 0.9375rem;
+    color: var(--text-1);
+  }
+
+  .certs__issuer {
+    grid-column: 1;
+    color: var(--text-3);
+  }
+
+  .certs__verify {
+    grid-row: span 2;
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    flex: none;
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    color: var(--text-3);
+    transition: color var(--dur-1) var(--ease-out);
+  }
+
+  .certs__link:hover .certs__verify {
     color: var(--accent);
-    padding: 0.3rem 0.7rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
-    border-radius: 999px;
-    transition:
-      background 0.15s ease,
-      border-color 0.15s ease,
-      transform 0.15s ease;
   }
-  .cert-pill:hover {
-    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
-    border-color: var(--accent);
-    transform: translateY(-1px);
+
+  .certs__link:active .certs__verify {
+    color: var(--accent-hover);
   }
-  .cert-name {
-    font-size: 0.95rem;
-    color: var(--ink);
-  }
-  /* On small screens shorten the pill to just "View" so the name stays inline. */
-  @media (max-width: 600px) {
-    .cert-pill__word {
-      display: none;
+
+  @media (min-width: 640px) {
+    .nowlist__row {
+      grid-template-columns: 8.5rem minmax(0, 1fr);
+      gap: var(--s-4);
+      align-items: baseline;
+    }
+
+    .fitgrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ledger__link {
+      grid-template-columns: 3.25rem minmax(0, 1fr) minmax(0, 1.05fr) 1.25rem;
+      grid-template-areas: 'i name figure arrow';
+      column-gap: var(--s-4);
+    }
+
+    .ledger__figure {
+      justify-self: end;
+      text-align: right;
+    }
+
+    .rail__row {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+      gap: var(--s-4);
+      align-items: baseline;
     }
   }
 
-  .skills {
-    margin-top: 1.25rem;
-  }
-  /* Extra breathing room between the two toolkit groups */
-  .skills + .skills {
-    margin-top: 3rem;
-  }
-  .skills__group {
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--muted);
-    margin-bottom: 0.75rem;
-  }
-  .skill-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1.75rem;
-    display: grid;
-    gap: 0.85rem;
-  }
-  .skill {
-    display: grid;
-    gap: 0.4rem;
-  }
-  .skill__name {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--ink);
-  }
-  .skill__bar {
-    height: 6px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--ink) 9%, var(--bg));
-    overflow: hidden;
-  }
-  .skill__bar i {
-    display: block;
-    height: 100%;
-    border-radius: 999px;
-    background: var(--accent);
-  }
+  @media (min-width: 900px) {
+    .lead__grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: clamp(2.5rem, 5vw, 4.5rem);
+      align-items: end;
+    }
 
-  /* Closing */
-  .closing {
-    text-align: center;
-  }
-  .closing__copy {
-    max-width: 48ch;
-    margin-inline: auto;
-  }
-  .closing__copy h2 {
-    margin: 0.5rem 0 1rem;
-  }
-  .closing__copy p {
-    color: var(--muted);
-    margin: 0 auto 1.75rem;
-  }
+    .portrait {
+      width: 360px;
+    }
 
-  @media (min-width: 860px) {
-    .intro__inner {
-      grid-template-columns: 1.2fr 0.8fr;
+    .nowlist {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 3vw, 2.5rem);
     }
-    .role-grid {
-      grid-template-columns: repeat(2, 1fr);
+
+    .nowlist__row {
+      grid-template-columns: 1fr;
+      gap: 0.3125rem;
+      align-items: start;
     }
-    .principles {
-      grid-template-columns: repeat(3, 1fr);
+
+    .ledger__link {
+      grid-template-columns: 3.25rem minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 1.05fr) 1.25rem;
+      grid-template-areas: 'i name client figure arrow';
+      column-gap: var(--s-5);
+      padding: var(--s-5) 0;
     }
-    .background {
-      grid-template-columns: 1fr 1fr;
+
+    .ledger__client {
+      display: block;
+      grid-area: client;
+    }
+
+    .bg {
+      grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.76fr);
+    }
+
+    .kit {
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.85fr);
+    }
+
+    .certs__link {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.5fr) auto;
+      align-items: center;
+    }
+
+    .certs__issuer {
+      grid-column: 2;
+    }
+
+    .certs__verify {
+      grid-row: auto;
     }
   }
 </style>

@@ -2,7 +2,7 @@
 title: 'A retrieval assistant that actually knows the catalog'
 cardTitle: 'RAG Fashion Assistant'
 excerpt: 'Shoppers ask in plain language; answers come back tied to 44,000+ real products in real time.'
-description: 'Building a RAG assistant over a 44,000-product fashion catalog with LangChain, Weaviate, and OpenAI — grounded, real-time answers instead of model guesswork.'
+description: 'Building a RAG assistant over a 44,000 product fashion catalog with LangChain, Weaviate, and OpenAI, giving grounded real time answers instead of model guesswork.'
 category: 'Retrieval (RAG)'
 pubDate: 2026-04-30
 image: '/work/rag-fashion.webp'

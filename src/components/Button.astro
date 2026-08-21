@@ -1,28 +1,22 @@
 ---
 interface Props {
   href?: string;
-  variant?: 'primary' | 'secondary';
-  magnetic?: boolean;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'md' | 'sm';
   class?: string;
   [key: string]: unknown;
 }
 
-const {
-  href,
-  variant = 'primary',
-  magnetic = false,
-  class: className = '',
-  ...rest
-} = Astro.props;
+const { href, variant = 'primary', size = 'md', class: className = '', ...rest } = Astro.props;
 
-const classes = ['btn', variant === 'primary' ? 'btn-primary' : 'btn-secondary', className]
-  .filter(Boolean)
-  .join(' ');
-
-const magAttr = magnetic ? { 'data-magnetic': '0.35' } : {};
 const Tag = href ? 'a' : 'button';
 ---
 
-<Tag class={classes} href={href} {...magAttr} {...rest}>
+<Tag
+  class:list={['btn', `btn-${variant}`, { 'btn-sm': size === 'sm' }, className]}
+  href={href}
+  type={href ? undefined : 'button'}
+  {...rest}
+>
   <slot />
 </Tag>

@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Button from '../../components/Button.astro';
+import CtaBand from '../../components/CtaBand.astro';
 import LiveBadge from '../../components/LiveBadge.astro';
 import { Icon } from 'astro-icon/components';
 import { site } from '../../config/site';
@@ -91,7 +91,7 @@ const breadcrumbLd = {
 };
 ---
 
-<Layout title={data.title} description={data.description} image={data.image} type="article">
+<Layout title={data.cardTitle ?? data.title} description={data.description} image={data.image} type="article">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} />
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
@@ -99,7 +99,7 @@ const breadcrumbLd = {
 
   <article class="post">
     <div class="container-site">
-      <a href={backHref} class="post__back link-accent" data-cursor="view">
+      <a href={backHref} class="post__back link-accent">
         <Icon name="lucide:arrow-left" width={16} height={16} />
         {backLabel}
       </a>
@@ -195,7 +195,7 @@ const breadcrumbLd = {
               <ol>
                 {citations.map((citation) => (
                   <li>
-                    <a href={citation.url} target="_blank" rel="noopener noreferrer" data-cursor="view">
+                    <a href={citation.url} target="_blank" rel="noopener noreferrer">
                       {citation.label}
                     </a>
                   </li>
@@ -216,14 +216,14 @@ const breadcrumbLd = {
         </ul>
         {
           next ? (
-            <a href={`/blog/${next.slug}`} class="post__next" data-cursor="view">
+            <a href={`/blog/${next.slug}`} class="post__next">
               <span class="post__next-label">
                 Next article <Icon name="lucide:arrow-right" width={15} height={15} />
               </span>
               <span class="post__next-title">{next.data.title}</span>
             </a>
           ) : (
-            <a href={backHref} class="link-accent post__foot-link" data-cursor="view">
+            <a href={backHref} class="link-accent post__foot-link">
               {backLabel} <Icon name="lucide:arrow-right" width={16} height={16} />
             </a>
           )
@@ -233,15 +233,11 @@ const breadcrumbLd = {
 
     <!-- CTA -->
     <div class="post-cta">
-      <div class="container-site post-cta__inner">
-        <h2 data-reveal>Building something similar?</h2>
-        <p data-reveal data-reveal-delay="80">
-          If you have a workflow that's slow, manual, or hard to scale, I can
-          tell you what AI can realistically do about it.
-        </p>
-        <div data-reveal data-reveal-delay="140">
-          <Button href="/contact" magnetic>Start a project</Button>
-        </div>
+      <div class="container-site">
+        <CtaBand
+          title="Building something similar?"
+          lede="If you have a workflow that's slow, manual, or hard to scale, I can tell you what AI can realistically do about it."
+        />
       </div>
     </div>
   </article>
@@ -281,7 +277,7 @@ const breadcrumbLd = {
   }
   .post__date {
     font-size: 0.85rem;
-    color: var(--muted);
+    color: var(--text-2);
   }
   .post__head h1 {
     font-size: clamp(2rem, 4.5vw, 3.25rem);
@@ -290,7 +286,7 @@ const breadcrumbLd = {
   .post__standfirst {
     margin-top: 1.25rem;
     font-size: 1.2rem;
-    color: var(--muted);
+    color: var(--text-2);
   }
 
   .post__cover {
@@ -316,21 +312,21 @@ const breadcrumbLd = {
     padding: 1.5rem;
     border: 1px solid var(--border);
     border-radius: 12px;
-    background: var(--surface);
+    background: var(--surface-1);
   }
   .post__facts dt {
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: var(--muted);
+    color: var(--text-2);
     margin-bottom: 0.3rem;
   }
   .post__facts dd {
     margin: 0;
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.05rem;
-    color: var(--ink);
+    color: var(--text-1);
   }
   .post__facts-metric {
     color: var(--accent) !important;
@@ -361,7 +357,7 @@ const breadcrumbLd = {
     padding: 1.25rem 1.5rem;
     border: 1px solid var(--border);
     border-radius: 12px;
-    background: var(--surface);
+    background: var(--surface-1);
   }
   .post__evidence h2 {
     font-size: 1.15rem;
@@ -376,25 +372,25 @@ const breadcrumbLd = {
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: var(--muted);
+    color: var(--text-2);
     margin-bottom: 0.3rem;
   }
   .post__evidence-grid dd {
     margin: 0;
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.02rem;
-    color: var(--ink);
+    color: var(--text-1);
   }
   .post__evidence-outcome {
     color: var(--accent);
   }
   .post__evidence-outcome.is-default {
-    color: var(--ink);
+    color: var(--text-1);
   }
   .post__evidence-note {
     margin-top: 0.9rem;
-    color: var(--muted);
+    color: var(--text-2);
     font-size: 0.95rem;
     line-height: 1.65;
   }
@@ -407,7 +403,7 @@ const breadcrumbLd = {
     font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: var(--muted);
+    color: var(--text-2);
     margin-bottom: 0.5rem;
   }
   .post__citations ol {
@@ -455,7 +451,7 @@ const breadcrumbLd = {
   }
   .prose :global(strong) {
     font-weight: 600;
-    color: var(--ink);
+    color: var(--text-1);
   }
   .prose :global(a) {
     color: var(--accent);
@@ -466,13 +462,13 @@ const breadcrumbLd = {
     margin: 1.5rem 0;
     padding-left: 1.25rem;
     border-left: 3px solid var(--accent);
-    color: var(--muted);
+    color: var(--text-2);
     font-style: italic;
   }
   .prose :global(code) {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.9em;
-    background: color-mix(in srgb, var(--ink) 6%, var(--bg));
+    background: color-mix(in srgb, var(--text-1) 6%, var(--bg));
     padding: 0.15em 0.4em;
     border-radius: 6px;
   }
@@ -513,10 +509,10 @@ const breadcrumbLd = {
     color: var(--accent);
   }
   .post__next-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.05rem;
-    color: var(--ink);
+    color: var(--text-1);
     transition: color 0.15s ease;
   }
   .post__next:hover .post__next-title {
@@ -537,26 +533,12 @@ const breadcrumbLd = {
     padding: 0.25rem 0.625rem;
     border: 1px solid var(--border);
     border-radius: 999px;
-    color: var(--muted);
+    color: var(--text-2);
   }
 
   /* CTA */
   .post-cta {
     margin-top: clamp(3.5rem, 8vw, 6rem);
-    background: var(--ink);
-    color: var(--bg);
-    padding: clamp(3rem, 7vw, 5rem) 0;
-  }
-  .post-cta__inner {
-    text-align: center;
-    max-width: 42ch;
-    margin-inline: auto;
-    display: grid;
-    gap: 1.25rem;
-    justify-items: center;
-  }
-  .post-cta__inner p {
-    color: color-mix(in srgb, var(--bg) 78%, transparent);
-    font-size: 1.1rem;
+    padding-bottom: clamp(3rem, 7vw, 5rem);
   }
 </style>

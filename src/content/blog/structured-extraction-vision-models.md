@@ -2,7 +2,7 @@
 title: 'Text or scan, one pipeline: extraction with vision models'
 cardTitle: 'Extraction With Vision Models'
 excerpt: 'When files arrive as spreadsheets, PDFs, and photos, language and vision models have to pull in the same direction.'
-description: 'How to combine LLM text extraction and vision models to pull structured data from mixed-format documents — spreadsheets, digital PDFs, and scanned images alike.'
+description: 'How to combine LLM text extraction and vision models to pull structured data from mixed format documents: spreadsheets, digital PDFs, and scanned images alike.'
 category: 'Document Intelligence'
 pubDate: 2026-06-05
 image: '/work/article-vision.webp'

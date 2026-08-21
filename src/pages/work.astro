@@ -2,8 +2,8 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
+import CtaBand from '../components/CtaBand.astro';
 import Eyebrow from '../components/Eyebrow.astro';
-import Button from '../components/Button.astro';
 import PostCard from '../components/PostCard.astro';
 import LiveBadge from '../components/LiveBadge.astro';
 import { Icon } from 'astro-icon/components';
@@ -17,23 +17,23 @@ const archive = workPosts.filter((p) => !p.data.featured);
 ---
 
 <Layout
-  title="Machine Learning Engineer Case Studies"
+  title="Case Studies in AI and Machine Learning"
   description="Case studies by Ali Zain, a machine learning engineer shipping AI systems across e-commerce, payroll, banking, and legal workflows."
 >
   <!-- Hero -->
   <section class="work-hero">
     <div class="container-site">
       <Eyebrow>Work</Eyebrow>
-      <h1 data-reveal>Systems shipped, <span class="mark">not just notebooks.</span></h1>
+      <h1 data-reveal>Systems shipped, not just notebooks.</h1>
       <p class="work-hero__lede" data-reveal data-reveal-delay="80">
         A selection of AI systems I have built as a machine learning engineer across e-commerce, payroll,
-        banking, and legal — each one put into production and measured against
+        banking, and legal. Each one went into production and was measured against
         the manual work it replaced.
       </p>
       <ul class="work-hero__meta" data-reveal data-reveal-delay="140">
         <li><strong>{workPosts.length}</strong> shipped systems</li>
         <li><strong>4</strong> industries</li>
-        <li><strong>90%</strong> peak workload cut</li>
+        <li><strong>70%</strong> peak workload cut</li>
       </ul>
     </div>
   </section>
@@ -47,7 +47,7 @@ const archive = workPosts.filter((p) => !p.data.featured);
           const n = String(i + 1).padStart(2, '0');
           return (
             <article class="feature" data-reveal>
-              <a class="feature__media" href={href} data-cursor="view">
+              <a class="feature__media" href={href}>
                 <img
                   src={p.data.image}
                   alt={p.data.imageAlt}
@@ -74,7 +74,7 @@ const archive = workPosts.filter((p) => !p.data.featured);
                 <ul class="tags">
                   {p.data.tags.map((t) => <li>{t}</li>)}
                 </ul>
-                <a class="feature__link link-accent" href={href} data-cursor="view">
+                <a class="feature__link link-accent" href={href}>
                   Read the case study <Icon name="lucide:arrow-right" width={16} height={16} />
                 </a>
               </div>
@@ -99,24 +99,16 @@ const archive = workPosts.filter((p) => !p.data.featured);
   </Section>
 
   <!-- CTA -->
-  <Section id="work-cta" dark class="work-cta">
-    <div class="work-cta__inner">
-      <h2 data-reveal>Have something like this to build?</h2>
-      <p data-reveal data-reveal-delay="80">
-        If a workflow in your business is slow, manual, or hard to scale, I can
-        tell you what AI can realistically do about it.
-      </p>
-      <div data-reveal data-reveal-delay="140">
-        <Button href="/contact" magnetic>Start a project</Button>
-      </div>
-    </div>
+  <Section id="work-cta">
+    <CtaBand
+      title="Have something like this to build?"
+      lede="If a workflow in your business is slow, manual, or hard to scale, I can tell you what AI can realistically do about it."
+      note="I read every message and usually reply within a day"
+    />
   </Section>
 </Layout>
 
 <style>
-  .mark {
-    color: var(--accent);
-  }
 
   /* Hero */
   .work-hero {
@@ -130,7 +122,7 @@ const archive = workPosts.filter((p) => !p.data.featured);
   .work-hero__lede {
     margin-top: 1.5rem;
     max-width: 58ch;
-    color: var(--muted);
+    color: var(--text-2);
     font-size: 1.15rem;
   }
   .work-hero__meta {
@@ -143,15 +135,15 @@ const archive = workPosts.filter((p) => !p.data.featured);
   }
   .work-hero__meta li {
     font-size: 0.95rem;
-    color: var(--muted);
+    color: var(--text-2);
   }
   .work-hero__meta strong {
     display: block;
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: clamp(1.75rem, 4vw, 2.5rem);
     line-height: 1;
-    color: var(--ink);
+    color: var(--text-1);
     letter-spacing: -0.02em;
   }
   .work-hero__meta li:first-child strong {
@@ -174,7 +166,7 @@ const archive = workPosts.filter((p) => !p.data.featured);
     overflow: hidden;
     border-radius: 16px;
     border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(57, 62, 65, 0.06);
+    box-shadow: var(--shadow-card);
     aspect-ratio: 3 / 2;
   }
   .feature__media img {
@@ -195,7 +187,7 @@ const archive = workPosts.filter((p) => !p.data.featured);
     flex-wrap: wrap;
   }
   .feature__n {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 1rem;
     color: var(--accent);
@@ -207,7 +199,7 @@ const archive = workPosts.filter((p) => !p.data.featured);
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: var(--muted);
+    color: var(--text-2);
     padding: 0.3rem 0.7rem;
     border: 1px solid var(--border);
     border-radius: 999px;
@@ -224,19 +216,19 @@ const archive = workPosts.filter((p) => !p.data.featured);
   .feature__client {
     margin-top: 0.4rem;
     font-size: 0.95rem;
-    color: var(--muted);
+    color: var(--text-2);
   }
   .feature__desc {
     margin-top: 1rem;
     max-width: 52ch;
-    color: var(--ink);
+    color: var(--text-1);
   }
   .feature__metric {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     margin-top: 1.25rem;
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 0.95rem;
     color: var(--accent);
@@ -269,7 +261,7 @@ const archive = workPosts.filter((p) => !p.data.featured);
     padding: 0.25rem 0.625rem;
     border: 1px solid var(--border);
     border-radius: 999px;
-    color: var(--muted);
+    color: var(--text-2);
   }
 
   /* Section head (More builds) */
@@ -291,20 +283,6 @@ const archive = workPosts.filter((p) => !p.data.featured);
   :global(.work-cta) {
     position: relative;
     overflow: hidden;
-  }
-  .work-cta__inner {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    max-width: 42ch;
-    margin-inline: auto;
-    display: grid;
-    gap: 1.25rem;
-    justify-items: center;
-  }
-  .work-cta__inner p {
-    color: color-mix(in srgb, var(--bg) 78%, transparent);
-    font-size: 1.1rem;
   }
 
   /* Responsive */

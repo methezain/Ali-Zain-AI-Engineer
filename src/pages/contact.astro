@@ -8,14 +8,14 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
 ---
 
 <Layout
-  title="Contact | AI Engineering Projects"
-  description="Contact Ali Zain for AI engineering projects, including LLM apps, RAG systems, and automation for manual workflows."
+  title="Contact an AI Engineer"
+  description="Contact Ali Zain (methezain), an AI engineer and Python developer, about LLM apps, RAG systems, document pipelines, and automation for manual workflows."
 >
   <section class="contact">
     <div class="container-site">
       <div class="contact__head">
         <Eyebrow>Contact</Eyebrow>
-        <h1 data-reveal>Let’s build <span class="mark">something.</span></h1>
+        <h1 data-reveal>Let’s build something.</h1>
         <p class="contact__lede" data-reveal data-reveal-delay="80">
           Tell me what’s slow, manual, or hard to scale in your business. I read
           every message and usually reply within a day.
@@ -48,7 +48,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
             <label>Company<input name="company" tabindex="-1" autocomplete="off" /></label>
           </div>
 
-          <button type="submit" class="btn btn-primary form__submit" data-magnetic="0.35">
+          <button type="submit" class="btn btn-primary form__submit">
             Send message
           </button>
           <p class="form__note">I’ll never share your details. No newsletters, no spam.</p>
@@ -59,7 +59,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
           <div class="direct__block">
             <span class="direct__label">Email</span>
             <div class="direct__row">
-              <a href={`mailto:${site.email}`} class="direct__value" data-cursor="view">{site.email}</a>
+              <a href={`mailto:${site.email}`} class="direct__value">{site.email}</a>
               <button type="button" class="copy" id="copy-email" data-copy={site.email} aria-label="Copy email address">
                 <Icon name="lucide:copy" width={16} height={16} />
               </button>
@@ -68,14 +68,14 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
 
           <div class="direct__block">
             <span class="direct__label">Phone</span>
-            <a href={telHref} class="direct__value" data-cursor="view">{site.phone}</a>
+            <a href={telHref} class="direct__value">{site.phone}</a>
           </div>
 
           <div class="direct__block">
             <span class="direct__label">Elsewhere</span>
             <div class="direct__socials">
-              <a href={site.social.github} target="_blank" rel="noopener" class="direct__value" data-cursor="view">GitHub</a>
-              <a href={site.social.linkedin} target="_blank" rel="noopener" class="direct__value" data-cursor="view">LinkedIn</a>
+              <a href={site.social.github} target="_blank" rel="noopener" class="direct__value">GitHub</a>
+              <a href={site.social.linkedin} target="_blank" rel="noopener" class="direct__value">LinkedIn</a>
             </div>
           </div>
 
@@ -99,9 +99,6 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
 </Layout>
 
 <style>
-  .mark {
-    color: var(--accent);
-  }
   .contact {
     padding-top: clamp(2.5rem, 6vw, 4.5rem);
     padding-bottom: clamp(3.5rem, 8vw, 7rem);
@@ -113,7 +110,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
   .contact__lede {
     margin-top: 1.5rem;
     max-width: 52ch;
-    color: var(--muted);
+    color: var(--text-2);
     font-size: 1.15rem;
   }
   .contact__grid {
@@ -135,15 +132,15 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
   .field label {
     font-size: 0.85rem;
     font-weight: 500;
-    color: var(--ink);
+    color: var(--text-1);
   }
   .field input,
   .field textarea {
     width: 100%;
     font-family: var(--font-body);
     font-size: 1rem;
-    color: var(--ink);
-    background: var(--surface);
+    color: var(--text-1);
+    background: var(--surface-1);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.75rem 0.875rem;
@@ -195,7 +192,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
   }
   .form__note {
     font-size: 0.85rem;
-    color: var(--muted);
+    color: var(--text-2);
   }
 
   /* Direct methods */
@@ -206,7 +203,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     padding: clamp(1.5rem, 3vw, 2rem);
     border: 1px solid var(--border);
     border-radius: 12px;
-    background: var(--surface);
+    background: var(--surface-1);
     height: fit-content;
   }
   .direct__label {
@@ -214,7 +211,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: var(--muted);
+    color: var(--text-2);
     margin-bottom: 0.4rem;
   }
   .direct__row {
@@ -223,10 +220,10 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     gap: 0.6rem;
   }
   .direct__value {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.05rem;
-    color: var(--ink);
+    color: var(--text-1);
     transition: color 0.15s ease;
   }
   a.direct__value:hover {
@@ -245,7 +242,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: transparent;
-    color: var(--muted);
+    color: var(--text-2);
     cursor: pointer;
     transition:
       color 0.15s ease,
@@ -285,10 +282,10 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     gap: 0.6rem;
     max-width: calc(100vw - 2rem);
     padding: 0.85rem 1.15rem;
-    background: var(--ink);
+    background: var(--text-1);
     color: var(--bg);
-    border-radius: 10px;
-    box-shadow: 0 12px 30px rgba(57, 62, 65, 0.22);
+    border-radius: var(--r-control);
+    box-shadow: var(--shadow-lift);
     font-size: 0.95rem;
     opacity: 0;
     pointer-events: none;
@@ -301,7 +298,8 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     transform: translate(-50%, 0);
   }
   .toast.is-error {
-    background: var(--accent);
+    background: var(--danger);
+    color: var(--on-accent);
   }
   .toast__icon {
     display: inline-flex;
@@ -311,7 +309,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     padding: 2px;
   }
   .toast.is-error .toast__icon {
-    color: var(--bg);
+    color: var(--on-accent);
     background: transparent;
     padding: 0;
   }

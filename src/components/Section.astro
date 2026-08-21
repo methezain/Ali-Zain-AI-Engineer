@@ -1,18 +1,57 @@
 ---
+import AmbientField from './AmbientField.astro';
+
 interface Props {
   id?: string;
   class?: string;
-  dark?: boolean;
+  tone?: 'plain' | 'band' | 'deep';
+  wide?: boolean;
+  field?: number;
 }
 
-const { id, class: className = '', dark = false } = Astro.props;
-
-const base = 'py-[clamp(3.5rem,8vw,7.5rem)]';
-const tone = dark ? 'bg-ink text-bg' : '';
+const { id, class: className = '', tone = 'plain', wide = false, field } = Astro.props;
 ---
 
-<section id={id} class={`${base} ${tone} ${className}`.trim()}>
-  <div class="container-site">
+<section id={id} class:list={['section', `section--${tone}`, { 'section--field': field }, className]}>
+  {field && <AmbientField class="section__field" density={field} />}
+  <div class:list={[wide ? 'section__wide' : 'container-site', 'section__body']}>
     <slot />
   </div>
 </section>
+
+<style>
+  .section {
+    padding-block: var(--section-y);
+  }
+
+  .section--field {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section__field {
+    -webkit-mask-image: radial-gradient(90% 80% at 50% 45%, #000 10%, transparent 75%);
+    mask-image: radial-gradient(90% 80% at 50% 45%, #000 10%, transparent 75%);
+  }
+
+  .section__body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section--band {
+    background: var(--surface-2);
+    border-block: 1px solid var(--border);
+  }
+
+  .section--deep {
+    border-block: 1px solid var(--border);
+  }
+
+  .section__wide {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+</style>

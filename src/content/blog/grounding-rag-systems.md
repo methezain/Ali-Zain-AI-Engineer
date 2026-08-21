@@ -1,5 +1,5 @@
 ---
-title: 'Why your RAG system hallucinates — and how to ground it'
+title: 'Why your RAG system hallucinates, and how to ground it'
 cardTitle: 'Grounding RAG Systems'
 excerpt: 'Retrieval quality, chunking, and prompt design decide whether a RAG bot is trustworthy or a liability.'
 description: 'A practical take on grounding RAG systems: the retrieval quality, chunking strategy, and prompt design that stop a chatbot from making things up.'
