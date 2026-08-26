@@ -1,0 +1,335 @@
+---
+interface Props {
+  class?: string;
+  points?: number;
+}
+
+const { class: className = '', points = 110 } = Astro.props;
+---
+
+<span class:list={['orbit', className]} data-orbit data-points={points} aria-hidden="true">
+  <canvas class="orbit__back" data-orbit-back></canvas>
+  <canvas class="orbit__front" data-orbit-front></canvas>
+</span>
+
+<style>
+  /* Square by construction: a circle in a box that inherits the figure's
+     aspect ratio gets its poles clipped by the canvas edge. */
+  .orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: var(--orbit-size, 130%);
+    aspect-ratio: 1;
+    display: block;
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 60%, transparent 88%);
+    mask-image: radial-gradient(circle at 50% 50%, #000 60%, transparent 88%);
+  }
+
+  .orbit__back,
+  .orbit__front {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .orbit__back {
+    z-index: -1;
+  }
+
+  .orbit__front {
+    z-index: 1;
+  }
+</style>
+
+<script>
+  type Pt = {
+    x: number;
+    y: number;
+    z: number;
+    ox: number;
+    oy: number;
+    dx: number;
+    dy: number;
+    vx: number;
+    vy: number;
+  };
+
+  const teardowns: Array<() => void> = [];
+
+  // Read from the host, not the root: a local token override such as
+  // .section--deep must win, or the mesh uses the wrong theme's jade.
+  const token = (el: Element, name: string) =>
+    getComputedStyle(el).getPropertyValue(name).trim();
+
+  function start(host: HTMLElement): () => void {
+    const back = host.querySelector<HTMLCanvasElement>('[data-orbit-back]');
+    const front = host.querySelector<HTMLCanvasElement>('[data-orbit-front]');
+    const bctx = back?.getContext('2d');
+    const fctx = front?.getContext('2d');
+    if (!back || !front || !bctx || !fctx) return () => {};
+
+    const calm = matchMedia('(prefers-reduced-motion: reduce)');
+    const N = Math.max(40, Math.min(220, Number(host.dataset.points) || 110));
+
+    // Fibonacci sphere: even coverage without clustering at the poles.
+    const pts: Pt[] = [];
+    const golden = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < N; i++) {
+      const y = 1 - (i / (N - 1)) * 2;
+      const r = Math.sqrt(Math.max(0, 1 - y * y));
+      const th = golden * i;
+      pts.push({
+        x: Math.cos(th) * r,
+        y,
+        z: Math.sin(th) * r,
+        ox: 0,
+        oy: 0,
+        dx: 0,
+        dy: 0,
+        vx: 0,
+        vy: 0,
+      });
+    }
+
+    // Fixed geodesic edges, computed once so the mesh reads as a solid structure.
+    const edges: Array<[number, number]> = [];
+    const LINK = 0.55;
+    for (let i = 0; i < N; i++) {
+      for (let j = i + 1; j < N; j++) {
+        const dx = pts[i].x - pts[j].x;
+        const dy = pts[i].y - pts[j].y;
+        const dz = pts[i].z - pts[j].z;
+        if (dx * dx + dy * dy + dz * dz < LINK * LINK) edges.push([i, j]);
+      }
+    }
+
+    const TILT = -0.36;
+    let spin = 0;
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let R = 1;
+    let raf: number | null = null;
+    let visible = true;
+    let hot = false;
+    let last = 0;
+    const pointer = { x: -9999, y: -9999 };
+    const sx: number[] = [];
+    const sy: number[] = [];
+    const sd: number[] = [];
+    let lineCol = '#000';
+    let glowDot: HTMLCanvasElement | null = null;
+    let glowLive: HTMLCanvasElement | null = null;
+
+    // One sprite per colour beats building a radial gradient per dot per frame.
+    const sprite = (color: string) => {
+      const S = 64;
+      const c = document.createElement('canvas');
+      c.width = S;
+      c.height = S;
+      const g = c.getContext('2d');
+      if (!g) return c;
+      const grad = g.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+      grad.addColorStop(0, color);
+      grad.addColorStop(0.22, color);
+      grad.addColorStop(0.5, 'transparent');
+      grad.addColorStop(1, 'transparent');
+      g.fillStyle = grad;
+      g.fillRect(0, 0, S, S);
+      return c;
+    };
+
+    const palette = () => {
+      lineCol = token(host, '--border-strong');
+      glowDot = sprite(token(host, '--accent'));
+      glowLive = sprite(token(host, '--accent-hover'));
+    };
+
+    const resize = () => {
+      const rect = host.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = rect.width;
+      h = rect.height;
+      R = (Math.min(w, h) / 2) * 0.94;
+      [back, front].forEach((c) => {
+        c.width = Math.round(w * dpr);
+        c.height = Math.round(h * dpr);
+      });
+      bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const project = (dt: number) => {
+      const cs = Math.cos(spin);
+      const ss = Math.sin(spin);
+      const ct = Math.cos(TILT);
+      const st = Math.sin(TILT);
+      const focal = R * 2.6;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      for (let i = 0; i < N; i++) {
+        const p = pts[i];
+        const x1 = p.x * cs + p.z * ss;
+        const z1 = p.z * cs - p.x * ss;
+        const y2 = p.y * ct - z1 * st;
+        const z2 = z1 * ct + p.y * st;
+
+        const depth = focal / (focal + z2 * R);
+        const px = cx + x1 * R * depth;
+        const py = cy + y2 * R * depth;
+
+        if (!calm.matches) {
+          const ddx = px + p.dx - pointer.x;
+          const ddy = py + p.dy - pointer.y;
+          const d2 = ddx * ddx + ddy * ddy;
+          const reach = 120;
+          if (d2 < reach * reach) {
+            const d = Math.max(Math.sqrt(d2), 1);
+            const push = (1 - d / reach) * 26;
+            p.vx += (ddx / d) * push * 0.055;
+            p.vy += (ddy / d) * push * 0.055;
+          }
+          p.vx += -p.dx * 0.035;
+          p.vy += -p.dy * 0.035;
+          p.vx *= 0.9;
+          p.vy *= 0.9;
+          p.dx += p.vx * dt;
+          p.dy += p.vy * dt;
+        }
+
+        sx[i] = px + p.dx;
+        sy[i] = py + p.dy;
+        sd[i] = depth;
+      }
+    };
+
+    const paint = (ctx: CanvasRenderingContext2D, half: 1 | -1) => {
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.lineWidth = 1;
+      for (const [i, j] of edges) {
+        const dm = (sd[i] + sd[j]) / 2;
+        const facing = dm >= 1 ? 1 : -1;
+        if (facing !== half) continue;
+        const fade = Math.min(1, Math.max(0, (dm - 0.72) / 0.56));
+        ctx.globalAlpha = (half === 1 ? 0.6 : 0.26) * (0.35 + fade * 0.65);
+        ctx.strokeStyle = lineCol;
+        ctx.beginPath();
+        ctx.moveTo(sx[i], sy[i]);
+        ctx.lineTo(sx[j], sy[j]);
+        ctx.stroke();
+      }
+
+      for (let i = 0; i < N; i++) {
+        const facing = sd[i] >= 1 ? 1 : -1;
+        if (facing !== half) continue;
+        const ddx = sx[i] - pointer.x;
+        const ddy = sy[i] - pointer.y;
+        const near = ddx * ddx + ddy * ddy < 140 * 140;
+        const fade = Math.min(1, Math.max(0, (sd[i] - 0.72) / 0.56));
+        const img = near ? glowLive : glowDot;
+        if (!img) continue;
+        const s = (near ? 20 : 13) * (0.62 + fade * 0.62);
+        ctx.globalAlpha = (half === 1 ? 0.95 : 0.34) * (0.34 + fade * 0.66);
+        ctx.drawImage(img, sx[i] - s / 2, sy[i] - s / 2, s, s);
+      }
+
+      ctx.globalAlpha = 1;
+    };
+
+    const render = (t: number) => {
+      const dt = last ? Math.min((t - last) / 16.67, 3) : 1;
+      last = t;
+      if (!calm.matches) spin += (hot ? 0.0042 : 0.0011) * dt;
+      project(dt);
+      paint(bctx, -1);
+      paint(fctx, 1);
+    };
+
+    const loop = (t: number) => {
+      render(t);
+      raf = calm.matches ? null : requestAnimationFrame(loop);
+    };
+
+    const play = () => {
+      if (raf === null && visible && !calm.matches) {
+        last = 0;
+        raf = requestAnimationFrame(loop);
+      }
+    };
+    const pause = () => {
+      if (raf !== null) cancelAnimationFrame(raf);
+      raf = null;
+    };
+
+    const onPointer = (e: PointerEvent) => {
+      const rect = host.getBoundingClientRect();
+      pointer.x = e.clientX - rect.left;
+      pointer.y = e.clientY - rect.top;
+      hot =
+        pointer.x > -80 && pointer.y > -80 && pointer.x < rect.width + 80 && pointer.y < rect.height + 80;
+      if (calm.matches) render(performance.now());
+    };
+    const onLeave = () => {
+      pointer.x = -9999;
+      pointer.y = -9999;
+      hot = false;
+    };
+
+    palette();
+    resize();
+    render(performance.now());
+    play();
+
+    const io = new IntersectionObserver((entries) => {
+      visible = entries[0].isIntersecting;
+      visible ? play() : pause();
+    });
+    io.observe(host);
+
+    const ro = new ResizeObserver(() => {
+      resize();
+      render(performance.now());
+    });
+    ro.observe(host);
+
+    const themeWatch = new MutationObserver(() => {
+      palette();
+      render(performance.now());
+    });
+    themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    window.addEventListener('pointermove', onPointer, { passive: true });
+    window.addEventListener('blur', pause);
+    window.addEventListener('focus', play);
+    document.addEventListener('pointerleave', onLeave);
+
+    return () => {
+      pause();
+      io.disconnect();
+      ro.disconnect();
+      themeWatch.disconnect();
+      window.removeEventListener('pointermove', onPointer);
+      window.removeEventListener('blur', pause);
+      window.removeEventListener('focus', play);
+      document.removeEventListener('pointerleave', onLeave);
+    };
+  }
+
+  const initOrbit = () => {
+    while (teardowns.length) teardowns.pop()?.();
+    document.querySelectorAll<HTMLElement>('[data-orbit]').forEach((el) => {
+      teardowns.push(start(el));
+    });
+  };
+
+  document.addEventListener('astro:page-load', initOrbit);
+  document.addEventListener('astro:before-swap', () => {
+    while (teardowns.length) teardowns.pop()?.();
+  });
+</script>
