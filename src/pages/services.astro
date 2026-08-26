@@ -5,344 +5,1146 @@ import CtaBand from '../components/CtaBand.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import Button from '../components/Button.astro';
 import AnswerBlock from '../components/AnswerBlock.astro';
-import TrustSignals from '../components/TrustSignals.astro';
+import { site } from '../config/site';
+import OrbitMesh from '../components/OrbitMesh.astro';
 import { Icon } from 'astro-icon/components';
 
 const services = [
   {
-    icon: 'lucide:message-square-code',
-    title: 'LLM Apps & RAG Systems',
-    deliverables: [
-      'Retrieval pipeline: chunking, embeddings, and a vector store',
-      'Grounded chat or search, exposed as a clean API or UI',
-      'An evaluation harness so quality is measured, not guessed',
-    ],
-    outcome: 'Answers tied to your data, in real time',
-  },
-  {
-    icon: 'lucide:workflow',
-    title: 'Agentic Workflows & Automation',
-    deliverables: [
-      'An orchestrated agent graph with tool-calling',
-      'Integrations with the systems the work actually lives in',
-      'Guardrails, retries, and logging you can inspect',
-    ],
-    outcome: 'Hours of manual work compressed into minutes',
-  },
-  {
-    icon: 'lucide:server',
-    title: 'AI Backends with FastAPI',
-    deliverables: [
-      'Typed, documented API with sensible validation',
-      'Dockerised services and a repeatable deploy',
-      'Data pipelines that hold up under real load',
-    ],
-    outcome: 'A backend that keeps working after I leave',
-  },
-  {
+    id: 'documents',
     icon: 'lucide:file-scan',
-    title: 'Document & Data Intelligence',
-    deliverables: [
-      'Ingestion for mixed formats: CSV, XLSX, PDF, and scans',
-      'LLM and vision extraction with a validation layer',
-      'Structured output written straight to your database',
-    ],
-    outcome: 'Messy documents in, trustworthy data out',
+    title: 'Document and data intelligence',
+    line: 'Mixed formats in, structured records out, including the vendor who changed their layout in March.',
+    gets: ['OCR + vision extraction', 'Validation layer', 'Writes to your database'],
+    removes: 'Retyping files by hand',
   },
   {
-    icon: 'lucide:rocket',
-    title: 'Deployment & MLOps',
-    deliverables: [
-      'Containerisation and cloud deployment (Docker, AWS)',
-      'Monitoring and logging for inputs, outputs, and drift',
-      'Documentation and a clean, honest handoff',
-    ],
-    outcome: 'Shipped, observable, and maintainable',
+    id: 'retrieval',
+    icon: 'lucide:search',
+    title: 'Retrieval and RAG',
+    line: 'Chat and search that answer from your own content, and say nothing when the answer is not in there.',
+    gets: ['Chunking + embeddings', 'Reranking', 'Evaluation harness'],
+    removes: 'Hunting through folders',
+  },
+  {
+    id: 'agents',
+    icon: 'lucide:workflow',
+    title: 'Agentic workflows',
+    line: 'Multi step jobs an agent finishes on its own, with a human check on the calls that carry risk.',
+    gets: ['LangGraph orchestration', 'Typed tool schemas', 'Retries + full logs'],
+    removes: 'Copying between five tools',
+  },
+  {
+    id: 'models',
+    icon: 'lucide:cpu',
+    title: 'Model Training',
+    line: 'When prompting a hosted model will not hold, I label your data and train one that will.',
+    gets: ['Classification', 'Computer vision', 'Measured on holdout'],
+    removes: 'Guessing at edge cases',
+  },
+  {
+    id: 'backend',
+    icon: 'lucide:server',
+    title: 'Python backends and deployment',
+    line: 'The API your product calls, containerised, deployed, and documented well enough to hand over.',
+    gets: ['FastAPI + typed schemas', 'Docker + AWS', 'Runbook'],
+    removes: 'A notebook nobody can run',
   },
 ];
 
-const steps = [
-  { n: '01', title: 'Discover', desc: 'Understand the workflow, the data, and the outcome that actually matters.' },
-  { n: '02', title: 'Build', desc: 'Prototype fast, validate against real inputs, then harden what works.' },
-  { n: '03', title: 'Ship', desc: 'Deploy with monitoring, documentation, and a clean handoff.' },
-  { n: '04', title: 'Iterate', desc: 'Measure results and tune until the system earns its keep.' },
+const compare = [
+  {
+    crit: 'Who writes the code',
+    cells: [
+      { s: 'none', v: 'Me, every line' },
+      { s: 'none', v: 'A team you do not pick' },
+      { s: 'none', v: 'One person' },
+    ],
+  },
+  {
+    crit: 'You talk to whoever is building it',
+    cells: [
+      { s: 'yes', v: 'Always' },
+      { s: 'no', v: 'Through an account manager' },
+      { s: 'yes', v: 'Always' },
+    ],
+  },
+  {
+    crit: 'Trains a model when prompting will not hold',
+    cells: [
+      { s: 'yes', v: 'Yes' },
+      { s: 'part', v: 'Sometimes' },
+      { s: 'no', v: 'Rarely' },
+    ],
+  },
+  {
+    crit: 'Runs on your real files in week one',
+    cells: [
+      { s: 'yes', v: 'Yes' },
+      { s: 'part', v: 'After a discovery phase' },
+      { s: 'part', v: 'Depends' },
+    ],
+  },
+  {
+    crit: 'Runbook and handover included',
+    cells: [
+      { s: 'yes', v: 'Included' },
+      { s: 'part', v: 'Usually an add on' },
+      { s: 'no', v: 'Rarely' },
+    ],
+  },
+  {
+    crit: 'Several workstreams at once',
+    cells: [
+      { s: 'no', v: 'No, one project at a time' },
+      { s: 'yes', v: 'Yes' },
+      { s: 'no', v: 'No' },
+    ],
+  },
 ];
 
-const serviceAnswers = [
+const columns = ['Working with me', 'An AI agency', 'A generalist freelancer'];
+
+const routes = [
   {
-    q: 'Which services are the best first fit?',
-    a: 'Most teams start with either a RAG system for internal knowledge or document intelligence for manual file workflows.',
+    k: 'Route A',
+    title: 'Discovery, then build',
+    when: 'The problem is real but the scope is not settled yet.',
+    steps: [
+      'A short paid block on your actual files, not a sample set',
+      'Ends with a written plan, a working spike, and a fixed scope for the build',
+      'If the plan does not convince you, you stop there and keep it',
+    ],
   },
   {
-    q: 'Do you only build prototypes?',
-    a: 'No. The default path is prototype, then production hardening with monitoring, documentation, and handoff.',
-  },
-  {
-    q: 'Can this work with existing systems?',
-    a: 'Yes. Integrations are built around current data sources, APIs, and team workflows to avoid tool sprawl.',
-  },
-  {
-    q: 'What outcomes should a team expect?',
-    a: 'Lower manual effort, faster processing, and a more reliable pipeline with clear operating visibility.',
+    k: 'Route B',
+    title: 'Straight to build',
+    when: 'You already know what needs to exist.',
+    steps: [
+      'A call to agree the deliverable and the acceptance test',
+      'Build, then handover with the runbook and the failure modes written down',
+      'No hourly clock on either side',
+    ],
   },
 ];
+
+const answers = [
+  {
+    q: 'Who is Ali Zain?',
+    a: 'Me. I am an AI engineer and Python developer based in Islamabad, and methezain everywhere online. Since 2024 I have built document extraction pipelines, retrieval systems, and agent workflows that run in production for banking, payroll, legal, and eCommerce teams.',
+  },
+  {
+    q: 'What does an AI engineer actually do?',
+    a: 'An AI engineer puts a model inside a system somebody can actually use. That means the retrieval, the validation, the API, the deployment, and the monitoring around the model, not just the call to it. Research picks the approach. An AI engineer makes it survive real traffic.',
+  },
+  {
+    q: 'What is the difference between an AI engineer and an AI/ML engineer?',
+    a: 'In practice very little, and I am hired under both titles as well as machine learning engineer. AI engineer usually leans toward LLM systems and retrieval; AI/ML engineer leans toward training and evaluating models. I do both, which is why trained models sits next to retrieval in the list above.',
+  },
+  {
+    q: 'Can I hire Ali Zain as a freelance AI engineer?',
+    a: 'Yes. I take project based work alongside my role at Intalytic Group, scoped by deliverable rather than by the hour. Either a short paid discovery block if the scope is unsettled, or straight to a fixed build if you already know what needs to exist.',
+  },
+  {
+    q: 'Which AI engineering services do you offer?',
+    a: 'Five: document and data intelligence, retrieval and RAG, agentic workflows, Model Training, and Python backends with deployment. Each one is listed above with what you get and the manual work it removes.',
+  },
+];
+
+const stages = [
+  { name: 'Retrieval augmented generation', tag: 'RAG' },
+  { name: 'Agentic AI orchestration', tag: 'Agents' },
+  { name: 'Document intelligence', tag: 'OCR + vision' },
+  { name: 'Machine learning engineering', tag: 'Training' },
+  { name: 'Production APIs and MLOps', tag: 'Deploy' },
+];
+
+const marks = {
+  yes: { icon: 'lucide:check', label: 'yes' },
+  no: { icon: 'lucide:x', label: 'no' },
+  part: { icon: 'lucide:minus', label: 'partly' },
+};
 ---
 
 <Layout
   title="AI Engineering Services"
-  description="AI engineering services by Ali Zain (methezain): LLM apps, RAG systems, agentic workflows, and document intelligence built for production reliability."
+  description="AI engineering services by Ali Zain (methezain): document intelligence, RAG and retrieval, agentic workflows, trained models, and Python backends built for production."
 >
-  <!-- Hero -->
-  <section class="svc-hero">
-    <div class="container-site">
-      <Eyebrow>Services</Eyebrow>
-      <h1 data-reveal>AI that removes real work.</h1>
-      <p class="svc-hero__lede" data-reveal data-reveal-delay="80">
-        I help teams turn slow, manual, or unscalable work into systems that run
-        on their own. Each engagement ends in something deployed and measured,
-        not a demo that quietly gets abandoned.
-      </p>
-      <div class="svc-hero__actions" data-reveal data-reveal-delay="140">
-        <Button href="/contact">Start a project</Button>
-        <Button href="/work" variant="secondary">See AI case studies</Button>
+  <section class="lead">
+    <div class="container-site lead__grid">
+      <div class="lead__body">
+        <Eyebrow>Services</Eyebrow>
+        <h1>Five things I build, and the work each one removes.</h1>
+        <p class="lead__text">
+          Every one goes into production, runs on your data, and ships with a runbook.
+        </p>
+        <div class="lead__actions">
+          <Button href="/contact">Start a project</Button>
+          <a href="/work" class="link-quiet">
+            See what shipped
+            <Icon name="lucide:arrow-right" width={16} height={16} />
+          </a>
+        </div>
+      </div>
+
+      <div class="rig">
+        <span class="streaks" aria-hidden="true">
+          <i style="--y: 8%; --d: 0s; --t: 2.6s"></i>
+          <i style="--y: 21%; --d: 0.9s; --t: 3.4s"></i>
+          <i style="--y: 34%; --d: 1.7s; --t: 2.2s"></i>
+          <i style="--y: 52%; --d: 0.4s; --t: 3s"></i>
+          <i style="--y: 68%; --d: 2.1s; --t: 2.8s"></i>
+          <i style="--y: 84%; --d: 1.3s; --t: 3.6s"></i>
+        </span>
+
+        <ol class="stack">
+          {
+            stages.map((st, i) => (
+              <li
+                class:list={['stage', { 'stage--lit': i === 0 }]}
+                style={`--i: ${i}`}
+              >
+                <span class="stage__n mono-label">{`0${i + 1}`}</span>
+                <span class="stage__name">{st.name}</span>
+                <span class="stage__tag mono-label">{st.tag}</span>
+              </li>
+            ))
+          }
+        </ol>
       </div>
     </div>
   </section>
 
-  <!-- Service blocks -->
-  <Section id="services">
-    <ol class="services">
-      {
-        services.map((s, i) => (
-          <li class="service" data-reveal>
-            <div class="service__head">
-              <span class="service__icon">
-                <Icon name={s.icon} width={22} height={22} />
-              </span>
-              <span class="service__n">{String(i + 1).padStart(2, '0')}</span>
-              <h2>{s.title}</h2>
-            </div>
-            <div class="service__detail">
-              <p class="service__label">What you get</p>
-              <ul class="service__list">
-                {s.deliverables.map((d) => (
-                  <li>
-                    <Icon name="lucide:check" width={16} height={16} />
-                    <span>{d}</span>
-                  </li>
-                ))}
-              </ul>
-              <p class="service__outcome">
-                <Icon name="lucide:trending-up" width={16} height={16} />
-                <span>{s.outcome}</span>
-              </p>
-            </div>
-          </li>
-        ))
-      }
-    </ol>
+  <Section id="offer">
+    <div class="section-head">
+      <Eyebrow index="01">What I build</Eyebrow>
+      <h2>One engineer, five systems.</h2>
+    </div>
+
+    <div class="hub" data-hub>
+      <svg class="hub__wires" aria-hidden="true" data-hub-wires preserveAspectRatio="none"></svg>
+
+      <div class="hub__core" data-hub-core>
+        <span class="hub__mark" aria-hidden="true">
+          <Icon name="lucide:terminal" width={20} height={20} />
+        </span>
+        <span class="hub__name">{site.name}</span>
+        <span class="hub__role mono-label">AI Engineer · Python Developer</span>
+      </div>
+
+      <ol class="hub__list">
+        {
+          services.map((sv, i) => (
+            <li>
+              <a
+                class="node"
+                id={sv.id}
+                href={`/contact?service=${sv.id}`}
+                data-hub-node={sv.id}
+              >
+                <span class="node__icon" aria-hidden="true">
+                  <Icon name={sv.icon} width={17} height={17} />
+                </span>
+                <span class="node__body">
+                  <span class="node__title">{sv.title}</span>
+                  <span class="node__line">{sv.line}</span>
+                  <span class="node__gets">
+                    {sv.gets.map((g) => <span class="pill">{g}</span>)}
+                  </span>
+                  <span class="node__removes">
+                    <span class="mono-label">Removes</span>
+                    {sv.removes}
+                  </span>
+                </span>
+                <span class="node__n index-marker" aria-hidden="true">{`0${i + 1}`}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
   </Section>
 
-  <!-- How engagements work -->
-  <Section id="process" class="svc-process">
-    <div class="section-head">
-      <div>
-        <Eyebrow>How it works</Eyebrow>
-        <h2 data-reveal>A tight loop from idea to impact.</h2>
+  <Section id="trained" tone="deep">
+    <div class="mind">
+      <figure class="mind__art">
+        <OrbitMesh class="mind__globe" points={88} />
+        <img
+          src="/services/brain.webp"
+          srcset="/services/brain-sm.webp 560w, /services/brain.webp 1100w"
+          sizes="(min-width: 900px) 460px, 90vw"
+          alt="A brain rendered as a circuit board, standing for a model trained on your own data"
+          width="1100"
+          height="963"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <div class="mind__copy">
+        <p class="head-statement">
+          A prompt borrows somebody else’s judgement. A trained model learns yours.
+        </p>
+        <p class="mind__text">
+          Hosted models are the right answer most of the time, and I reach for them first. But when
+          the decision depends on how <em>your</em> business reads a document, no amount of prompt
+          wording fixes it. That is when I label your data and train something that does.
+        </p>
+        <a href="#models" class="link-quiet">
+          Model Training
+          <Icon name="lucide:arrow-up" width={16} height={16} />
+        </a>
       </div>
     </div>
-    <ol class="process">
-      {
-        steps.map((step, i) => (
-          <li class="process__step" data-reveal data-reveal-delay={i * 60}>
-            <span class="process__n">{step.n}</span>
-            <h3>{step.title}</h3>
-            <p>{step.desc}</p>
-          </li>
-        ))
-      }
-    </ol>
   </Section>
 
-  <Section id="service-answers" class="svc-answers">
-    <div class="service-evidence">
-      <AnswerBlock
-        title="Quick answers about services"
-        items={serviceAnswers}
-      />
-      <TrustSignals updatedOn="August 2026" />
+  <Section id="compare" tone="band">
+    <div class="section-head">
+      <Eyebrow index="02">The honest version</Eyebrow>
+      <h2>One engineer is not always the right answer.</h2>
+      <p class="section-lede">
+        There are real reasons to hire an agency instead. Here is where each option actually wins, so
+        you can rule me out quickly if I am the wrong shape.
+      </p>
+    </div>
+
+    <div class="cmp-scroll">
+      <table class="cmp">
+        <caption class="sr-only">
+          Comparing an independent engineer, an AI agency, and a generalist freelancer
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" class="mono-label">Criterion</th>
+            {columns.map((c) => <th scope="col" class="mono-label cmp__col">{c}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {
+            compare.map((row) => (
+              <tr>
+                <th scope="row" class="cmp__crit">{row.crit}</th>
+                {row.cells.map((cell) => (
+                  <td class="cmp__cell">
+                    <span class:list={['cmp__val', `cmp__val--${cell.s}`]}>
+                      {cell.s !== 'none' && (
+                        <Icon name={marks[cell.s].icon} width={14} height={14} aria-hidden="true" />
+                      )}
+                      {cell.s !== 'none' && <span class="sr-only">{marks[cell.s].label}, </span>}
+                      {cell.v}
+                    </span>
+                  </td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="cmp__hint mono-note">Scroll the table sideways to compare all three.</p>
+  </Section>
+
+  <Section id="routes">
+    <div class="head-split">
+      <div>
+        <Eyebrow index="03">Getting started</Eyebrow>
+        <h2>You do not have to know the scope before we start.</h2>
+      </div>
+      <div class="head-split__aside">
+        <a href="/contact" class="link-quiet">
+          Send me the problem
+          <Icon name="lucide:arrow-right" width={16} height={16} />
+        </a>
+      </div>
+    </div>
+
+    <div class="routes">
+      {
+        routes.map((r) => (
+          <article class="route" data-reveal>
+            <span class="mono-label route__k">{r.k}</span>
+            <h3>{r.title}</h3>
+            <p class="route__when">{r.when}</p>
+            <ol class="route__steps">
+              {r.steps.map((st) => <li>{st}</li>)}
+            </ol>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="routes__foot mono-note">
+      Either way: project based, scoped by deliverable, no hourly commitment.
+    </p>
+  </Section>
+
+  <Section id="answers">
+    <div class="faq">
+      <Eyebrow index="04">Before you email</Eyebrow>
+      <AnswerBlock title="Common questions about hiring an AI engineer" items={answers} />
     </div>
   </Section>
 
-  <!-- CTA -->
   <Section id="svc-cta">
     <CtaBand
-      title="Not sure which of these you need?"
-      lede="Tell me what is slow or manual in your business. I will tell you what AI can realistically do about it, and what it cannot."
-      note="I read every message and usually reply within a day"
+      title="Not sure which of the five you need?"
+      lede="Describe what is slow or manual and send one real file. I will tell you which of these fits, or that none of them do."
+      note="Project based · I reply within a day"
     />
   </Section>
 </Layout>
 
-<style>
+<script>
+  const SVG = 'http://www.w3.org/2000/svg';
 
-  /* Hero */
-  .svc-hero {
-    padding-top: clamp(2.5rem, 6vw, 4.5rem);
-    padding-bottom: clamp(1rem, 3vw, 2rem);
+  const drawWires = (hub: HTMLElement) => {
+    const svg = hub.querySelector<SVGSVGElement>('[data-hub-wires]');
+    const core = hub.querySelector<HTMLElement>('[data-hub-core]');
+    const nodes = [...hub.querySelectorAll<HTMLElement>('[data-hub-node]')];
+    if (!svg || !core || !nodes.length) return;
+
+    const box = hub.getBoundingClientRect();
+    svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
+    svg.setAttribute('width', String(box.width));
+    svg.setAttribute('height', String(box.height));
+    svg.replaceChildren();
+
+    // Below the two-column breakpoint the cards stack, so the wires would cross the text.
+    if (!window.matchMedia('(min-width: 1000px)').matches) return;
+
+    const c = core.getBoundingClientRect();
+    const hx = c.right - box.left;
+    const hy = c.top + c.height / 2 - box.top;
+    const R = 16;
+
+    nodes.forEach((node, i) => {
+      const n = node.getBoundingClientRect();
+      const nx = n.left - box.left;
+      const ny = n.top + n.height / 2 - box.top;
+      const midX = hx + (nx - hx) * 0.45;
+      const dir = ny > hy ? 1 : -1;
+      const d =
+        Math.abs(ny - hy) < R * 2
+          ? `M ${hx} ${hy} H ${nx}`
+          : `M ${hx} ${hy} H ${midX - R} Q ${midX} ${hy} ${midX} ${hy + R * dir}` +
+            ` V ${ny - R * dir} Q ${midX} ${ny} ${midX + R} ${ny} H ${nx}`;
+
+      const base = document.createElementNS(SVG, 'path');
+      base.setAttribute('d', d);
+      base.setAttribute('class', 'wire');
+      base.setAttribute('fill', 'none');
+      svg.appendChild(base);
+
+      const lit = document.createElementNS(SVG, 'path');
+      lit.setAttribute('d', d);
+      lit.setAttribute('class', 'wire wire--lit');
+      lit.setAttribute('fill', 'none');
+      lit.dataset.wireFor = node.dataset.hubNode ?? '';
+      lit.style.setProperty('--wire-delay', `${i * 0.62}s`);
+      svg.appendChild(lit);
+
+      const dot = document.createElementNS(SVG, 'circle');
+      dot.setAttribute('r', '2.5');
+      dot.setAttribute('cx', String(nx));
+      dot.setAttribute('cy', String(ny));
+      dot.setAttribute('class', 'wire__cap');
+      svg.appendChild(dot);
+    });
+  };
+
+  const boot = () => {
+    document.querySelectorAll<HTMLElement>('[data-hub]').forEach((hub) => {
+      const paint = () => drawWires(hub);
+      paint();
+
+      let t = 0;
+      const onResize = () => {
+        window.clearTimeout(t);
+        t = window.setTimeout(paint, 120);
+      };
+      window.addEventListener('resize', onResize, { passive: true });
+      window.matchMedia('(min-width: 1000px)').addEventListener('change', paint);
+      if (document.fonts?.ready) document.fonts.ready.then(paint);
+
+      const light = (id: string | null) => {
+        hub.querySelectorAll<SVGPathElement>('[data-wire-for]').forEach((p) => {
+          p.classList.toggle('is-lit', p.dataset.wireFor === id);
+        });
+      };
+
+      hub.querySelectorAll<HTMLElement>('[data-hub-node]').forEach((node) => {
+        const on = () => light(node.dataset.hubNode ?? null);
+        const off = () => light(null);
+        node.addEventListener('pointerenter', on);
+        node.addEventListener('focus', on);
+        node.addEventListener('pointerleave', off);
+        node.addEventListener('blur', off);
+      });
+    });
+  };
+
+  boot();
+  document.addEventListener('astro:after-swap', boot);
+</script>
+
+
+
+<style>
+  .lead {
+    padding-top: clamp(1.75rem, 4vw, 3rem);
+    padding-bottom: clamp(1.75rem, 3.4vw, 2.75rem);
+    overflow: hidden;
   }
-  .svc-hero h1 {
-    margin-top: 0.75rem;
-    max-width: 16ch;
+
+  .lead__grid {
+    display: grid;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 3rem);
   }
-  .svc-hero__lede {
-    margin-top: 1.5rem;
-    max-width: 56ch;
+
+  .rig {
+    position: relative;
+    width: 100%;
+  }
+
+  .stack {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .stage {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--s-3);
+    padding: 0.8125rem 0.9375rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r-control);
+    background: var(--surface-1);
+    transition:
+      background var(--dur-2) var(--ease-out),
+      border-color var(--dur-2) var(--ease-out),
+      opacity var(--dur-2) var(--ease-out),
+      transform var(--dur-2) var(--ease-out);
+  }
+
+  .stage__n {
+    color: var(--text-3);
+  }
+
+  .stage__name {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.012em;
+    color: var(--text-1);
+  }
+
+  .stage__tag {
+    color: var(--text-3);
+  }
+
+  /* The lit stage: an accent fill, not a neon halo. The tinted drop is
+     directional so it reads as elevation rather than bloom. */
+  .stage--lit {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 10px 26px -12px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .stage--lit .stage__n,
+  .stage--lit .stage__tag {
+    color: color-mix(in srgb, var(--on-accent) 70%, transparent);
+  }
+
+  .stage--lit .stage__name {
+    color: var(--on-accent);
+  }
+
+  .streaks {
+    display: none;
+  }
+
+  .lead__body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .lead h1 {
+    margin-top: 0.875rem;
+    max-width: 22ch;
+  }
+
+  .lead__text {
+    margin-top: var(--s-5);
+    max-width: 46ch;
     color: var(--text-2);
-    font-size: 1.15rem;
+    font-size: 1.0625rem;
+    line-height: 1.65;
   }
-  .svc-hero__actions {
+
+  .lead__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.875rem;
-    margin-top: 2rem;
+    align-items: center;
+    gap: var(--s-5);
+    margin-top: clamp(1.5rem, 2.6vw, 2rem);
   }
 
-  /* Service blocks */
-  .services {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 0;
+  .item__removes .mono-label {
+    color: var(--text-3);
   }
-  .service {
-    padding: clamp(2rem, 4vw, 3rem) 0;
+
+  :global(#trained) {
+    overflow: hidden;
+    padding-block: clamp(5rem, 8vw, 7rem);
+  }
+
+  .mind {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  .mind__art img {
+    width: 100%;
+    height: auto;
+    opacity: 0.92;
+  }
+
+  .mind__text {
+    margin: var(--s-5) 0;
+    max-width: 54ch;
+    color: var(--text-2);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  .mind__text em {
+    font-style: normal;
+    color: var(--text-1);
+  }
+
+  .section-head :global(.section-lede) {
+    max-width: 58ch;
+  }
+
+  .cmp-scroll {
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .cmp {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .cmp thead th {
+    padding: 0 var(--s-4) var(--s-3) 0;
+    color: var(--text-3);
+    font-weight: 500;
+    vertical-align: bottom;
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .cmp tbody th,
+  .cmp tbody td {
+    padding: var(--s-4) var(--s-4) var(--s-4) 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: baseline;
+  }
+
+  .cmp__crit {
+    width: 30%;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-1);
+  }
+
+  .cmp__val {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.9375rem;
+    color: var(--text-2);
+  }
+
+  .cmp__val svg {
+    flex: none;
+    transform: translateY(2px);
+  }
+
+  .cmp__val--yes {
+    color: var(--text-1);
+  }
+
+  .cmp__val--yes svg {
+    color: var(--accent-hover);
+  }
+
+  .cmp__val--no svg,
+  .cmp__val--part svg {
+    color: var(--text-3);
+  }
+
+  .cmp__hint {
+    margin: var(--s-4) 0 0;
+    color: var(--text-3);
+  }
+
+  .routes {
+    display: grid;
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .route {
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--border-strong);
+  }
+
+  .route__k {
+    color: var(--accent);
+  }
+
+  .route h3 {
+    margin: 0.5rem 0 0;
+    font-size: 1.1875rem;
+  }
+
+  .route__when {
+    margin: 0.375rem 0 0;
+    max-width: 40ch;
+    color: var(--text-3);
+    font-size: 0.875rem;
+  }
+
+  .route__steps {
+    display: grid;
+    gap: var(--s-3);
+    margin: var(--s-5) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .route__steps li {
+    position: relative;
+    max-width: 44ch;
+    padding-left: 1.75rem;
+    color: var(--text-2);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    counter-increment: step;
+  }
+
+  .route__steps li::before {
+    content: counter(step);
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .routes__foot {
+    margin: var(--s-6) 0 0;
+    padding-top: var(--s-4);
     border-top: 1px solid var(--border);
   }
-  .service:first-child {
-    border-top: none;
-    padding-top: 0;
+
+  .faq {
+    max-width: 780px;
   }
-  .service__head {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+
+  .faq :global(.answer-block h2) {
+    margin-top: 0.75rem;
   }
-  .service__icon {
+
+  .faq :global(.answer-block__list) {
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq :global(.answer-block__item) {
+    border: 0;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .faq :global(.answer-block__item summary) {
+    padding-inline: 0;
+  }
+
+  .faq :global(.answer-block__item p) {
+    padding-inline: 0;
+    max-width: 62ch;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  /* --- hub diagram ------------------------------------------------------ */
+
+  #offer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hub {
+    position: relative;
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .hub__wires {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  :global(.wire) {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+
+  :global(.wire--lit) {
+    stroke: var(--accent);
+    stroke-dasharray: 22 260;
+    stroke-dashoffset: 282;
+    opacity: 0.55;
+    animation: wire-run 4.6s linear infinite;
+    animation-delay: var(--wire-delay, 0s);
+  }
+
+  :global(.wire--lit.is-lit) {
+    opacity: 1;
+    animation-duration: 1.05s;
+    animation-delay: 0s;
+  }
+
+  :global(.wire__cap) {
+    fill: var(--border-strong);
+    stroke: none;
+  }
+
+  .hub__core {
+    display: grid;
+    justify-items: start;
+    gap: 0.375rem;
+    align-content: center;
+    padding: clamp(1rem, 2vw, 1.375rem);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-card);
+    background: var(--surface-2);
+  }
+
+  .hub__mark {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    color: var(--accent);
+    width: 34px;
+    height: 34px;
+    margin-bottom: 0.25rem;
+    border-radius: var(--r-control);
+    background: var(--accent);
+    color: var(--on-accent);
   }
-  .service__n {
+
+  .hub__name {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--text-2);
-  }
-  .service__head h2 {
-    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
-  }
-  .service__detail {
-    max-width: 60ch;
-  }
-  .service__label {
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--text-2);
-    margin-bottom: 0.75rem;
-  }
-  .service__list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1.25rem;
-    display: grid;
-    gap: 0.6rem;
-  }
-  .service__list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    font-size: 0.975rem;
+    font-size: 1.1875rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: var(--text-1);
   }
-  .service__list :global(svg) {
-    color: var(--accent);
-    flex-shrink: 0;
-    margin-top: 0.2rem;
+
+  .hub__role {
+    color: var(--text-3);
   }
-  .service__outcome {
+
+  .hub__list {
+    display: grid;
+    gap: var(--s-3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .node {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--s-4);
+    align-items: start;
+    padding: clamp(0.875rem, 1.8vw, 1.125rem);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    background: var(--surface-1);
+    scroll-margin-top: 7rem;
+    transition:
+      border-color var(--dur-2) var(--ease-out),
+      background var(--dur-2) var(--ease-out),
+      transform var(--dur-2) var(--ease-out);
+  }
+
+  .node:hover,
+  .node:focus-visible {
+    background: var(--surface-2);
+    transform: translateX(3px);
+  }
+
+  .node:active {
+    transform: translateX(1px) scale(0.995);
+  }
+
+  .node__icon {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--accent);
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--r-control);
+    background: var(--accent-bg);
+    color: var(--accent-hover);
+    flex: none;
   }
 
-  /* Process */
-  .svc-process .section-head {
-    margin-bottom: clamp(2rem, 4vw, 3rem);
-  }
-  .svc-process .section-head h2 {
-    margin-top: 0.5rem;
-  }
-  .process {
+  .node__body {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem 1.25rem;
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    gap: 0.4375rem;
   }
-  .process__step {
-    padding: 1.1rem 0;
-    border-top: 1px solid var(--border);
-  }
-  .process__n {
+
+  .node__title {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--accent);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.014em;
+    color: var(--text-1);
   }
-  .process__step h3 {
-    font-size: 1.15rem;
-    margin: 0.4rem 0;
-  }
-  .process__step p {
+
+  .node__line {
+    max-width: 50ch;
     color: var(--text-2);
-    max-width: 32ch;
-    font-size: 0.92rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
   }
 
-  .service-evidence {
-    display: grid;
-    gap: 1.5rem;
-    align-items: start;
+  .node__gets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-top: 0.125rem;
   }
 
-  /* CTA */
+  .node__removes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem var(--s-3);
+    margin-top: 0.1875rem;
+    font-size: 0.8125rem;
+    color: var(--text-1);
+  }
+
+  .node__removes .mono-label {
+    color: var(--text-3);
+  }
+
+  .node__n {
+    color: var(--text-3);
+  }
+
+  .node:hover .node__n,
+  .node:focus-visible .node__n {
+    color: var(--accent);
+  }
+
+  /* --- brain, with a dotted ring that turns ------------------------------ */
+
+  .mind__art {
+    --orbit-size: 118%;
+    position: relative;
+    margin: 0;
+    max-width: 420px;
+    isolation: isolate;
+  }
+
+  .mind__art img {
+    position: relative;
+    z-index: 0;
+  }
+
+  @keyframes streak {
+    from {
+      transform: translateX(-45%);
+    }
+    to {
+      transform: translateX(240%);
+    }
+  }
+
+  @keyframes wire-run {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .rig {
+      max-width: 430px;
+      justify-self: end;
+    }
+
+    /* Cascade to the right, fading back, so the stack reads as depth. */
+    .stage {
+      margin-left: calc(var(--i) * 26px);
+      opacity: calc(1 - var(--i) * 0.16);
+      transform: scale(calc(1 - var(--i) * 0.012));
+      transform-origin: left center;
+    }
+
+    .stack:hover .stage {
+      opacity: 0.42;
+    }
+
+    .stack:hover .stage--lit:not(:hover) {
+      border-color: var(--border);
+      background: var(--surface-1);
+      box-shadow: none;
+    }
+
+    .stack:hover .stage--lit:not(:hover) .stage__name {
+      color: var(--text-1);
+    }
+
+    .stack:hover .stage--lit:not(:hover) .stage__n,
+    .stack:hover .stage--lit:not(:hover) .stage__tag {
+      color: var(--text-3);
+    }
+
+    .stack .stage:hover {
+      opacity: 1;
+      border-color: var(--accent);
+      background: var(--accent);
+      box-shadow: 0 10px 26px -12px color-mix(in srgb, var(--accent) 55%, transparent);
+      transform: scale(calc(1 - var(--i) * 0.012)) translateX(-4px);
+    }
+
+    .stack .stage:hover .stage__name {
+      color: var(--on-accent);
+    }
+
+    .stack .stage:hover .stage__n,
+    .stack .stage:hover .stage__tag {
+      color: color-mix(in srgb, var(--on-accent) 70%, transparent);
+    }
+
+    .streaks {
+      display: block;
+      position: absolute;
+      inset: -14% -34% -14% 18%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 34%, #000 76%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 34%, #000 76%, transparent);
+    }
+
+    .streaks i {
+      position: absolute;
+      top: var(--y);
+      left: 0;
+      width: 42%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.5;
+      animation: streak var(--t, 3s) linear infinite;
+      animation-delay: var(--d, 0s);
+    }
+  }
+
+  @media (min-width: 640px) {
+    .routes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 3.5rem);
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .hub {
+      grid-template-columns: minmax(0, 0.46fr) minmax(0, 1fr);
+      column-gap: clamp(3.5rem, 8vw, 7rem);
+      align-items: center;
+    }
+  }
 
   @media (min-width: 760px) {
-    .service-evidence {
-      grid-template-columns: 1.3fr 1fr;
-    }
-    .process {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .process__step {
-      padding: 1.5rem 0;
+    .cmp__hint {
+      display: none;
     }
   }
+
+  @media (min-width: 900px) {
+    .lead__grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: clamp(2.5rem, 5vw, 4.5rem);
+    }
+
+    .mind {
+      grid-template-columns: minmax(0, 0.78fr) minmax(0, 1fr);
+      column-gap: clamp(2.5rem, 6vw, 5rem);
+    }
+
+    .mind__art {
+      max-width: 460px;
+      --orbit-size: 132%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .streaks i {
+      animation: none;
+      opacity: 0.28;
+    }
+
+    .stack .stage:hover {
+      transform: none;
+    }
+
+    :global(.wire--lit.is-lit) {
+      animation: none;
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+    }
+
+    .node:hover,
+    .node:focus-visible {
+      transform: none;
+    }
+  }
+
 </style>
