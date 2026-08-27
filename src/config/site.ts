@@ -9,10 +9,10 @@ export const site = {
     'Python Developer',
     'AI/ML Engineer',
   ],
-  title: 'Ali Zain · AI Engineer and Python Developer',
+  title: 'Ali Zain | AI & Python Developer',
   tagline: 'AI systems that do real work.',
   description:
-    'Ali Zain (methezain) is an AI engineer and Python developer building LLM apps, RAG systems, and agentic automation that cuts real workload. Available worldwide for freelance and contract projects.',
+    'Ali Zain is an AI engineer and Python developer building LLM apps, RAG systems, and agentic automation. Available worldwide for freelance and contract work.',
   url: 'https://alizain.dev',
   location: 'Islamabad, Pakistan',
   email: 'methealizain@gmail.com',
