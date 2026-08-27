@@ -19,6 +19,7 @@ export const site = {
   phone: '+923229587927',
   available: true,
   ogImage: '/og-default.png',
+  favicon: '/favicon-192.png',
   social: {
     instagram: 'https://www.instagram.com/methezain',
     github: 'https://github.com/methezain',

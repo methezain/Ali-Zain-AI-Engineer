@@ -1,0 +1,176 @@
+<div id="page-loader" class="pl" aria-hidden="true" transition:persist>
+  <div class="pl__inner">
+    <span class="pl__mark">Ali&nbsp;Zain<span class="pl__dot">.</span></span>
+    <div class="pl__bar"><span class="pl__fill"></span></div>
+  </div>
+</div>
+
+<style>
+  .pl {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: grid;
+    place-items: center;
+    background: var(--bg, #0a1614);
+    transition:
+      opacity var(--dur-2) var(--ease-out),
+      visibility var(--dur-2) var(--ease-out);
+  }
+
+  .pl.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--dur-3) var(--ease-out),
+      visibility var(--dur-3) var(--ease-out);
+  }
+
+  .pl__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-5);
+    transform: translateY(-4vh);
+  }
+
+  .pl__mark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 4vw, 1.875rem);
+    letter-spacing: -0.032em;
+    line-height: 1;
+    color: var(--text-1);
+    white-space: nowrap;
+  }
+
+  .pl__dot {
+    color: var(--accent);
+  }
+
+  .pl__bar {
+    position: relative;
+    width: 132px;
+    height: 3px;
+    overflow: hidden;
+    border-radius: var(--r-pill);
+    background: var(--surface-2, #16302b);
+  }
+
+  .pl__fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--accent, #3ed9b0);
+    transform: scaleX(0.04);
+    transform-origin: left center;
+    will-change: transform;
+    animation: pl-fill 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .pl.is-done .pl__fill {
+    animation: none;
+    transform: scaleX(1);
+    transition: transform var(--dur-1) var(--ease-out);
+  }
+
+  @keyframes pl-fill {
+    from {
+      transform: scaleX(0.04);
+    }
+    to {
+      transform: scaleX(0.94);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pl {
+      transition: none;
+    }
+    .pl__fill {
+      animation-name: pl-fill;
+      animation-duration: 2.6s;
+      animation-timing-function: linear;
+    }
+    .pl.is-done .pl__fill {
+      transition: none;
+    }
+  }
+</style>
+
+<noscript>
+  <style>
+    #page-loader {
+      display: none;
+    }
+  </style>
+</noscript>
+
+<script is:inline>
+  (function () {
+    if (window.__pageLoaderBound) return;
+    window.__pageLoaderBound = true;
+
+    var SHOW_DELAY = 300;
+    var MIN_VISIBLE = 420;
+    var showTimer;
+    var hideTimer;
+    var doneTimer;
+    var failsafeTimer;
+    var shownAt = Date.now();
+
+    function el() {
+      return document.getElementById('page-loader');
+    }
+
+    function show() {
+      var p = el();
+      if (!p) return;
+      clearTimeout(hideTimer);
+      clearTimeout(doneTimer);
+      shownAt = Date.now();
+      var fill = p.querySelector('.pl__fill');
+      p.classList.remove('is-done', 'is-hidden');
+      if (fill) {
+        fill.style.animation = 'none';
+        void fill.offsetWidth;
+        fill.style.animation = '';
+      }
+      failsafeTimer = setTimeout(finish, 10000);
+    }
+
+    function hide() {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+      clearTimeout(failsafeTimer);
+      var p = el();
+      if (!p || p.classList.contains('is-hidden')) return;
+      var wait = MIN_VISIBLE - (Date.now() - shownAt);
+      if (wait > 0) {
+        hideTimer = setTimeout(finish, wait);
+        return;
+      }
+      finish();
+    }
+
+    function finish() {
+      var p = el();
+      if (!p) return;
+      p.classList.add('is-done');
+      doneTimer = setTimeout(function () {
+        p.classList.add('is-hidden');
+      }, 140);
+    }
+
+    document.addEventListener('astro:page-load', hide);
+    window.addEventListener('load', hide);
+    window.addEventListener('pageshow', hide);
+    setTimeout(hide, 8000);
+
+    document.addEventListener('astro:before-preparation', function () {
+      clearTimeout(showTimer);
+      showTimer = setTimeout(show, SHOW_DELAY);
+    });
+  })();
+</script>
