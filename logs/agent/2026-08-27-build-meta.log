@@ -1,0 +1,68 @@
+
+> ali-zain-portfolio@0.1.0 build
+> astro build
+
+23:25:21 [types] Generated 2.79s
+23:25:21 [build] output: "static"
+23:25:21 [build] directory: D:\My Coding Projects\Exact Solutions\dist\
+23:25:21 [build] Collecting build info...
+23:25:21 [build] ✓ Completed in 5.70s.
+23:25:21 [build] Building static entrypoints...
+23:25:31 [vite] [32m✓ built in 9.87s[39m
+23:25:31 [build] ✓ Completed in 10.05s.
+
+ building client (vite) 
+23:25:31 [vite] transforming...
+23:25:32 [vite] [32m✓[39m 27 modules transformed.
+23:25:32 [vite] rendering chunks...
+23:25:32 [vite] computing gzip size...
+23:25:32 [vite] [2mdist/[22m[36m_astro/page.BNYwb576.js     [39m[1m[2m 0.04 kB[22m[1m[22m[2m │ gzip: 0.06 kB[22m
+23:25:32 [vite] [2mdist/[22m[36m_astro/hoisted.BjqbRL_-.js  [39m[1m[2m 0.86 kB[22m[1m[22m[2m │ gzip: 0.51 kB[22m
+23:25:32 [vite] [2mdist/[22m[36m_astro/index.Bel2lkwj.js    [39m[1m[2m 2.22 kB[22m[1m[22m[2m │ gzip: 1.00 kB[22m
+23:25:32 [vite] [2mdist/[22m[36m_astro/hoisted.lJuvdmsA.js  [39m[1m[2m 2.90 kB[22m[1m[22m[2m │ gzip: 1.42 kB[22m
+23:25:32 [vite] [2mdist/[22m[36m_astro/hoisted.DXdxjvm5.js  [39m[1m[2m 3.09 kB[22m[1m[22m[2m │ gzip: 1.54 kB[22m
+23:25:32 [vite] [2mdist/[22m[36m_astro/hoisted.GOE0iR82.js  [39m[1m[2m 6.16 kB[22m[1m[22m[2m │ gzip: 2.69 kB[22m
+23:25:32 [vite] [2mdist/[22m[36m_astro/hoisted.DCWdIZX4.js  [39m[1m[2m18.36 kB[22m[1m[22m[2m │ gzip: 6.23 kB[22m
+23:25:32 [vite] [32m✓ built in 733ms[39m
+
+ generating static routes 
+23:25:32 ▶ src/pages/404.astro
+23:25:32   └─ /404.html (+78ms)
+23:25:32 ▶ src/pages/about.astro
+23:25:32   └─ /about/index.html (+179ms)
+23:25:33 ▶ src/pages/blog/[...page].astro
+23:25:33   └─ /blog/index.html (+23ms)
+23:25:33 ▶ src/pages/blog/[slug].astro
+23:25:33   ├─ /blog/machine-learning-engineer-document-automation-roi/index.html (+39ms)
+23:25:33   ├─ /blog/ai-engineer-first-30-days/index.html (+27ms)
+23:25:33   ├─ /blog/grounding-rag-systems/index.html (+24ms)
+23:25:33   ├─ /blog/b2b-b2c-commerce-agents/index.html (+24ms)
+23:25:33   ├─ /blog/structured-extraction-vision-models/index.html (+26ms)
+23:25:33   ├─ /blog/payseye-extraction-engine/index.html (+26ms)
+23:25:33   ├─ /blog/shipping-ml-with-fastapi/index.html (+22ms)
+23:25:33   ├─ /blog/rag-fashion-assistant/index.html (+42ms)
+23:25:33   ├─ /blog/banking-document-pipeline/index.html (+33ms)
+23:25:33   ├─ /blog/smart-invoice-classifier/index.html (+19ms)
+23:25:33   ├─ /blog/legal-workflow-saas/index.html (+31ms)
+23:25:33   ├─ /blog/ai-seo-content-engine/index.html (+46ms)
+23:25:33   └─ /blog/fraud-detection-classifier/index.html (+67ms)
+23:25:33 ▶ src/pages/blog/category/[category]/[...page].astro
+23:25:33   ├─ /blog/category/document-intelligence/index.html (+28ms)
+23:25:33   ├─ /blog/category/agentic-ai/index.html (+66ms)
+23:25:33   ├─ /blog/category/retrieval-rag/index.html (+112ms)
+23:25:33   ├─ /blog/category/automation/index.html (+81ms)
+23:25:33   ├─ /blog/category/machine-learning/index.html (+760ms)
+23:25:34   └─ /blog/category/backend/index.html (+46ms)
+23:25:34 ▶ src/pages/contact.astro
+23:25:34   └─ /contact/index.html (+16ms)
+23:25:34 ▶ src/pages/index.astro
+23:25:34   └─ /index.html (+51ms)
+23:25:34 ▶ src/pages/services.astro
+23:25:34   └─ /services/index.html (+49ms)
+23:25:34 ▶ src/pages/work.astro
+23:25:34   └─ /work/index.html (+19ms)
+23:25:34 ✓ Completed in 2.44s.
+
+23:25:35 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
+23:25:35 [build] 26 page(s) built in 19.22s
+23:25:35 [build] Complete!
