@@ -9,7 +9,7 @@ image: '/work/rag-fashion.webp'
 imageAlt: 'Rack of garments hanging in a fashion boutique'
 work: true
 featured: true
-order: 3
+order: 5
 client: 'Fashion catalog search'
 metric: '44,000+ products indexed'
 metricContext: 'Catalog-size metric reflects indexed product records available to the retrieval layer at deployment.'

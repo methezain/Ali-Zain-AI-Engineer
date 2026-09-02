@@ -4,78 +4,227 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Eyebrow from '../components/Eyebrow.astro';
-import PostCard from '../components/PostCard.astro';
-import LiveBadge from '../components/LiveBadge.astro';
+import Button from '../components/Button.astro';
 import { Icon } from 'astro-icon/components';
+import { site } from '../config/site';
 
-// Work page shows only case studies (work: true). Articles never appear here.
 const workPosts = (await getCollection('blog', ({ data }) => data.work && !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const featured = workPosts.filter((p) => p.data.featured);
+const cases = workPosts.filter((p) => p.data.featured);
 const archive = workPosts.filter((p) => !p.data.featured);
+
+const summary: Record<string, string> = {
+  'b2b-b2c-commerce-agents':
+    'Two shopping agents on one catalog. Trade buyers ask in bulk, retail buyers ask in plain English, both get answers from live stock.',
+  'payseye-extraction-engine':
+    'UK timesheets arrive as spreadsheets, PDFs, and phone photos. One router sends text to an LLM and scans to a vision model.',
+  'ai-seo-content-engine':
+    'A LangGraph agent that researches a topic, drafts the article, and structures it for search, so writing starts from a real draft.',
+  'banking-document-pipeline':
+    'Statements and forms go in, validated records land in S3. Anything the validator does not trust is flagged instead of guessed.',
+  'rag-fashion-assistant':
+    'Retrieval over a 44,000 product catalog. Shoppers ask in their own words and get answers tied to stock that actually exists.',
+};
+
+const smallImage = (src: string) => src.replace(/\.webp$/, '-sm.webp');
+
+const RING_R = 27;
+const RING_C = 2 * Math.PI * RING_R;
+const rings = [
+  { value: 70, suffix: '%', label: 'manual review removed', note: 'legal and finance pipelines' },
+  { value: 89, suffix: '', label: 'mAP@50 detection', note: 'YOLOv8 safety model' },
+];
+
+const processing = [
+  { label: 'Manual', pct: 100, read: '100', lead: false },
+  { label: 'Automated', pct: 40, read: '40', lead: true },
+];
+
+const layers = [
+  {
+    n: '01',
+    name: 'Model layer',
+    note: 'Whatever the problem actually needs',
+    items: ['OpenAI', 'Anthropic', 'LangChain', 'LangGraph', 'YOLOv8', 'Weaviate', 'Scikit-learn'],
+  },
+  {
+    n: '02',
+    name: 'Service layer',
+    note: 'Python, typed, validated, testable',
+    items: ['Python', 'FastAPI', 'Pydantic', 'Background jobs', 'PostgreSQL', 'MongoDB'],
+  },
+  {
+    n: '03',
+    name: 'Runtime',
+    note: 'Where it runs after I hand it over',
+    items: ['Docker', 'AWS', 'S3', 'Fly.io', 'Health checks'],
+  },
+];
+
 ---
 
 <Layout
-  title="Case Studies in AI and Machine Learning"
-  description="Case studies by Ali Zain, a machine learning engineer shipping AI systems across e-commerce, payroll, banking, and legal workflows."
+  title="AI Engineering Work and Case Studies"
+  description="The AI engineering work of Ali Zain (methezain): RAG systems, document pipelines, agents, and trained models, each shipped behind a Python and FastAPI service."
 >
-  <!-- Hero -->
-  <section class="work-hero">
-    <div class="container-site">
-      <Eyebrow>Work</Eyebrow>
-      <h1 data-reveal>Systems shipped, not just notebooks.</h1>
-      <p class="work-hero__lede" data-reveal data-reveal-delay="80">
-        A selection of AI systems I have built as a machine learning engineer across e-commerce, payroll,
-        banking, and legal. Each one went into production and was measured against
-        the manual work it replaced.
-      </p>
-      <ul class="work-hero__meta" data-reveal data-reveal-delay="140">
-        <li><strong>{workPosts.length}</strong> shipped systems</li>
-        <li><strong>4</strong> industries</li>
-        <li><strong>70%</strong> peak workload cut</li>
-      </ul>
+  <section class="lead">
+    <div class="container-site lead__grid">
+      <div class="lead__body">
+        <Eyebrow>Work</Eyebrow>
+        <h1>Every build here went into production and stayed there.</h1>
+        <p class="lead__text">
+          I am Ali Zain, an AI engineer and Python developer. Retrieval systems, document pipelines,
+          and trained models, each one shipped behind a FastAPI service.
+        </p>
+        <div class="lead__actions">
+          <Button href={site.cv} download="Ali-Zain-AI-Engineer.pdf">
+            <Icon name="lucide:download" width={16} height={16} />
+            Download CV
+          </Button>
+          <a href="/contact" class="link-quiet">
+            Start a project
+            <Icon name="lucide:arrow-right" width={16} height={16} />
+          </a>
+        </div>
+      </div>
+
+      <figure class="rig">
+        <div class="rig__bar" aria-hidden="true">
+          <span class="rig__dots"><i></i><i></i><i></i></span>
+          <span class="rig__addr mono">results.json</span>
+        </div>
+
+        <div class="rig__screen">
+          <figcaption class="rig__cap">
+            <span class="mono-label">Measured after handover</span>
+            <span class="rig__cap-note mono-note">on the client's own data</span>
+          </figcaption>
+
+          <div class="rig__wide">
+            <p class="rig__wide-k mono-label">Document processing time</p>
+            <ul class="pb">
+              {
+                processing.map((b) => (
+                  <li class:list={['pb__row', { 'pb__row--lead': b.lead }]}>
+                    <span class="pb__k mono-label">{b.label}</span>
+                    <span class="pb__track">
+                      <span class="pb__fill" style={`--w: ${b.pct}%`} />
+                    </span>
+                    <span class="pb__v mono">{b.read}</span>
+                  </li>
+                ))
+              }
+            </ul>
+            <p class="rig__wide-note mono-note">60% faster once the pipeline took over</p>
+          </div>
+
+          <div class="rig__pair">
+            {
+              rings.map((r) => (
+                <div class="gauge">
+                  <div class="gauge__top">
+                  <svg class="gauge__svg" viewBox="0 0 64 64" role="presentation" aria-hidden="true">
+                    <circle
+                      class="gauge__track"
+                      cx="32"
+                      cy="32"
+                      r={RING_R}
+                      fill="none"
+                      stroke-width="5"
+                    />
+                    <circle
+                      class="gauge__arc"
+                      cx="32"
+                      cy="32"
+                      r={RING_R}
+                      fill="none"
+                      stroke-width="5"
+                      stroke-linecap="round"
+                      stroke-dasharray={`${(RING_C * r.value) / 100} ${RING_C}`}
+                      transform="rotate(-90 32 32)"
+                    />
+                  </svg>
+                  <p class="gauge__v">
+                    {r.value}
+                    {r.suffix && <span class="unit">{r.suffix}</span>}
+                  </p>
+                  </div>
+                  <p class="gauge__k">{r.label}</p>
+                  <p class="gauge__n mono-note">{r.note}</p>
+                </div>
+              ))
+            }
+          </div>
+
+          <p class="rig__foot mono-note">
+            {workPosts.length} systems · 4 industries · e-commerce, payroll, banking, legal
+          </p>
+        </div>
+      </figure>
     </div>
   </section>
 
-  <!-- Featured projects -->
-  <Section id="featured" class="section-featured">
-    <div class="features">
+  <Section id="builds">
+    <div class="head-bar">
+      <div class="head-bar__rail">
+        <Eyebrow index="01">Case files</Eyebrow>
+        <span class="mono-note">{cases.length} of {workPosts.length} written up in full</span>
+      </div>
+      <h2>The five worth reading in full.</h2>
+      <p class="head-bar__lede">
+        Each one ran on a client's own data. The numbers were measured after handover, against the
+        manual process the system replaced.
+      </p>
+    </div>
+
+    <div class="cases">
       {
-        featured.map((p, i) => {
+        cases.map((p, i) => {
           const href = `/blog/${p.slug}`;
           const n = String(i + 1).padStart(2, '0');
           return (
-            <article class="feature" data-reveal>
-              <a class="feature__media" href={href}>
-                <img
-                  src={p.data.image}
-                  alt={p.data.imageAlt}
-                  width="1200"
-                  height="800"
-                  loading="lazy"
-                  decoding="async"
-                />
+            <article class="case" id={p.slug} data-reveal>
+              <a class="case__media" href={href} tabindex="-1" aria-hidden="true">
+                <span class="case__frame">
+                  <img
+                    src={p.data.image}
+                    srcset={`${smallImage(p.data.image)} 640w, ${p.data.image} 1200w`}
+                    sizes="(min-width: 860px) 46vw, 92vw"
+                    alt=""
+                    width="1200"
+                    height="800"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
+                <span class="case__chip">
+                  <span class="case__chip-v">{p.data.metric}</span>
+                  <span class="case__chip-k mono-label">measured after handover</span>
+                </span>
               </a>
-              <div class="feature__body">
-                <div class="feature__top">
-                  <span class="feature__n">{n}</span>
-                  <span class="feature__cat">{p.data.category}</span>
-                  {p.data.liveUrl && <LiveBadge href={p.data.liveUrl} />}
-                  {p.data.liveLinks?.map((l) => <LiveBadge href={l.url} label={l.label} />)}
+
+              <div class="case__body">
+                <div class="case__meta">
+                  <span class="index-marker">{`//${n}`}</span>
+                  <span class="case__cat mono-label">{p.data.category}</span>
                 </div>
-                <h2><a href={href}>{p.data.title}</a></h2>
-                <p class="feature__client">{p.data.client}</p>
-                <p class="feature__desc">{p.data.description}</p>
-                <p class="feature__metric">
-                  <Icon name="lucide:trending-up" width={16} height={16} />
-                  <span>{p.data.metric}</span>
-                </p>
-                <ul class="tags">
-                  {p.data.tags.map((t) => <li>{t}</li>)}
+
+                <h3 class="case__title">
+                  <a href={href}>{p.data.cardTitle ?? p.data.title}</a>
+                </h3>
+
+                <p class="case__desc">{summary[p.slug] ?? p.data.excerpt}</p>
+
+                <ul class="tags case__tags">
+                  {p.data.tags.map((t) => (
+                    <li>{t}</li>
+                  ))}
                 </ul>
-                <a class="feature__link link-accent" href={href}>
-                  Read the case study <Icon name="lucide:arrow-right" width={16} height={16} />
+
+                <a class="case__link link-quiet" href={href}>
+                  Read the case study
+                  <Icon name="lucide:arrow-right" width={16} height={16} />
                 </a>
               </div>
             </article>
@@ -85,20 +234,70 @@ const archive = workPosts.filter((p) => !p.data.featured);
     </div>
   </Section>
 
-  <!-- More builds -->
-  <Section id="more" class="section-more">
-    <div class="section-head">
-      <div>
-        <Eyebrow>More builds</Eyebrow>
-        <h2 data-reveal>Also in the archive.</h2>
-      </div>
+  <Section id="backend" tone="deep">
+    <div class="be__head">
+      <Eyebrow index="02">The Python underneath</Eyebrow>
+      <p class="head-statement">
+        Every model here sits behind a Python service that somebody else has to run at 3am.
+      </p>
+      <p class="be__lede">
+        The AI layer gets the attention. The FastAPI layer is what decides whether the thing is still
+        running six months after I leave.
+      </p>
     </div>
-    <div class="grid-more">
-      {archive.map((entry) => <PostCard entry={entry} />)}
-    </div>
+
+    <ol class="be__stack">
+      {
+        layers.map((l) => (
+          <li class="be__layer" data-reveal>
+            <div class="be__label">
+              <span class="index-marker">{l.n}</span>
+              <span class="be__name">{l.name}</span>
+              <span class="be__note mono-note">{l.note}</span>
+            </div>
+            <ul class="tags be__items">
+              {l.items.map((t) => (
+                <li>{t}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
   </Section>
 
-  <!-- CTA -->
+  <Section id="archive" tone="band">
+    <div class="section-head">
+      <div class="section-head__top">
+        <div>
+          <Eyebrow index="03">Also shipped</Eyebrow>
+          <h2>{archive.length} more in the archive.</h2>
+        </div>
+        <a href="/blog" class="link-quiet">
+          All writing
+          <Icon name="lucide:arrow-right" width={16} height={16} />
+        </a>
+      </div>
+    </div>
+
+    <ul class="arch">
+      {
+        archive.map((p) => (
+          <li class="arch__row">
+            <a class="arch__link" href={`/blog/${p.slug}`}>
+              <span class="arch__title">{p.data.cardTitle ?? p.data.title}</span>
+              <span class="arch__cat mono-label">{p.data.category}</span>
+              <span class="arch__metric">{p.data.metric}</span>
+              <span class="arch__go" aria-hidden="true">
+                <Icon name="lucide:arrow-up-right" width={16} height={16} />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
   <Section id="work-cta">
     <CtaBand
       title="Have something like this to build?"
@@ -109,198 +308,518 @@ const archive = workPosts.filter((p) => !p.data.featured);
 </Layout>
 
 <style>
+  /* ---- hero ---- */
+  .lead {
+    padding-top: clamp(2.75rem, 6vw, 4.75rem);
+    padding-bottom: clamp(0.5rem, 1.5vw, 1.25rem);
+  }
 
-  /* Hero */
-  .work-hero {
-    padding-top: clamp(2.5rem, 6vw, 4.5rem);
-    padding-bottom: clamp(1rem, 3vw, 2rem);
+  .lead__grid {
+    display: grid;
+    gap: clamp(2.25rem, 5vw, 3.5rem);
+    align-items: center;
   }
-  .work-hero h1 {
-    margin-top: 0.75rem;
-    max-width: 16ch;
+
+  .lead__body h1 {
+    margin-top: 0.875rem;
+    max-width: 17ch;
   }
-  .work-hero__lede {
-    margin-top: 1.5rem;
-    max-width: 58ch;
+
+  .lead__text {
+    margin-top: 1.25rem;
+    max-width: 50ch;
     color: var(--text-2);
-    font-size: 1.15rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
   }
-  .work-hero__meta {
+
+  .lead__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 1.75rem;
+  }
+
+  /* ---- hero stats card ---- */
+  .rig {
+    margin: 0;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    box-shadow: inset 0 1px 0 var(--edge-top), var(--shadow-card);
+    overflow: hidden;
+  }
+
+  .rig__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.875rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rig__dots {
+    display: inline-flex;
+    gap: 0.3125rem;
+  }
+
+  .rig__dots i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+
+  .rig__dots i:first-child {
+    background: var(--accent);
+  }
+
+  .rig__addr {
+    font-size: 0.65rem;
+    color: var(--text-3);
+  }
+
+  .rig__screen {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.875rem;
+  }
+
+  .rig__cap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-bottom: 0.625rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rig__cap-note {
+    color: var(--text-3);
+  }
+
+  .rig__wide,
+  .gauge {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-control);
+    padding: 0.75rem 0.875rem;
+  }
+
+  .rig__wide-k {
+    color: var(--text-2);
+  }
+
+  .rig__wide-note {
+    margin-top: 0.5rem;
+    color: var(--text-3);
+  }
+
+  .pb {
     list-style: none;
     padding: 0;
-    margin: 2.25rem 0 0;
-  }
-  .work-hero__meta li {
-    font-size: 0.95rem;
-    color: var(--text-2);
-  }
-  .work-hero__meta strong {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    line-height: 1;
-    color: var(--text-1);
-    letter-spacing: -0.02em;
-  }
-  .work-hero__meta li:first-child strong {
-    color: var(--accent);
+    margin: 0.625rem 0 0;
+    display: grid;
+    gap: 0.375rem;
   }
 
-  /* Featured */
-  .features {
+  .pb__row {
     display: grid;
-    gap: clamp(3rem, 7vw, 6rem);
-  }
-  .feature {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(1.5rem, 4vw, 3rem);
+    grid-template-columns: 4.75rem minmax(0, 1fr) 2rem;
     align-items: center;
+    gap: 0.625rem;
   }
-  .feature__media {
+
+  .pb__k {
+    color: var(--text-3);
+  }
+
+  .pb__track {
+    height: 8px;
+    border-radius: var(--r-pill);
+    background: var(--surface-3);
+    overflow: hidden;
+  }
+
+  .pb__fill {
+    display: block;
+    height: 100%;
+    width: var(--w, 0%);
+    border-radius: var(--r-pill);
+    background: var(--text-3);
+  }
+
+  .pb__row--lead .pb__fill {
+    background: var(--accent);
+  }
+
+  .pb__v {
+    font-size: 0.68rem;
+    color: var(--text-2);
+    text-align: right;
+  }
+
+  .pb__row--lead .pb__v {
+    color: var(--text-1);
+  }
+
+  .rig__pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.625rem;
+  }
+
+  .gauge {
+    display: grid;
+    justify-items: start;
+    gap: 0.125rem;
+  }
+
+  .gauge__top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .gauge__svg {
+    width: 44px;
+    height: 44px;
+    flex: none;
+  }
+
+  .gauge__track {
+    stroke: var(--surface-3);
+  }
+
+  .gauge__arc {
+    stroke: var(--accent);
+  }
+
+  .gauge__v {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--metric);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gauge__k {
+    font-size: 0.75rem;
+    line-height: 1.3;
+    color: var(--text-2);
+  }
+
+  .gauge__n {
+    color: var(--text-3);
+    line-height: 1.35;
+  }
+
+  .rig__foot {
+    padding-top: 0.625rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-3);
+  }
+
+
+  /* ---- case files ---- */
+  .cases {
+    display: grid;
+    gap: 0;
+  }
+
+  .case {
+    display: grid;
+    gap: clamp(1.75rem, 3.5vw, 2.75rem);
+    align-items: center;
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    border-top: 1px solid var(--border);
+  }
+
+  .case:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .case__media {
+    position: relative;
+    display: block;
+    padding-bottom: 1.25rem;
+  }
+
+  .case__frame {
     display: block;
     overflow: hidden;
-    border-radius: 16px;
     border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    background: var(--surface-2);
     box-shadow: var(--shadow-card);
-    aspect-ratio: 3 / 2;
-  }
-  .feature__media img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .feature:hover .feature__media img {
-    transform: scale(1.04);
-  }
-  .feature__top {
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
-    margin-bottom: 0.875rem;
-    flex-wrap: wrap;
-  }
-  .feature__n {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--accent);
-    letter-spacing: 0.02em;
-  }
-  .feature__cat {
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--text-2);
-    padding: 0.3rem 0.7rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-  }
-  .feature__body h2 {
-    font-size: clamp(1.6rem, 3vw, 2.25rem);
-  }
-  .feature__body h2 a {
-    transition: color 0.15s ease;
-  }
-  .feature__body h2 a:hover {
-    color: var(--accent);
-  }
-  .feature__client {
-    margin-top: 0.4rem;
-    font-size: 0.95rem;
-    color: var(--text-2);
-  }
-  .feature__desc {
-    margin-top: 1rem;
-    max-width: 52ch;
-    color: var(--text-1);
-  }
-  .feature__metric {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--accent);
-  }
-  .feature__body .tags {
-    margin-top: 1.25rem;
-  }
-  .feature__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: 1.5rem;
-    font-weight: 500;
-    font-size: 0.95rem;
   }
 
-  /* Shared tag chips */
-  .tags {
+  .case__frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    transition: transform var(--dur-3) var(--ease-out);
+  }
+
+  .case:hover .case__frame img {
+    transform: scale(1.035);
+  }
+
+  .case__chip {
+    position: absolute;
+    left: clamp(0.875rem, 2.5vw, 1.5rem);
+    bottom: 0;
+    display: grid;
+    gap: 0.1875rem;
+    padding: 0.625rem 0.875rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-control);
+    box-shadow: var(--shadow-card);
+    max-width: calc(100% - clamp(1.75rem, 5vw, 3rem));
+  }
+
+  .case__chip-v {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.9375rem;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    color: var(--metric);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .case__chip-k {
+    font-size: 0.6rem;
+  }
+
+  .case__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .case__cat {
+    color: var(--text-2);
+  }
+
+  .case__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 2.6vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    max-width: 20ch;
+  }
+
+  .case__title a {
+    transition: color var(--dur-1) var(--ease-out);
+  }
+
+  .case__title a:hover {
+    color: var(--accent);
+  }
+
+  .case__desc {
+    margin-top: 1rem;
+    max-width: 44ch;
+    color: var(--text-2);
+    font-size: 0.9375rem;
+    line-height: 1.62;
+  }
+
+  .case__tags {
+    margin-top: 1.125rem;
+  }
+
+  .case__link {
+    margin-top: 1.375rem;
+  }
+
+
+  /* ---- backend layers ---- */
+  .be__head {
+    max-width: 46ch;
+    margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
+  }
+
+  .be__head .head-statement {
+    margin-top: 0.875rem;
+  }
+
+  .be__lede {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--text-2);
+    font-size: 0.9375rem;
+    line-height: 1.62;
+  }
+
+  .be__stack {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-  .tags li {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    padding: 0.25rem 0.625rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    color: var(--text-2);
-  }
-
-  /* Section head (More builds) */
-  .section-head {
-    margin-bottom: clamp(2rem, 4vw, 3rem);
-  }
-  .section-head h2 {
-    margin-top: 0.5rem;
-  }
-
-  /* More builds grid */
-  .grid-more {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 0.75rem;
   }
 
-  /* CTA */
-  :global(.work-cta) {
-    position: relative;
-    overflow: hidden;
+  .be__layer {
+    display: grid;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.125rem 1.25rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    transition:
+      border-color var(--dur-2) var(--ease-out),
+      background var(--dur-2) var(--ease-out),
+      transform var(--dur-2) var(--ease-out);
   }
 
-  /* Responsive */
+  .be__layer:hover {
+    background: var(--surface-2);
+    transform: translateX(3px);
+  }
+
+  .be__label {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .be__name {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--text-1);
+  }
+
+  .be__items {
+    justify-content: flex-start;
+  }
+
+  /* ---- archive ---- */
+  .arch {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border-strong);
+  }
+
+  .arch__row {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .arch__link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 1.125rem 0.5rem 1.125rem 0;
+    transition:
+      background-color var(--dur-2) var(--ease-out),
+      padding-left var(--dur-2) var(--ease-out);
+  }
+
+  .arch__link:hover {
+    background: var(--surface-1);
+    padding-left: 0.75rem;
+  }
+
+  .arch__title {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--text-1);
+  }
+
+  .arch__cat {
+    grid-column: 1;
+    color: var(--text-3);
+  }
+
+  .arch__metric {
+    grid-column: 1;
+    font-size: 0.8125rem;
+    color: var(--metric);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .arch__go {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    display: inline-flex;
+    color: var(--accent);
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+
+  .arch__link:hover .arch__go {
+    transform: translate(2px, -2px);
+  }
+
   @media (min-width: 720px) {
-    .grid-more {
-      grid-template-columns: repeat(2, 1fr);
+    .arch__link {
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.8fr) minmax(0, 1.2fr) 1.25rem;
+    }
+
+    .arch__cat,
+    .arch__metric {
+      grid-column: auto;
+    }
+
+    .arch__go {
+      grid-column: auto;
+      grid-row: auto;
+      justify-self: end;
+    }
+
+    .arch__metric {
+      text-align: right;
     }
   }
 
-  @media (min-width: 960px) {
-    .feature {
-      grid-template-columns: 1.1fr 1fr;
+  @media (min-width: 860px) {
+    .lead__grid {
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+      column-gap: clamp(2.5rem, 5vw, 4rem);
     }
-    .feature:nth-child(even) .feature__media {
+
+    .rig__screen {
+      gap: 0.875rem;
+      padding: 1.125rem;
+    }
+
+    .gauge__svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .case {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: clamp(2.25rem, 5vw, 4rem);
+    }
+
+    .case:nth-child(odd) .case__media {
       order: 2;
     }
-    .grid-more {
-      grid-template-columns: repeat(3, 1fr);
+
+    .be__layer {
+      grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+      column-gap: clamp(1.5rem, 3vw, 2.5rem);
+      padding: 1.25rem 1.5rem;
     }
   }
 </style>

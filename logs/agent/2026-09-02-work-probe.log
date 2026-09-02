@@ -1,0 +1,60 @@
+### 1440
+PROBE::vw=1422
+   scrollLeft=0 scrollW=1422/1422
+   scale h1=60 bar=53.6 h2=44.8 stmt=37.6 case=32
+   overflow=none
+   liveBadges=0 subLines=0
+   cases=5 imgs=5 chips=5
+   brokenImgs=none
+   gauges=118.75220230569417 169.64600329384882 stroke=rgb(62, 217, 176) // 150.98494293152547 169.64600329384882 stroke=rgb(62, 217, 176)
+   rig[L753 W498 H407] leadBody[H457]
+### 1200
+PROBE::vw=1182
+   scrollLeft=0 scrollW=1182/1182
+   scale h1=59.1 bar=52.008 h2=40.188 stmt=37.6 case=30.732
+   overflow=none
+   liveBadges=0 subLines=0
+   cases=5 imgs=5 chips=5
+   brokenImgs=none
+   gauges=118.75220230569417 169.64600329384882 stroke=rgb(62, 217, 176) // 150.98494293152547 169.64600329384882 stroke=rgb(62, 217, 176)
+   rig[L631 W500 H407] leadBody[H454]
+### 1000
+PROBE::vw=982
+   scrollLeft=0 scrollW=982/982
+   scale h1=49.1 bar=43.208 h2=33.388 stmt=31.424 case=25.532
+   overflow=none
+   liveBadges=0 subLines=0
+   cases=5 imgs=5 chips=5
+   brokenImgs=none
+   gauges=118.75220230569417 169.64600329384882 stroke=rgb(62, 217, 176) // 150.98494293152547 169.64600329384882 stroke=rgb(62, 217, 176)
+   rig[L524 W418 H439] leadBody[H414]
+### 860
+PROBE::vw=842
+   scrollLeft=0 scrollW=842/842
+   scale h1=42.1 bar=37.048 h2=29.6 stmt=26.944 case=23.2
+   overflow=none
+   liveBadges=0 subLines=0
+   cases=5 imgs=5 chips=5
+   brokenImgs=none
+   gauges=118.75220230569417 169.64600329384882 stroke=rgb(62, 217, 176) // 150.98494293152547 169.64600329384882 stroke=rgb(62, 217, 176)
+   rig[L40 W762 H389] leadBody[H343]
+### 720
+PROBE::vw=702
+   scrollLeft=0 scrollW=702/702
+   scale h1=37.6 bar=33.6 h2=29.6 stmt=25.6 case=23.2
+   overflow=none
+   liveBadges=0 subLines=0
+   cases=5 imgs=5 chips=5
+   brokenImgs=none
+   gauges=118.75220230569417 169.64600329384882 stroke=rgb(62, 217, 176) // 150.98494293152547 169.64600329384882 stroke=rgb(62, 217, 176)
+   rig[L35 W632 H389] leadBody[H330]
+### 560
+PROBE::vw=542
+   scrollLeft=0 scrollW=542/542
+   scale h1=37.6 bar=33.6 h2=29.6 stmt=25.6 case=23.2
+   overflow=none
+   liveBadges=0 subLines=0
+   cases=5 imgs=5 chips=5
+   brokenImgs=none
+   gauges=118.75220230569417 169.64600329384882 stroke=rgb(62, 217, 176) // 150.98494293152547 169.64600329384882 stroke=rgb(62, 217, 176)
+   rig[L27 W488 H389] leadBody[H330]

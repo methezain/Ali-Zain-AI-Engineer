@@ -8,8 +8,8 @@ pubDate: 2025-12-15
 image: '/work/seo-content.webp'
 imageAlt: 'Laptop, coffee, and a notepad with a pen on a wooden desk'
 work: true
-featured: false
-order: 7
+featured: true
+order: 3
 client: 'Content automation'
 metric: '−80% manual writing effort'
 metricContext: 'Reduction estimate compares manual drafting effort before and after introducing the automated workflow in repeated runs.'

@@ -9,7 +9,7 @@ image: '/work/legal-saas.webp'
 imageAlt: 'Bronze statue of Lady Justice holding balanced scales'
 work: true
 featured: false
-order: 6
+order: 7
 client: 'Final-year project'
 metric: '−60% case processing time'
 metricContext: 'Time reduction was observed during workflow testing of document-heavy legal intake and processing.'

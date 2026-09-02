@@ -8,8 +8,8 @@ pubDate: 2026-02-11
 image: '/work/invoice-classifier.webp'
 imageAlt: 'Invoices and tax documents spread across a desk beside a calculator'
 work: true
-featured: true
-order: 5
+featured: false
+order: 6
 client: 'Mixed-vendor invoice routing'
 metric: '98% accuracy · 300k invoices'
 metricContext: 'Accuracy and volume are based on model evaluation over a multi-vendor invoice dataset of roughly 300k records.'
