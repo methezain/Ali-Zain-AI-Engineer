@@ -20,6 +20,7 @@ export const site = {
   available: true,
   ogImage: '/og-default.png',
   favicon: '/favicon-192.png',
+  cv: '/Ali-Zain-AI-Engineer.pdf',
   social: {
     instagram: 'https://www.instagram.com/methezain',
     github: 'https://github.com/methezain',

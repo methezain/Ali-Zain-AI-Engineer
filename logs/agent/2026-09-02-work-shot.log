@@ -1,0 +1,60 @@
+[4932:8:0902/210132.995:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[4932:8:0902/210132.997:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[4932:8:0902/210132.997:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+737067 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\work-dark.png
+[4932:16456:0902/210135.038:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://drive.google.com/drive/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+727439 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\work-dark.png
+[14584:17804:0902/210412.987:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://docs.google.com/document/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+[7704:17420:0902/210430.883:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[7704:17420:0902/210430.919:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[7704:17420:0902/210430.921:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[7704:17420:0902/210431.308:ERROR:google_apis\gcm\engine\mcs_client.cc:702]   Error code: 401  Error message: Authentication Failed: wrong_secret
+[7704:17420:0902/210431.308:ERROR:google_apis\gcm\engine\mcs_client.cc:704] Failed to log in to GCM, resetting connection.
+726799 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\work-light.png
+[7704:13724:0902/210433.181:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://docs.google.com/spreadsheets/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+727472 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\work-light.png
+[9148:1264:0902/210703.750:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://docs.google.com/spreadsheets/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+[2744:12496:0902/210946.365:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[2744:12496:0902/210946.365:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[2744:12496:0902/210946.380:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[2744:12496:0902/210947.334:ERROR:google_apis\gcm\engine\mcs_client.cc:702]   Error code: 401  Error message: Authentication Failed: wrong_secret
+[2744:12496:0902/210947.334:ERROR:google_apis\gcm\engine\mcs_client.cc:704] Failed to log in to GCM, resetting connection.
+727882 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\work-dark.png
+[18976:12772:0902/210953.219:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[18976:12772:0902/210953.221:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[18976:12772:0902/210953.234:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+578957 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\work-narrow.png
+[18976:12772:0902/210953.871:ERROR:google_apis\gcm\engine\mcs_client.cc:702]   Error code: 401  Error message: Authentication Failed: wrong_secret
+[18976:12772:0902/210953.871:ERROR:google_apis\gcm\engine\mcs_client.cc:704] Failed to log in to GCM, resetting connection.
+[18976:3844:0902/210953.994:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://docs.google.com/spreadsheets/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+729116 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\work-light.png
+[12496:6340:0902/211235.448:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://docs.google.com/document/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+[16372:9416:0902/212946.129:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+1686916 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\v2-dark.png
+[18632:5168:0902/213259.893:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[18632:5168:0902/213259.899:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[18632:5168:0902/213259.899:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+1694066 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\v2-light.png
+[18632:12724:0902/213301.763:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://chat.google.com/download?usp=chrome_default from install source 1 failed to install with reason 21
+1405144 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\v2-narrow.png
+[17460:7640:0902/213307.404:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://docs.google.com/spreadsheets/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+1679495 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\v3-dark.png
+[1252:14164:0902/214714.546:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[1252:14164:0902/214714.546:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[1252:14164:0902/214714.546:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[1252:15380:0902/214714.593:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://docs.google.com/presentation/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+125349 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\v4-dark.png
+[16420:20124:0902/214848.384:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://drive.google.com/drive/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+[19132:13524:0902/214931.122:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[19132:13524:0902/214931.122:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[19132:13524:0902/214931.124:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+1667609 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\v4-dark.png
+[19132:2572:0902/214932.962:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://docs.google.com/presentation/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21
+[14080:14524:0902/215145.574:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[14080:14524:0902/215145.574:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+1687978 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\v4-light.png
+[8428:2668:0902/215151.246:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[8428:2668:0902/215151.246:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[8428:2668:0902/215151.246:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+467159 bytes written to file C:\Users\pcinf\AppData\Local\Temp\claude\d--My-Coding-Projects-Exact-Solutions\48d6ac0c-e14b-4235-8456-b427fbedc7fe\scratchpad\v4-narrow.png
+[8428:12296:0902/215151.501:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://www.youtube.com/s/notifications/manifest/cr_install.html from install source 1 failed to install with reason 21
