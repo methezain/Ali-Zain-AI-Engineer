@@ -31,8 +31,6 @@ const dateLabel = data.pubDate.toLocaleDateString('en-US', {
 const backHref = data.work ? '/work' : '/blog';
 const backLabel = data.work ? 'Back to AI case studies' : 'Back to AI engineering blog';
 const evidenceContext = data.client ?? `${data.category} article`;
-const evidenceOutcome = data.metric ?? 'Practical implementation guidance';
-const evidenceStack = data.tags.length > 0 ? data.tags.join(' · ') : 'Not specified';
 
 const liveCitations = [
   ...(data.liveUrl ? [{ label: 'Live project', url: data.liveUrl }] : []),
@@ -105,10 +103,6 @@ const breadcrumbLd = {
       </a>
 
       <div class="post__head">
-        <div class="post__meta">
-          <span class="post__cat">{data.category}</span>
-          <span class="post__date">{dateLabel}</span>
-        </div>
         <h1 data-reveal>{data.title}</h1>
         <p class="post__standfirst" data-reveal data-reveal-delay="60">
           {data.description}
@@ -126,84 +120,63 @@ const breadcrumbLd = {
         />
       </div>
 
-      {
-        data.work && (
-          <dl class="post__facts">
-            {data.client && (
-              <div>
-                <dt>Context</dt>
-                <dd>{data.client}</dd>
-              </div>
-            )}
-            {data.metric && (
-              <div>
-                <dt>Outcome</dt>
-                <dd class="post__facts-metric">{data.metric}</dd>
-              </div>
-            )}
-            {data.tags.length > 0 && (
-              <div>
-                <dt>Stack</dt>
-                <dd>{data.tags.join(' · ')}</dd>
-              </div>
-            )}
-            {data.liveUrl && (
-              <div class="post__facts-live">
-                <dt>Live</dt>
-                <dd>
-                  <LiveBadge href={data.liveUrl} label="View live project" />
-                </dd>
-              </div>
-            )}
-            {data.liveLinks && data.liveLinks.length > 0 && (
-              <div class="post__facts-live">
-                <dt>Live</dt>
-                <dd class="post__facts-live-badges">
-                  {data.liveLinks.map((l) => (
-                    <LiveBadge href={l.url} label={l.label} />
-                  ))}
-                </dd>
-              </div>
-            )}
-          </dl>
-        )
-      }
 
-      <section class="post__evidence" aria-label="Evidence snapshot">
-        <h2>Evidence snapshot</h2>
+
+      <section class="post__evidence" aria-label="Post details">
+        <!-- Top row: Category · Date · Client -->
         <dl class="post__evidence-grid">
           <div>
-            <dt>Context</dt>
-            <dd>{evidenceContext}</dd>
+            <dt>Category</dt>
+            <dd class="post__evidence-cat">{data.category}</dd>
           </div>
           <div>
-            <dt>Outcome</dt>
-            <dd class:list={['post__evidence-outcome', { 'is-default': !data.metric }]}>{evidenceOutcome}</dd>
+            <dt>Published</dt>
+            <dd>{dateLabel}</dd>
           </div>
-          <div>
-            <dt>Stack</dt>
-            <dd>{evidenceStack}</dd>
-          </div>
-        </dl>
-        {
-          data.metricContext && <p class="post__evidence-note">{data.metricContext}</p>
-        }
-        {
-          citations.length > 0 && (
-            <div class="post__citations">
-              <h3>Citations</h3>
-              <ol>
-                {citations.map((citation) => (
-                  <li>
-                    <a href={citation.url} target="_blank" rel="noopener noreferrer">
-                      {citation.label}
-                    </a>
-                  </li>
-                ))}
-              </ol>
+          {data.client && (
+            <div>
+              <dt>Client</dt>
+              <dd>{evidenceContext}</dd>
             </div>
-          )
-        }
+          )}
+        </dl>
+
+        <!-- Bottom row: Tags + Visit buttons (only if either exists) -->
+        {(data.tags.length > 0 || data.liveUrl || (data.liveLinks && data.liveLinks.length > 0)) && (
+          <div class="post__evidence-foot">
+            {data.tags.length > 0 && (
+              <ul class="post__evidence-tags" aria-label="Tags">
+                {data.tags.map((t) => <li>{t}</li>)}
+              </ul>
+            )}
+            {(data.liveUrl || (data.liveLinks && data.liveLinks.length > 0)) && (
+              <div class="post__evidence-live-actions">
+                {data.liveUrl && !data.liveLinks?.length && (
+                  <a
+                    href={data.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="post__visit-btn"
+                  >
+                    <Icon name="lucide:external-link" width={14} height={14} aria-hidden="true" />
+                    Visit project
+                  </a>
+                )}
+                {data.liveLinks && data.liveLinks.length > 0 && data.liveLinks.map((l) => (
+                  <a
+                    href={l.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="post__visit-btn"
+                  >
+                    <Icon name="lucide:external-link" width={14} height={14} aria-hidden="true" />
+                    {l.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       <div class="post__body prose">
@@ -211,9 +184,6 @@ const breadcrumbLd = {
       </div>
 
       <div class="post__foot">
-        <ul class="tags">
-          {data.tags.map((t) => <li>{t}</li>)}
-        </ul>
         {
           next ? (
             <a href={`/blog/${next.slug}`} class="post__next">
@@ -260,25 +230,6 @@ const breadcrumbLd = {
     margin: clamp(1.5rem, 4vw, 2.5rem) auto 0;
     text-align: center;
   }
-  .post__meta {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-  }
-  .post__cat {
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--accent);
-  }
-  .post__date {
-    font-size: 0.85rem;
-    color: var(--text-2);
-  }
   .post__head h1 {
     font-size: clamp(2rem, 4.5vw, 3.25rem);
     line-height: 1.15;
@@ -303,124 +254,106 @@ const breadcrumbLd = {
     object-fit: cover;
   }
 
-  /* Project facts (case studies only) */
-  .post__facts {
-    display: grid;
-    gap: 1.25rem;
-    max-width: 55rem;
-    margin: clamp(2rem, 4vw, 3rem) auto 0;
-    padding: 1.5rem;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface-1);
-  }
-  .post__facts dt {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--text-2);
-    margin-bottom: 0.3rem;
-  }
-  .post__facts dd {
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 1.05rem;
-    color: var(--text-1);
-  }
-  .post__facts-metric {
-    color: var(--accent) !important;
-  }
-  .post__facts-live dd {
-    margin-top: 0.15rem;
-  }
-  .post__facts-live-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-  @media (min-width: 640px) {
-    .post__facts {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-    }
-    .post__facts-live {
-      grid-column: 1 / -1;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-    }
-  }
-
+  /* Post details box */
   .post__evidence {
     max-width: 55rem;
-    margin: clamp(1.5rem, 3vw, 2.25rem) auto 0;
+    margin: clamp(2rem, 4vw, 3rem) auto 0;
     padding: 1.25rem 1.5rem;
     border: 1px solid var(--border);
     border-radius: 12px;
     background: var(--surface-1);
+    box-shadow: var(--shadow-card);
   }
-  .post__evidence h2 {
-    font-size: 1.15rem;
-    margin-bottom: 0.8rem;
-  }
+
+  /* Top row — Category · Published · Client */
   .post__evidence-grid {
     margin: 0;
     display: grid;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 1.5rem;
   }
   .post__evidence-grid dt {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: var(--text-2);
-    margin-bottom: 0.3rem;
+    color: var(--text-3);
+    margin-bottom: 0.25rem;
   }
   .post__evidence-grid dd {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 1.02rem;
+    font-size: 0.975rem;
     color: var(--text-1);
+    line-height: 1.3;
   }
-  .post__evidence-outcome {
+  .post__evidence-cat {
     color: var(--accent);
   }
-  .post__evidence-outcome.is-default {
-    color: var(--text-1);
-  }
-  .post__evidence-note {
-    margin-top: 0.9rem;
-    color: var(--text-2);
-    font-size: 0.95rem;
-    line-height: 1.65;
-  }
-  .post__citations {
+
+  /* Bottom row — Tags + Visit buttons */
+  .post__evidence-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
     margin-top: 1rem;
-    padding-top: 0.95rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--border);
   }
-  .post__citations h3 {
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--text-2);
-    margin-bottom: 0.5rem;
-  }
-  .post__citations ol {
+  .post__evidence-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
     margin: 0;
-    padding-left: 1.2rem;
-    display: grid;
-    gap: 0.45rem;
   }
-  .post__citations a {
+  .post__evidence-tags li {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-2);
+    background: var(--surface-2);
+  }
+  .post__evidence-live-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .post__visit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 500;
     color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    background: var(--accent-bg);
+    border: 1px solid transparent;
+    border-radius: var(--r-control, 8px);
+    text-decoration: none;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      transform 0.1s var(--spring-ui, ease);
+  }
+  .post__visit-btn:hover {
+    background: color-mix(in srgb, var(--accent-bg) 70%, var(--surface-2));
+    border-color: var(--border-strong);
+  }
+  .post__visit-btn:active {
+    transform: scale(0.97);
   }
   @media (min-width: 640px) {
     .post__evidence-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
+      gap: 1rem 2rem;
     }
   }
 
@@ -481,7 +414,7 @@ const breadcrumbLd = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 1rem;
   }
   .post__foot-link {
@@ -518,23 +451,7 @@ const breadcrumbLd = {
   .post__next:hover .post__next-title {
     color: var(--accent);
   }
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .tags li {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    padding: 0.25rem 0.625rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    color: var(--text-2);
-  }
+
 
   /* CTA */
   .post-cta {
