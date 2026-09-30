@@ -1,17 +1,5 @@
-# Exact Solutions Website
+# alizain.dev
 
-This repository hosts the alizain.dev website and SEO execution assets.
+Personal portfolio website of Ali Zain. Built with Astro.
 
-Start all SEO operations from:
-
-- [SEO Operations Master Guide](seo/README.md)
-
-Supporting project plan:
-
-- [SEO Growth Plan](plan.md)
-
-Common commands:
-
-- npm run dev
-- npm run build
-- npm run validate:seo
+**Live:** [alizain.dev](https://alizain.dev)

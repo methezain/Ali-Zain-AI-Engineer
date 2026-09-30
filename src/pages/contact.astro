@@ -5,6 +5,30 @@ import { Icon } from 'astro-icon/components';
 import { site } from '../config/site';
 
 const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
+
+const contactMethods = [
+  {
+    icon: 'lucide:mail',
+    label: 'Email',
+    value: site.email,
+    href: `mailto:${site.email}`,
+    copyable: true,
+    id: 'copy-email',
+  },
+  {
+    icon: 'lucide:phone',
+    label: 'Phone',
+    value: site.phone,
+    href: telHref,
+    copyable: false,
+  },
+];
+
+const socialLinks = [
+  { label: 'GitHub', href: site.social.github, icon: 'lucide:github' },
+  { label: 'LinkedIn', href: site.social.linkedin, icon: 'lucide:linkedin' },
+  { label: 'Instagram', href: site.social.instagram, icon: 'lucide:instagram' },
+];
 ---
 
 <Layout
@@ -13,79 +37,159 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
 >
   <section class="contact">
     <div class="container-site">
-      <div class="contact__head">
-        <Eyebrow>Contact</Eyebrow>
-        <h1 data-reveal>Let’s build something.</h1>
-        <p class="contact__lede" data-reveal data-reveal-delay="80">
-          Tell me what’s slow, manual, or hard to scale in your business. I read
-          every message and usually reply within a day.
+
+      <!-- Page header -->
+      <header class="contact__header" data-reveal>
+        <Eyebrow>Get in touch</Eyebrow>
+        <h1>Let's build something.</h1>
+        <p class="contact__lede">
+          Tell me what's slow, manual, or hard to scale. I read every message
+          and usually reply within a day.
         </p>
-      </div>
+      </header>
 
+      <!-- Two-column grid -->
       <div class="contact__grid">
-        <!-- Form -->
-        <form id="contact-form" class="form" novalidate data-reveal>
-          <div class="field">
-            <label for="name">Name</label>
-            <input id="name" name="name" type="text" autocomplete="name" required />
-            <p class="field__error" data-error-for="name" aria-live="polite"></p>
-          </div>
 
-          <div class="field">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" required />
-            <p class="field__error" data-error-for="email" aria-live="polite"></p>
-          </div>
+        <!-- LEFT: Form -->
+        <div class="contact__form-wrap" data-reveal data-reveal-delay="40">
+          <form id="contact-form" class="cform" novalidate>
 
-          <div class="field field--message">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" rows="6" required></textarea>
-            <p class="field__error" data-error-for="message" aria-live="polite"></p>
-          </div>
+            <!-- Name + Email row -->
+            <div class="cform__row">
+              <div class="cfield">
+                <label class="cfield__label" for="name">Full name</label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  placeholder="John Doe"
+                  required
+                />
+                <p class="cfield__error" data-error-for="name" aria-live="polite"></p>
+              </div>
 
-          <!-- Honeypot: hidden from humans, catches bots -->
-          <div class="hp" aria-hidden="true">
-            <label>Company<input name="company" tabindex="-1" autocomplete="off" /></label>
-          </div>
+              <div class="cfield">
+                <label class="cfield__label" for="email">Email</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  inputmode="email"
+                  autocomplete="email"
+                  placeholder="your@email.com"
+                  required
+                />
+                <p class="cfield__error" data-error-for="email" aria-live="polite"></p>
+              </div>
+            </div>
 
-          <button type="submit" class="btn btn-primary form__submit">
-            Send message
-          </button>
-          <p class="form__note">I’ll never share your details. No newsletters, no spam.</p>
-        </form>
+            <div class="cfield">
+              <label class="cfield__label" for="subject">What's this about?</label>
+              <input
+                id="subject"
+                name="subject"
+                type="text"
+                placeholder="LLM app, RAG system, automation..."
+              />
+            </div>
 
-        <!-- Direct methods -->
-        <aside class="direct" data-reveal data-reveal-delay="100">
-          <div class="direct__block">
-            <span class="direct__label">Email</span>
-            <div class="direct__row">
-              <a href={`mailto:${site.email}`} class="direct__value">{site.email}</a>
-              <button type="button" class="copy" id="copy-email" data-copy={site.email} aria-label="Copy email address">
-                <Icon name="lucide:copy" width={16} height={16} />
+            <div class="cfield">
+              <label class="cfield__label" for="message">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="6"
+                placeholder="Describe what's slow, repetitive, or hard to scale in your workflow..."
+                required
+              ></textarea>
+              <p class="cfield__error" data-error-for="message" aria-live="polite"></p>
+            </div>
+
+            <!-- Honeypot -->
+            <div class="hp" aria-hidden="true">
+              <label>Company<input name="company" tabindex="-1" autocomplete="off" /></label>
+            </div>
+
+            <div class="cform__footer">
+              <button type="submit" class="btn btn-primary cform__submit" id="submit-btn">
+                <Icon name="lucide:send" width={16} height={16} />
+                Send message
               </button>
+              <p class="cform__note">
+                <Icon name="lucide:shield-check" width={13} height={13} />
+                No newsletters, no spam.
+              </p>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- RIGHT: Direct contact panel -->
+        <aside class="direct" data-reveal data-reveal-delay="120">
+
+          {site.available && (
+            <div class="direct__status">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span>Available for new projects</span>
+            </div>
+          )}
+
+          <div class="direct__methods">
+            {contactMethods.map((m) => (
+              <div class="dmethod">
+                <div class="dmethod__icon-wrap" aria-hidden="true">
+                  <Icon name={m.icon} width={16} height={16} />
+                </div>
+                <div class="dmethod__body">
+                  <span class="dmethod__label">{m.label}</span>
+                  <div class="dmethod__row">
+                    <a href={m.href} class="dmethod__value">{m.value}</a>
+                    {m.copyable && (
+                      <button
+                        type="button"
+                        class="copy-btn"
+                        id={m.id}
+                        data-copy={m.value}
+                        aria-label={`Copy ${m.label.toLowerCase()} address`}
+                      >
+                        <Icon name="lucide:copy" width={13} height={13} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <hr class="direct__divider" />
+
+          <div class="direct__socials">
+            <span class="direct__section-label">Find me elsewhere</span>
+            <div class="direct__social-list">
+              {socialLinks.map((s) => (
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-link"
+                  aria-label={s.label}
+                >
+                  <Icon name={s.icon} width={16} height={16} />
+                  <span>{s.label}</span>
+                </a>
+              ))}
             </div>
           </div>
 
-          <div class="direct__block">
-            <span class="direct__label">Phone</span>
-            <a href={telHref} class="direct__value">{site.phone}</a>
+          <hr class="direct__divider" />
+
+          <div class="direct__promise">
+            <Icon name="lucide:clock" width={15} height={15} class="direct__promise-icon" />
+            <p>I typically reply within <strong>24 hours</strong> on business days. If your need is urgent, mention it in the subject.</p>
           </div>
 
-          <div class="direct__block">
-            <span class="direct__label">Elsewhere</span>
-            <div class="direct__socials">
-              <a href={site.social.github} target="_blank" rel="noopener" class="direct__value">GitHub</a>
-              <a href={site.social.linkedin} target="_blank" rel="noopener" class="direct__value">LinkedIn</a>
-            </div>
-          </div>
-
-          {
-            site.available && (
-              <span class="status-pill">
-                <span class="status-dot" /> Available for work
-              </span>
-            )
-          }
         </aside>
       </div>
     </div>
@@ -99,83 +203,115 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
 </Layout>
 
 <style>
+  /* Section */
   .contact {
-    padding-top: clamp(2.5rem, 6vw, 4.5rem);
-    padding-bottom: clamp(3.5rem, 8vw, 7rem);
+    padding-top: clamp(3rem, 7vw, 5rem);
+    padding-bottom: clamp(4rem, 9vw, 8rem);
   }
-  .contact__head h1 {
-    margin-top: 0.75rem;
-    max-width: 16ch;
+
+  /* Header */
+  .contact__header {
+    margin-bottom: clamp(2.5rem, 5vw, 3.75rem);
+    max-width: 680px;
+  }
+  .contact__header h1 {
+    margin-top: 0.6rem;
+    margin-bottom: 0;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
   }
   .contact__lede {
-    margin-top: 1.5rem;
-    max-width: 52ch;
+    margin-top: 1rem;
+    max-width: 56ch;
     color: var(--text-2);
-    font-size: 1.15rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
   }
+
+  /* Grid */
   .contact__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(2.5rem, 5vw, 4rem);
-    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    gap: clamp(2rem, 4vw, 3rem);
+    align-items: start;
   }
 
-  /* Form */
-  .form {
+  /* Form card */
+  .contact__form-wrap {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: clamp(1.5rem, 3.5vw, 2.25rem);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Form layout */
+  .cform {
     display: grid;
     gap: 1.25rem;
   }
-  .field {
+  .cform__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Fields */
+  .cfield {
     display: grid;
     gap: 0.4rem;
   }
-  .field label {
-    font-size: 0.85rem;
-    font-weight: 500;
+  .cfield__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
     color: var(--text-1);
   }
-  .field input,
-  .field textarea {
+  .cfield input,
+  .cfield textarea {
     width: 100%;
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--text-1);
-    background: var(--surface-1);
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 0.75rem 0.875rem;
+    padding: 0.7rem 0.875rem;
     transition:
       border-color 0.15s ease,
       box-shadow 0.15s ease;
   }
-  .field textarea {
+  .cfield input::placeholder,
+  .cfield textarea::placeholder {
+    color: var(--text-3);
+  }
+  .cfield textarea {
     resize: vertical;
-    min-height: 8rem;
+    min-height: 9rem;
+    line-height: 1.6;
   }
-  .field--message {
-    grid-template-rows: auto minmax(8rem, 1fr) auto;
-  }
-  .field--message textarea {
-    height: 100%;
-  }
-  .field input:focus-visible,
-  .field textarea:focus-visible {
+  .cfield input:focus-visible,
+  .cfield textarea:focus-visible {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
   }
-  .field input[aria-invalid='true'],
-  .field textarea[aria-invalid='true'] {
-    border-color: var(--accent);
+  .cfield input[aria-invalid='true'],
+  .cfield textarea[aria-invalid='true'] {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 14%, transparent);
   }
-  .field__error {
-    font-size: 0.8rem;
-    color: var(--accent);
+  .cfield__error {
+    font-size: 0.78rem;
+    color: var(--danger);
     min-height: 1rem;
   }
-  .field__error:empty {
+  .cfield__error:empty {
     display: none;
   }
+
+  /* Honeypot */
   .hp {
     position: absolute;
     left: -9999px;
@@ -183,91 +319,236 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     height: 1px;
     overflow: hidden;
   }
-  .form__submit {
-    justify-self: start;
-  }
-  .form__submit[disabled] {
-    opacity: 0.65;
-    cursor: default;
-  }
-  .form__note {
-    font-size: 0.85rem;
-    color: var(--text-2);
-  }
 
-  /* Direct methods */
-  .direct {
-    display: grid;
-    gap: 1.75rem;
-    align-content: start;
-    padding: clamp(1.5rem, 3vw, 2rem);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface-1);
-    height: fit-content;
-  }
-  .direct__label {
-    display: block;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--text-2);
-    margin-bottom: 0.4rem;
-  }
-  .direct__row {
+  /* Form footer */
+  .cform__footer {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-  }
-  .direct__value {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 1.05rem;
-    color: var(--text-1);
-    transition: color 0.15s ease;
-  }
-  a.direct__value:hover {
-    color: var(--accent);
-  }
-  .direct__socials {
-    display: flex;
     gap: 1.25rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
   }
-  .copy {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--text-2);
-    cursor: pointer;
-    transition:
-      color 0.15s ease,
-      border-color 0.15s ease;
-  }
-  .copy:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-  .status-pill {
+  .cform__submit {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0.7rem 1.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .cform__submit[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .cform__note {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
     font-size: 0.8rem;
-    font-weight: 500;
-    padding: 0.35rem 0.75rem;
+    color: var(--text-3);
+  }
+  .cform__note svg {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Direct contact aside */
+  .direct {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+    background: var(--surface-1);
     border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: clamp(1.5rem, 3.5vw, 2rem);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Status badge */
+  .direct__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-bg);
     border-radius: 999px;
+    padding: 0.35rem 0.9rem 0.35rem 0.65rem;
     width: fit-content;
+    letter-spacing: 0.01em;
   }
   .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: var(--accent);
+    flex-shrink: 0;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.55; transform: scale(0.85); }
+  }
+
+  /* Method rows */
+  .direct__methods {
+    display: grid;
+    gap: 1rem;
+  }
+  .dmethod {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .dmethod__icon-wrap {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .dmethod__body {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+  .dmethod__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-3);
+  }
+  .dmethod__row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .dmethod__value {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-1);
+    text-decoration: none;
+    transition: color 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dmethod__value:hover {
+    color: var(--accent);
+  }
+
+  /* Copy button */
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-3);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+  .copy-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .copy-btn:active {
+    transform: scale(0.93);
+  }
+
+  /* Divider */
+  .direct__divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* Socials */
+  .direct__socials {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .direct__section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-3);
+  }
+  .direct__social-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-2);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    text-decoration: none;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease,
+      background 0.15s ease,
+      transform 0.15s ease;
+  }
+  .social-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-bg);
+    transform: translateY(-2px);
+  }
+  .social-link:active {
+    transform: translateY(0) scale(0.97);
+  }
+
+  /* Response promise */
+  .direct__promise {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+    background: var(--accent-bg);
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  .direct__promise-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .direct__promise p {
+    font-size: 0.83rem;
+    color: var(--text-2);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .direct__promise strong {
+    color: var(--text-1);
+    font-weight: 600;
   }
 
   /* Toast */
@@ -286,7 +567,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     color: var(--bg);
     border-radius: var(--r-control);
     box-shadow: var(--shadow-lift);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     opacity: 0;
     pointer-events: none;
     transition:
@@ -299,7 +580,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
   }
   .toast.is-error {
     background: var(--danger);
-    color: var(--on-accent);
+    color: #fff;
   }
   .toast__icon {
     display: inline-flex;
@@ -309,68 +590,52 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
     padding: 2px;
   }
   .toast.is-error .toast__icon {
-    color: var(--on-accent);
+    color: #fff;
     background: transparent;
     padding: 0;
   }
 
-  @media (min-width: 820px) {
-    .contact__grid {
-      grid-template-columns: 1.4fr 0.9fr;
+  /* Responsive */
+  @media (min-width: 600px) {
+    .cform__row {
+      grid-template-columns: 1fr 1fr;
     }
+  }
+  @media (min-width: 860px) {
+    .contact__grid {
+      grid-template-columns: 1.45fr 1fr;
+      gap: 2rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .status-dot { animation: none; }
+    .social-link:hover { transform: none; }
   }
 </style>
 
 <script>
+  // Stricter email validation — rejects missing TLD, consecutive dots, spaces
+  function validateEmail(email: string): boolean {
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(email)
+      && !/\.{2,}/.test(email)          // no consecutive dots
+      && email.length <= 254;           // RFC 5321 length limit
+  }
+
   function initContactForm() {
     const form = document.getElementById('contact-form') as HTMLFormElement | null;
     if (!form || form.dataset.bound === '1') return;
     form.dataset.bound = '1';
 
-    const directCard = document.querySelector<HTMLElement>('.direct');
-    const messageField = form.querySelector<HTMLElement>('.field--message');
-    const messageInput = form.querySelector<HTMLTextAreaElement>('#message');
-
-    const toast = document.getElementById('toast');
+    const toast    = document.getElementById('toast');
     const toastMsg = document.getElementById('toast-msg');
-    const submit = form.querySelector<HTMLButtonElement>('.form__submit');
+    const submit   = document.getElementById('submit-btn') as HTMLButtonElement | null;
     let toastTimer: number | undefined;
-
-    const syncMessageHeight = () => {
-      if (!directCard || !messageField || !messageInput) return;
-
-      if (!window.matchMedia('(min-width: 820px)').matches) {
-        messageField.style.removeProperty('min-height');
-        messageField.style.removeProperty('height');
-        messageInput.style.removeProperty('height');
-        return;
-      }
-
-      const cardRect = directCard.getBoundingClientRect();
-      const messageRect = messageField.getBoundingClientRect();
-      const targetHeight = cardRect.bottom - messageRect.top;
-      const finalHeight = Math.max(120, Math.floor(targetHeight));
-
-      messageField.style.minHeight = `${finalHeight}px`;
-      messageField.style.height = `${finalHeight}px`;
-      messageInput.style.height = '100%';
-    };
-
-    syncMessageHeight();
-    window.addEventListener('resize', syncMessageHeight);
-    window.setTimeout(syncMessageHeight, 120);
-
-    if ('ResizeObserver' in window && directCard) {
-      const resizeObserver = new ResizeObserver(syncMessageHeight);
-      resizeObserver.observe(directCard);
-    }
 
     const showToast = (msg: string, isError = false) => {
       if (!toast || !toastMsg) return;
       toastMsg.textContent = msg;
       toast.classList.toggle('is-error', isError);
       toast.hidden = false;
-      // force reflow so the transition runs
       void toast.offsetWidth;
       toast.classList.add('is-visible');
       window.clearTimeout(toastTimer);
@@ -396,21 +661,22 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
       setError('name', '');
       setError('email', '');
       setError('message', '');
-      if (!data.name.trim()) fail('name', 'Please enter your name.');
-      if (!data.email.trim()) fail('email', 'Please enter your email.');
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) fail('email', 'That email doesn’t look right.');
+      if (!data.name.trim())    fail('name',    'Please enter your name.');
+      if (!data.email.trim())   fail('email',   'Please enter your email.');
+      else if (!validateEmail(data.email)) fail('email', 'Please enter a valid email address.');
       if (!data.message.trim()) fail('message', 'Please add a short message.');
       return firstInvalid;
     };
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const fd = new FormData(form);
+      const fd   = new FormData(form);
       const data = {
-        name: String(fd.get('name') ?? ''),
-        email: String(fd.get('email') ?? ''),
+        name:    String(fd.get('name')    ?? ''),
+        email:   String(fd.get('email')   ?? ''),
+        subject: String(fd.get('subject') ?? ''),
         message: String(fd.get('message') ?? ''),
-        company: String(fd.get('company') ?? ''), // honeypot
+        company: String(fd.get('company') ?? ''),
       };
 
       const firstInvalid = validate(data);
@@ -419,54 +685,50 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
         return;
       }
 
-      const original = submit?.textContent ?? 'Send message';
       if (submit) {
         submit.disabled = true;
-        submit.textContent = 'Sending…';
+        submit.textContent = 'Sending\u2026';
       }
 
       try {
-            const endpoints = [
-                'https://alizain-contact-api.methealizain.workers.dev/api/contact',
-                '/api/contact',
-                '/api/contact.php'
-            ];
+        const endpoints = [
+          'https://alizain-contact-api.methealizain.workers.dev/api/contact',
+          '/api/contact',
+          '/api/contact.php',
+        ];
         let sent = false;
 
         for (const endpoint of endpoints) {
           try {
-            const res = await fetch(endpoint, {
-              method: 'POST',
+            const res  = await fetch(endpoint, {
+              method:  'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data),
+              body:    JSON.stringify(data),
             });
             const json = await res.json().catch(() => null);
             if (res.ok && json && json.ok) {
               sent = true;
               break;
             }
-          } catch {
-            // Try the next endpoint.
-          }
+          } catch { /* try next */ }
         }
 
         if (sent) {
           form.reset();
-          showToast('Thanks — I’ll get back to you soon.');
+          showToast('Thanks \u2014 I\u2019ll get back to you soon.');
         } else {
           throw new Error('send failed');
         }
       } catch {
-        showToast('Couldn’t send just now — please email methealizain@gmail.com.', true);
+        showToast('Couldn\u2019t send just now \u2014 please email methealizain@gmail.com.', true);
       } finally {
         if (submit) {
           submit.disabled = false;
-          submit.textContent = original;
+          submit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Send message';
         }
       }
     });
 
-    // Click-to-copy email
     const copyBtn = document.getElementById('copy-email');
     copyBtn?.addEventListener('click', async () => {
       const value = copyBtn.getAttribute('data-copy') ?? '';
@@ -474,7 +736,7 @@ const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
         await navigator.clipboard.writeText(value);
         showToast('Email copied to clipboard.');
       } catch {
-        showToast('Couldn’t copy — please copy it manually.', true);
+        showToast('Couldn\u2019t copy \u2014 please copy it manually.', true);
       }
     });
   }
