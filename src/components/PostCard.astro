@@ -9,7 +9,7 @@ interface Props {
 const { entry } = Astro.props;
 const { data } = entry;
 const href = `/blog/${entry.slug}`;
-const title = data.cardTitle ?? data.title;
+const title = data.title;
 // Cards display small, so use the ~600px variant to keep downloads tiny.
 const cardImg = data.image.replace(/\.webp$/, '-sm.webp');
 ---
@@ -96,6 +96,11 @@ const cardImg = data.image.replace(/\.webp$/, '-sm.webp');
   .post-card__body h3 {
     margin: 0;
     font-size: 1.15rem;
+    /* Clamp to 2 lines with ellipsis – same title as the post page */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .post-card__body p {
