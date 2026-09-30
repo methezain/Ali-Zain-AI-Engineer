@@ -1,8 +1,8 @@
 ---
-title: 'I built an AI agent that writes technical blog posts'
-cardTitle: 'AI Blog Automation Agent'
+title: 'Technical blog automation with LangGraph and FastAPI'
+cardTitle: 'AI Agent for Blog Automation using LangGraph'
 excerpt: 'A multi-agent system that researches, outlines, writes in parallel, and delivers a publication-ready article in under 90 seconds.'
-description: 'A deep dive into building a LangGraph-based multi-agent system that autonomously researches the web, creates structured outlines, writes sections in parallel, and delivers publication-ready technical blog posts via a production FastAPI service.'
+description: 'A deep dive into building a LangGraph multi-agent system that researches, outlines, and writes technical blog posts via a production FastAPI service.'
 category: 'Agentic AI'
 pubDate: 2026-09-30
 image: '/work/article-blog-automation.webp'
