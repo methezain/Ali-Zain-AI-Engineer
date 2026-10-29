@@ -1,0 +1,255 @@
+{
+  "dark": {
+    "theme": "dark",
+    "title": "Ali Zain | AI Engineering Services",
+    "paths": 5,
+    "hot": 0,
+    "beads": 5,
+    "pathSample": "M 208 37 C 262 37, 262 45.5, 316 45.5",
+    "brain": true,
+    "orbit": 2,
+    "scrollLeft": 0,
+    "pageWidth": 1440,
+    "innerWidth": 1440,
+    "overlaps": [],
+    "nodes": [
+      {
+        "id": "documents",
+        "lit": true,
+        "x": 652,
+        "y": 127,
+        "w": 208,
+        "h": 54,
+        "text": "Document intelligence OCR + VISION"
+      },
+      {
+        "id": "retrieval",
+        "lit": false,
+        "x": 968,
+        "y": 127,
+        "w": 208,
+        "h": 71,
+        "text": "Retrieval augmented generation RAG"
+      },
+      {
+        "id": "agents",
+        "lit": false,
+        "x": 968,
+        "y": 315,
+        "w": 208,
+        "h": 54,
+        "text": "Agentic AI orchestration AGENTS"
+      },
+      {
+        "id": "models",
+        "lit": false,
+        "x": 652,
+        "y": 325,
+        "w": 208,
+        "h": 71,
+        "text": "Machine learning engineering TRAINING"
+      },
+      {
+        "id": "backend",
+        "lit": false,
+        "x": 810,
+        "y": 502,
+        "w": 208,
+        "h": 71,
+        "text": "Production APIs and MLOps DEPLOY"
+      }
+    ],
+    "handoff": {
+      "x": 0,
+      "y": 69,
+      "w": 1440,
+      "h": 612
+    },
+    "plate": {
+      "x": 652,
+      "y": 125,
+      "w": 608,
+      "h": 512
+    },
+    "wires": {
+      "w": 1440,
+      "h": 612,
+      "canvas": "1440x612"
+    },
+    "outside": []
+  },
+  "motion": {
+    "up": {
+      "plate": "matrix3d(1, 0, 0, 0, 0, 0.996464, -0.0840257, 0, 0, 0.0840257, 0.996464, 0, 0, -19.26, 0, 1)",
+      "graph": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 6.74, 24, 1)"
+    },
+    "down": {
+      "plate": "matrix3d(1, 0, 0, 0, 0, 0.996478, 0.0838518, 0, 0, -0.0838518, 0.996478, 0, 0, 19.23, 0, 1)",
+      "graph": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -6.73, 24, 1)"
+    }
+  },
+  "light": {
+    "theme": "light",
+    "title": "Ali Zain | AI Engineering Services",
+    "paths": 5,
+    "hot": 0,
+    "beads": 5,
+    "pathSample": "M 208 37 C 262 37, 262 45.5, 316 45.5",
+    "brain": true,
+    "orbit": 2,
+    "scrollLeft": 0,
+    "pageWidth": 1440,
+    "innerWidth": 1440,
+    "overlaps": [],
+    "nodes": [
+      {
+        "id": "documents",
+        "lit": true,
+        "x": 652,
+        "y": 127,
+        "w": 208,
+        "h": 54,
+        "text": "Document intelligence OCR + VISION"
+      },
+      {
+        "id": "retrieval",
+        "lit": false,
+        "x": 968,
+        "y": 127,
+        "w": 208,
+        "h": 71,
+        "text": "Retrieval augmented generation RAG"
+      },
+      {
+        "id": "agents",
+        "lit": false,
+        "x": 968,
+        "y": 315,
+        "w": 208,
+        "h": 54,
+        "text": "Agentic AI orchestration AGENTS"
+      },
+      {
+        "id": "models",
+        "lit": false,
+        "x": 652,
+        "y": 325,
+        "w": 208,
+        "h": 71,
+        "text": "Machine learning engineering TRAINING"
+      },
+      {
+        "id": "backend",
+        "lit": false,
+        "x": 810,
+        "y": 502,
+        "w": 208,
+        "h": 71,
+        "text": "Production APIs and MLOps DEPLOY"
+      }
+    ],
+    "handoff": {
+      "x": 0,
+      "y": 69,
+      "w": 1440,
+      "h": 612
+    },
+    "plate": {
+      "x": 652,
+      "y": 125,
+      "w": 608,
+      "h": 512
+    },
+    "wires": {
+      "w": 1440,
+      "h": 612,
+      "canvas": "1440x612"
+    },
+    "outside": []
+  },
+  "narrow": {
+    "theme": "dark",
+    "title": "Ali Zain | AI Engineering Services",
+    "paths": 5,
+    "hot": 0,
+    "beads": 5,
+    "pathSample": "M 208 37 C 268 37, 268 45.5, 328 45.5",
+    "brain": true,
+    "orbit": 2,
+    "scrollLeft": 0,
+    "pageWidth": 700,
+    "innerWidth": 700,
+    "overlaps": [],
+    "nodes": [
+      {
+        "id": "documents",
+        "lit": true,
+        "x": 35,
+        "y": 406,
+        "w": 208,
+        "h": 54,
+        "text": "Document intelligence OCR + VISION"
+      },
+      {
+        "id": "retrieval",
+        "lit": false,
+        "x": 363,
+        "y": 406,
+        "w": 208,
+        "h": 71,
+        "text": "Retrieval augmented generation RAG"
+      },
+      {
+        "id": "agents",
+        "lit": false,
+        "x": 363,
+        "y": 593,
+        "w": 208,
+        "h": 54,
+        "text": "Agentic AI orchestration AGENTS"
+      },
+      {
+        "id": "models",
+        "lit": false,
+        "x": 35,
+        "y": 604,
+        "w": 208,
+        "h": 71,
+        "text": "Machine learning engineering TRAINING"
+      },
+      {
+        "id": "backend",
+        "lit": false,
+        "x": 199,
+        "y": 781,
+        "w": 208,
+        "h": 71,
+        "text": "Production APIs and MLOps DEPLOY"
+      }
+    ],
+    "handoff": {
+      "x": 0,
+      "y": 69,
+      "w": 700,
+      "h": 875
+    },
+    "plate": {
+      "x": 35,
+      "y": 404,
+      "w": 630,
+      "h": 512
+    },
+    "wires": {
+      "w": 700,
+      "h": 875,
+      "canvas": "700x875"
+    },
+    "outside": []
+  },
+  "brainBox": {
+    "x": 0,
+    "y": 1897.640625,
+    "width": 1440,
+    "height": 649.40625
+  }
+}

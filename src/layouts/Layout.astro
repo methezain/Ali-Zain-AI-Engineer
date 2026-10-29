@@ -19,6 +19,48 @@ interface Props {
 }
 
 const { title, description, image, type, noindex } = Astro.props;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://alizain.dev',
+  name: 'Ali Zain',
+  alternateName: ['methezain', 'thetechboss', 'the tech boss', 'tech boss'],
+  jobTitle: ['AI Engineer', 'AI Developer', 'Python Developer'],
+  url: 'https://alizain.dev',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Islamabad',
+    addressCountry: 'PK',
+  },
+  email: 'methealizain@gmail.com',
+  telephone: '+923229587927',
+  description:
+    'Expert AI Engineer and Python Developer specializing in production deployment, agentic LangGraph workflows, and scalable document pipelines.',
+  knowsAbout: [
+    'Artificial Intelligence',
+    'AI Engineering',
+    'Model Training',
+    'Machine Learning',
+    'AI Developer',
+    'Python Developer',
+    'Production Deployment',
+    'FastAPI',
+    'Docker',
+    'LangGraph',
+    'LangChain',
+    'Computer Vision',
+    'YOLOv8',
+    'OCR Pipelines',
+    'AWS',
+  ],
+  sameAs: [
+    'https://linkedin.com/in/alizain-technologist',
+    'https://thetechboss.com',
+    'https://dev.to/methezain',
+    'https://github.com/methezain',
+  ],
+};
 ---
 
 <!doctype html>
@@ -59,6 +101,7 @@ const { title, description, image, type, noindex } = Astro.props;
         document.addEventListener('astro:after-swap', apply);
       })();
     </script>
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   </head>
   <body>
     <PageLoader />
